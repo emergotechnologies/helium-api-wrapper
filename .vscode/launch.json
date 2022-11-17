@@ -1,0 +1,18 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "Helium API Wrapper",
+            "type": "python",
+            "request": "launch",
+            "python": "${workspaceFolder}/.venv/bin/python",
+            "module": "src.helium_api_wrapper",
+            "justMyCode": true,
+            "args": ["get-challenges","--n", "5", "--file_format", "css"]
+        }
+    ]
+}

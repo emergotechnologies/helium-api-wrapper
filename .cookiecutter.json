@@ -1,0 +1,14 @@
+{
+  "_output_dir": "/Users/lukashuber/dev/temp",
+  "_template": "gh:cjolowicz/cookiecutter-hypermodern-python",
+  "author": "Lukas Huber",
+  "copyright_year": "2022",
+  "development_status": "Development Status :: 3 - Alpha",
+  "email": "lukas.huber@fh-kufstein.ac.at",
+  "friendly_name": "Helium Api Wrapper",
+  "github_user": "g4challenge",
+  "license": "MIT",
+  "package_name": "helium_api_wrapper",
+  "project_name": "helium-api-wrapper",
+  "version": "0.0.0"
+}
