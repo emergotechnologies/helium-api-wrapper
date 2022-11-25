@@ -15,3 +15,6 @@ __pycache__/
 *__pycache__
 docs/build/*
 .env
+/data/
+/.fleet/
+/.vscode/
