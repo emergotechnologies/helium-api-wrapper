@@ -46,10 +46,14 @@ class ResultHandler:
             self.logger = logging.getLogger(__name__)
         else:
             self.logger = logger
-        self.check_data()
-        self.data = pd.DataFrame(self.data)
+        # self.check_data()
+        # self.data = pd.DataFrame(self.data)
+
+    def append(self, obj):
+        self.data = pd.concat([self.data, pd.DataFrame(obj)])
 
     def write(self):
+        # @todo: implement data checks
         self.check_data()
         if self.file_format == "csv":
             self.write_csv()
@@ -63,6 +67,7 @@ class ResultHandler:
             self.write_parquet()
         else:
             self.logger.error(f"File format {self.file_format} not supported.")
+        self.logger.info(f"File {self.file_name} saved to {self.path}")
 
     def write_csv(self):
         self.data.to_csv(os.path.join(self.path, self.file_name + ".csv"))
@@ -84,13 +89,15 @@ class ResultHandler:
             self.logger.error("No data given.")
             raise ValueError("No data given.")
         if isinstance(self.data, dict):
-            self.data = [self.data]
+            self.data = pd.DataFrame(self.data)
             return
         if isinstance(self.data, list):
             return
         if isinstance(self.data, types.GeneratorType):
             self.logger.info("Generator given. Start scraping ...")
-            self.data = list(self.data)
+            self.data = pd.DataFrame(self.data)
+            return
+        if isinstance(self.data, pd.DataFrame):
             return
         else:
             self.logger.error("Data is not usable.")
