@@ -5,11 +5,11 @@
 /.python-version
 /.pytype/
 /dist/
+/env/
 /docs/_build/
 /src/*.egg-info/
 __pycache__/
 /.venv/
-src/helium_api_wrapper/berndilein.ipynb
 /.idea/
 *.ipynb_checkpoints
 *__pycache__

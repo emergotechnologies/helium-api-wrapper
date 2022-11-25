@@ -158,3 +158,16 @@ class Device(DataObject):
     organization_id: str = None
     oui: str = None
     total_packets: int = None
+
+
+class Event(DataObject):
+    """Class to describe an Integration Event"""
+    data: dict
+    description: str
+    device_id: str
+    frame_down: int = None
+    frame_up: int = None
+    organization_id: str
+    reported_at: str
+    router_uuid: str
+    sub_category: str

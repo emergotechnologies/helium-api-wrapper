@@ -11,7 +11,7 @@ import logging
 from typing import Union
 
 from helium_api_wrapper.Endpoint import Endpoint
-from helium_api_wrapper.DataObjects import DataObject, Device
+from helium_api_wrapper.DataObjects import DataObject, Device, Event
 
 logging.basicConfig(level=logging.INFO)
 
@@ -25,7 +25,6 @@ class DeviceApi:
         else:
             self.logger = logger
 
-    # @todo: move to Endpoint.py
     def get_endpoint(self, endpoint_url="devices", response: Device = None) -> Endpoint:
         """Load the Device data.
 
@@ -44,7 +43,7 @@ class DeviceApi:
         endpoint = Endpoint(endpoint_url, "GET", {}, response_type=response, type="console")
         return endpoint
 
-    def get_device(self, uuid: str) -> dict:
+    def get_device(self, uuid: str) -> Device:
         """Get a device by its uuid.
 
         :param uuid: The ID of the Device, defaults to None
@@ -58,16 +57,30 @@ class DeviceApi:
         endpoint.request_with_exponential_backoff()
         return endpoint.data[0]
 
-    def get_integration_events(self, uuid: str) -> dict:
+    def get_integration_events(self, uuid: str) -> Event:
         """Get the previous 10 Integration events for the device with the given uuid.
 
         :param uuid: The ID of the Device, defaults to None
         :type uuid: str
 
-        :return: The Device.
-        :rtype: Device
+        :return: The Event.
+        :rtype: Event
         """
-        self.logger.info(f"Getting Device Integration Events for uuid {uuid}")
+        self.logger.info(f"Getting Device Events for uuid {uuid}")
+        endpoint = self.get_endpoint(f"devices/{uuid}/events")
+        endpoint.request_with_exponential_backoff()
+        return endpoint.data
+
+    def get_events(self, uuid: str) -> Event:
+        """Get the previous 100 events for the device with the given uuid.
+
+        :param uuid: The ID of the Device, defaults to None
+        :type uuid: str
+
+        :return: The Event.
+        :rtype: Event
+        """
+        self.logger.info(f"Getting Device Events for uuid {uuid}")
         endpoint = self.get_endpoint(f"devices/{uuid}/events?sub_category=uplink_integration_req")
         endpoint.request_with_exponential_backoff()
         return endpoint.data

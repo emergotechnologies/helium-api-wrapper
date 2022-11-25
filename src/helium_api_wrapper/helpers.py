@@ -13,7 +13,7 @@ from typing import Union
 from haversine import haversine, Unit
 
 from helium_api_wrapper import HotspotApi, ChallengeApi, TransactionApi, DeviceApi
-
+from helium_api_wrapper.DataObjects import Hotspot
 
 logging.basicConfig(level=logging.INFO)
 
@@ -77,7 +77,11 @@ def load_hotspot(address: str):
     :return: Hotspot
     """
     api = HotspotApi()
-    return api.get_hotspot_by_address(address=address).as_dict(["address", "lat", "lng"])
+    hotspot = api.get_hotspot_by_address(address=address)
+    if isinstance(hotspot, Hotspot):
+        return hotspot.as_dict(["address", "lat", "lng"])
+    else:
+        return None
 
 
 def sort_witnesses(witnesses: list, load_type: str = "all"):
@@ -88,13 +92,16 @@ def sort_witnesses(witnesses: list, load_type: str = "all"):
     :param load_type: Load type
     :return: List of witnesses
     """
-    # @todo: add load_types and check if enough witnesses in the list
     # @todo: filter for valid witnesses
     if load_type == "all":
         return sorted(witnesses, key=lambda witness: witness["signal"], reverse=False)
     elif load_type == "triangulation":
+        if len(witnesses) < 3:
+            return sorted(witnesses, key=lambda witness: witness["signal"], reverse=False)
         return sorted(witnesses, key=lambda witness: witness["signal"], reverse=False)[:3]
     elif load_type == "best_signal":
+        if len(witnesses) == 0:
+            return witnesses
         return sorted(witnesses, key=lambda witness: witness["signal"], reverse=False)[0]
     else:
         return sorted(witnesses, key=lambda witness: witness["signal"], reverse=False)
@@ -166,21 +173,27 @@ def load_challenge_data(challenges: list = None, load_type: str = "triangulation
 
     for challenge in challenges:
         witnesses = sort_witnesses(challenge["witnesses"], load_type=load_type)
+        if load_hotspots:
+            challengee = load_hotspot(address=challenge["challengee"])
+        else:
+            challengee = {
+                "address": challenge["challengee"],
+                "lat": 0,
+                "lng": 0
+            }
+
         for witness in witnesses:
             if load_hotspots:
                 witness_hotspot = load_hotspot(address=witness["gateway"])
-                challengee = load_hotspot(address=challenge["challengee"])
             else:
                 witness_hotspot = {
                     "address": witness["gateway"],
                     "lat": 0,
                     "lng": 0
                 }
-                challengee = {
-                    "address": challenge["challengee"],
-                    "lat": 0,
-                    "lng": 0
-                }
+
+            if witness_hotspot is None or challengee is None:
+                return
 
             yield get_challenge_data(
                 challenge=challenge,
@@ -212,6 +225,7 @@ def get_challenge_data(challenge, witness, witness_hotspot, challengee):
                 "signal": witness["signal"],
                 "snr": witness["snr"],
                 "datarate": witness["datarate"],
+                "is_valid": witness["is_valid"],
                 "hash": challenge["hash"],
                 "time": challenge["time"],
                 "distance": distance
@@ -228,6 +242,7 @@ def load_device(uuid: str):
     api = DeviceApi()
     return api.get_device(uuid=uuid)
 
+
 def load_last_integration(uuid: str):
     """
     Load a device integration events
@@ -236,9 +251,19 @@ def load_last_integration(uuid: str):
     :return: Device
     """
     api = DeviceApi()
-
     integrations = api.get_integration_events(uuid=uuid)
-
     assert len(integrations) > 0, f"No Integration Events existing for device with uuid {uuid}"
+    return integrations[0]
 
+
+def load_last_event(uuid: str):
+    """
+    Load a device event
+
+    :param uuid: UUID of the device
+    :return: Device
+    """
+    api = DeviceApi()
+    integrations = api.get_events(uuid=uuid)
+    assert len(integrations) > 0, f"No Events existing for device with uuid {uuid}"
     return integrations[0]

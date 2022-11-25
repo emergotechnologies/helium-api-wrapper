@@ -26,7 +26,6 @@ class ChallengeApi:
         else:
             self.logger = logger
 
-    # @todo: move to Endpoint.py
     def get_endpoint(self, endpoint_url="challenges", params=None, response: DataObject = Challenge) -> Endpoint:
         """Load the hotspot data.
 
