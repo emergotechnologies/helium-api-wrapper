@@ -50,6 +50,7 @@ class ResultHandler:
         self.data = pd.DataFrame(self.data)
 
     def write(self):
+        self.check_data()
         if self.file_format == "csv":
             self.write_csv()
         elif self.file_format == "json":
@@ -88,7 +89,7 @@ class ResultHandler:
         if isinstance(self.data, list):
             return
         if isinstance(self.data, types.GeneratorType):
-            self.logger.info("Generator given. Start scraping hotspots...")
+            self.logger.info("Generator given. Start scraping ...")
             self.data = list(self.data)
             return
         else:

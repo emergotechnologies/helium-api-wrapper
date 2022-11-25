@@ -25,7 +25,6 @@ class TransactionApi:
         else:
             self.logger = logger
 
-    # @todo: move to Endpoint.py
     def get_endpoint(self, endpoint_url="transactions", params=None, response: DataObject = None) -> Endpoint:
         """Load the hotspot data.
 

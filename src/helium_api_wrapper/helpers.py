@@ -88,13 +88,16 @@ def sort_witnesses(witnesses: list, load_type: str = "all"):
     :param load_type: Load type
     :return: List of witnesses
     """
-    # @todo: add load_types and check if enough witnesses in the list
     # @todo: filter for valid witnesses
     if load_type == "all":
         return sorted(witnesses, key=lambda witness: witness["signal"], reverse=False)
     elif load_type == "triangulation":
+        if len(witnesses) < 3:
+            return sorted(witnesses, key=lambda witness: witness["signal"], reverse=False)
         return sorted(witnesses, key=lambda witness: witness["signal"], reverse=False)[:3]
     elif load_type == "best_signal":
+        if len(witnesses) == 0:
+            return witnesses
         return sorted(witnesses, key=lambda witness: witness["signal"], reverse=False)[0]
     else:
         return sorted(witnesses, key=lambda witness: witness["signal"], reverse=False)
@@ -228,6 +231,7 @@ def load_device(uuid: str):
     api = DeviceApi()
     return api.get_device(uuid=uuid)
 
+
 def load_last_integration(uuid: str):
     """
     Load a device integration events
@@ -236,9 +240,19 @@ def load_last_integration(uuid: str):
     :return: Device
     """
     api = DeviceApi()
-
     integrations = api.get_integration_events(uuid=uuid)
-
     assert len(integrations) > 0, f"No Integration Events existing for device with uuid {uuid}"
+    return integrations[0]
 
+
+def load_last_event(uuid: str):
+    """
+    Load a device event
+
+    :param uuid: UUID of the device
+    :return: Device
+    """
+    api = DeviceApi()
+    integrations = api.get_events(uuid=uuid)
+    assert len(integrations) > 0, f"No Events existing for device with uuid {uuid}"
     return integrations[0]

@@ -25,7 +25,6 @@ class HotspotApi:
         else:
             self.logger = logger
 
-    # @todo: move to Endpoint.py
     def get_endpoint(self, endpoint_url="hotspots", params=None, response: DataObject = Hotspot) -> Endpoint:
         """Load the hotspot data.
 
