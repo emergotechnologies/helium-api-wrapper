@@ -70,7 +70,7 @@ class Endpoint:
     response_type: Type[DataObject] = None
     response_code: int = None
     headers: dict = None
-    error_codes: List[int] = field(default_factory=lambda: [404, 429, 500, 502, 503])
+    error_codes: List[int] = field(default_factory=lambda: [429, 500, 502, 503])
     data: List[DataObject] = field(default_factory=list)
     cursor: str = None
     logger = logging.getLogger(__name__)
@@ -105,7 +105,7 @@ class Endpoint:
 
     def __request(self) -> Response:
         """Send a simple request to the Helium API and return the response."""
-        self.logger.info(f"Requesting {self.name}...")
+        self.logger.debug(f"Requesting {self.name}...")
         response = requests.request(
             self.method,
             self.get_url(),
@@ -151,9 +151,9 @@ class Endpoint:
         for page in range(page_amount):
             self.request_with_exponential_backoff()
             if self.cursor is None:
-                print(f"Finished crawling data at page {page + 1} of {page_amount}.")
+                self.logger.debug(f"Finished crawling data at page {page + 1} of {page_amount}.")
                 break
-            print(f"Page {page + 1} of {page_amount} crawled.")
+            self.logger.debug(f"Page {page + 1} of {page_amount} crawled.")
 
     @property
     def params(self) -> dict:
@@ -176,8 +176,13 @@ class Endpoint:
 
         :return: The data from the response.
         """
+
+        if self.response_code == 404:
+            self.logger.warning("Ressource not found")
+            return None
+
         if self.response_code == 204:
-            self.logger.info("No content")
+            self.logger.warning("No content")
             return None
         else:
             r = response.json()

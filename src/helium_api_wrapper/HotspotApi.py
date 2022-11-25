@@ -8,7 +8,7 @@
 """
 
 import logging
-from typing import List
+from typing import List, Union
 
 from helium_api_wrapper.Endpoint import Endpoint
 from helium_api_wrapper.DataObjects import Hotspot, Role, DataObject
@@ -46,7 +46,7 @@ class HotspotApi:
         endpoint = Endpoint(endpoint_url, "GET", params, response_type=response)
         return endpoint
 
-    def get_hotspot_by_address(self, address: str) -> Hotspot:
+    def get_hotspot_by_address(self, address: str) -> Union[Hotspot, None]:
         """Get a hotspot by address.
 
         :param address: The address of the hotspot, defaults to None
@@ -58,7 +58,10 @@ class HotspotApi:
         self.logger.info(f"Getting hotspot for adress {address}")
         endpoint = self.get_endpoint(f"hotspots/{address}")
         endpoint.request_with_exponential_backoff()
-        return endpoint.data[0]
+        if len(endpoint.data) == 0:
+            return None
+        else:
+            return endpoint.data[0]
 
     def get_hotspots(self, page_amount: int = 10, filter_modes: str = "full") -> List[Hotspot]:
         """Get a list of hotspots.

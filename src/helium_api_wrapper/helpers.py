@@ -13,7 +13,7 @@ from typing import Union
 from haversine import haversine, Unit
 
 from helium_api_wrapper import HotspotApi, ChallengeApi, TransactionApi, DeviceApi
-
+from helium_api_wrapper.DataObjects import Hotspot
 
 logging.basicConfig(level=logging.INFO)
 
@@ -77,7 +77,11 @@ def load_hotspot(address: str):
     :return: Hotspot
     """
     api = HotspotApi()
-    return api.get_hotspot_by_address(address=address).as_dict(["address", "lat", "lng"])
+    hotspot = api.get_hotspot_by_address(address=address)
+    if isinstance(hotspot, Hotspot):
+        return hotspot.as_dict(["address", "lat", "lng"])
+    else:
+        return None
 
 
 def sort_witnesses(witnesses: list, load_type: str = "all"):
@@ -169,21 +173,27 @@ def load_challenge_data(challenges: list = None, load_type: str = "triangulation
 
     for challenge in challenges:
         witnesses = sort_witnesses(challenge["witnesses"], load_type=load_type)
+        if load_hotspots:
+            challengee = load_hotspot(address=challenge["challengee"])
+        else:
+            challengee = {
+                "address": challenge["challengee"],
+                "lat": 0,
+                "lng": 0
+            }
+
         for witness in witnesses:
             if load_hotspots:
                 witness_hotspot = load_hotspot(address=witness["gateway"])
-                challengee = load_hotspot(address=challenge["challengee"])
             else:
                 witness_hotspot = {
                     "address": witness["gateway"],
                     "lat": 0,
                     "lng": 0
                 }
-                challengee = {
-                    "address": challenge["challengee"],
-                    "lat": 0,
-                    "lng": 0
-                }
+
+            if witness_hotspot is None or challengee is None:
+                return
 
             yield get_challenge_data(
                 challenge=challenge,
@@ -215,6 +225,7 @@ def get_challenge_data(challenge, witness, witness_hotspot, challengee):
                 "signal": witness["signal"],
                 "snr": witness["snr"],
                 "datarate": witness["datarate"],
+                "is_valid": witness["is_valid"],
                 "hash": challenge["hash"],
                 "time": challenge["time"],
                 "distance": distance
