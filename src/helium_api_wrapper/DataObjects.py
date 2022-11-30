@@ -16,29 +16,11 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class DataObject(BaseModel):
+class DataObject(BaseModel):  # type: ignore[misc]
     """Base class for all data objects."""
 
-    def __len__(self):
+    def __len__(self) -> int:
         return dict(self).__len__()
-
-    def __getitem__(self, item):
-        return getattr(self, item)
-
-    # TODO: I don't really think we need as_list and as_dict
-    def as_list(self, columns: Optional[List[str]] = None):
-        """Return the data as a list."""
-        data = dict(self)
-        if columns:
-            data = {key: data[key] for key in columns}
-        return data.values()
-
-    def as_dict(self, columns: Optional[List[str]] = None):
-        """Return the data as a dict."""
-        data = dict(self)
-        if columns:
-            data = {key: data[key] for key in columns}
-        return data
 
 
 class Geocode(DataObject):
@@ -131,6 +113,24 @@ class Challenge(DataObject):
     fee: Optional[int] = None
 
 
+class ChallengeResult(DataObject):
+    """Class to describe a Challenge loaded from the Helium API."""
+
+    challengee: Optional[str]
+    challengee_lat: Optional[float]
+    challengee_lng: Optional[float]
+    witness_address: Optional[str]
+    witness_lat: Optional[float]
+    witness_lng: Optional[float]
+    signal: Optional[int]
+    snr: Optional[float]
+    datarate: Optional[str]
+    is_valid: Optional[bool]
+    hash: Optional[str]
+    time: Optional[int]
+    distance: Optional[float]
+
+
 class ChallengeResolved(DataObject):
     """Class to describe a resolved Challenge."""
 
@@ -168,7 +168,7 @@ class Device(DataObject):
     dev_eui: Optional[str] = None
     id: Optional[str] = None
     in_xor_filter: Optional[bool] = None
-    labels: List[Optional[str]] = None
+    labels: Optional[List[str]] = None
     last_connected: Optional[str] = None
     name: Optional[str] = None
     organization_id: Optional[str] = None
@@ -179,7 +179,7 @@ class Device(DataObject):
 class Event(DataObject):
     """Class to describe an Integration Event."""
 
-    data: dict
+    data: Dict[str, Any]
     description: str
     device_id: str
     frame_down: Optional[int] = None

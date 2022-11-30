@@ -84,11 +84,10 @@ class ChallengeApi:
             )
 
         endpoint.crawl_pages(page_amount=10)
-
-        challenges = []
-        for challenge in endpoint.data:
-            challenges.append(self.resolve_challenge(challenge))
-        return challenges
+        resolved_challenges: List[ChallengeResolved] = [
+            self.resolve_challenge(challenge) for challenge in endpoint.data
+        ]
+        return resolved_challenges
 
     def resolve_challenge(self, challenge: Challenge) -> ChallengeResolved:
         """Resolve a challenge.

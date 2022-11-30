@@ -11,7 +11,9 @@
 import logging
 import os
 import types
-from typing import Any, Dict, Optional, Union
+from typing import Any
+from typing import Dict
+from typing import Optional
 
 import pandas as pd
 

@@ -8,9 +8,10 @@
 
 """
 
-from typing import Dict, Optional
 import logging
-from typing import Any, Union
+from typing import Dict
+from typing import Optional
+from typing import Union
 
 from helium_api_wrapper.DataObjects import ChallengeResolved
 from helium_api_wrapper.DataObjects import DataObject
@@ -67,9 +68,7 @@ class TransactionApi:
 
     def get_challenges_from_transactions(
         self, hash: str
-    ) -> Union[
-        ChallengeResolved, Dict[str, Any]
-    ]:  # TODO: check if this really returns a Dict
+    ) -> ChallengeResolved:  # TODO: check if this really returns a Dict
         """Get a hotspot by address.
 
         :param hash: The hash of the transaction, defaults to None
@@ -80,13 +79,14 @@ class TransactionApi:
         """
         self.logger.info(f"Getting challenges from transaction {hash}")
         challenge = self.get_transaction(hash)
-        print(challenge)
+        self.logger.info(challenge)
         if challenge["type"] == "poc_receipts_v2":
+            # flatten the data, this is dangerous we should look over this
             challenge_resolved = {
-                key: challenge[key] for key in challenge if key != "path"
+                key: value for key, value in challenge if key != "path"
             }
             challenge_resolved.update(challenge["path"][0])
             return ChallengeResolved(**challenge_resolved)
         else:
             self.logger.info(f"Transaction {hash} is not a challenge. Returning Data")
-            return challenge
+            return None  # TODO: should we return none or why do we only use poc_receipts_v2?

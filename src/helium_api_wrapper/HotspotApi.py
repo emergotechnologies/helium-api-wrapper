@@ -26,6 +26,8 @@ logging.basicConfig(level=logging.INFO)
 class HotspotApi:
     """Class to describe Hotspot API."""
 
+    data: List[Hotspot]
+
     def __init__(self, logger: Optional[logging.Logger] = None):
         self.logger: logging.Logger = logger or logging.getLogger(__name__)
 
@@ -83,7 +85,8 @@ class HotspotApi:
 
         endpoint = self.get_endpoint(params={"filter_modes": filter_modes})
         endpoint.crawl_pages(page_amount=page_amount)
-        return endpoint.data
+        data: List[DataObject] = endpoint.data
+        return data
 
     def get_hotspots_by_addresses(self, addresses: List[str]) -> List[Hotspot]:
         """Get a list of hotspots.
@@ -122,7 +125,8 @@ class HotspotApi:
             params={"lat": lat, "lon": lon, "distance": distance},
         )
         endpoint.crawl_pages(page_amount=10)
-        return endpoint.data
+        data: List[DataObject] = endpoint.data
+        return data
 
     def get_hotspots_box_search(
         self, swlat: str, swlon: str, nelat: str, nelon: str
@@ -152,11 +156,12 @@ class HotspotApi:
             params={"swlat": swlat, "swlon": swlon, "nelat": nelat, "nelon": nelon},
         )
         endpoint.crawl_pages(page_amount=10)
-        return endpoint.data
+        data: List[DataObject] = endpoint.data
+        return data
 
     def get_hotspot_roles(
         self, address: str, limit: int, filter_types: str = ""
-    ) -> List[DataObject]:
+    ) -> List[Role]:
         """Get a list of hotspots by owner.
 
         :param address: The address of the owner, defaults to None
@@ -173,21 +178,16 @@ class HotspotApi:
         """
         self.logger.info(f"Getting hotspot roles for {address}")
 
-        params: Dict[str, Union[str, int]] = {}
-
-        if filter_types != "":
-            params["filter_types"] = filter_types
-
         if limit < 0:
             raise ValueError("Limit must be greater than 0")
-        else:
-            params["limit"] = limit
 
         endpoint = self.get_endpoint(
-            f"hotspots/{address}/roles", params=params, response=Role
+            f"hotspots/{address}/roles",
+            params={"limit": limit, "filter_types": filter_types},
+            response=Role,
         )
         endpoint.crawl_pages(page_amount=1)
         if endpoint.data is None:
             raise ValueError("No recent roles found")
-        data = endpoint.data
+        data: List[Role] = endpoint.data
         return data

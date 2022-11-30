@@ -30,8 +30,6 @@ def test_get_hotspot_roles_succeeds() -> None:
     if len(result) > 0:
         assert type(result[0]).__name__ == "Role"
         assert len(result) == 2
-    else:
-        assert ValueError
 
 
 def test_get_hotspots_by_addresses_succeeds() -> None:
