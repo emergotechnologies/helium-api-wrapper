@@ -1,7 +1,10 @@
 """Test cases for Endpoints."""
 # import pytest
 
-from helium_api_wrapper import HotspotApi, ChallengeApi, TransactionApi
+from helium_api_wrapper import ChallengeApi
+from helium_api_wrapper import HotspotApi
+from helium_api_wrapper import TransactionApi
+
 
 """Test cases for HotspotApi."""
 

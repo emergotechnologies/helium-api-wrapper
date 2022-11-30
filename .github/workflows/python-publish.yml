@@ -5,7 +5,7 @@ name: Publish Python Package
 
 on:
   release:
-    types: [ published ]
+    types: [published]
 
 permissions:
   contents: read
@@ -18,7 +18,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
-            python-version: '3.x'
+          python-version: "3.x"
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip

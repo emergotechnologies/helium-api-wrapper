@@ -1,7 +1,7 @@
 """Test cases for the helpers module."""
 import pandas as pd
-
 from numpy import int64
+
 from helium_api_wrapper import helpers
 
 
@@ -24,8 +24,7 @@ address = "11BCGPgrFa2SxFMWfnv7S644uXX7jZTGmWVp3c2yhMh46G6pEbW"
 
 
 def test_challenge_loading_triangulation():
-    """function testing if challenge data is loaded correctly"""
-
+    """Function testing if challenge data is loaded correctly."""
     test_df = pd.DataFrame(helpers.load_challenge_data(limit=1))
 
     # TESTING COLUMNS AND DATATYPES
@@ -37,7 +36,8 @@ def test_challenge_loading_triangulation():
         ), f"{key} not of {column_types[key]}"
 
     # TESTING NUMBER OF CHALLENGEES
-    # using both lat. and lon. on the off chance that two hotspots share one but not both
+    # using both lat. and lon. on the off chance that two hotspots share one
+    # but not both
     assert (
         len(test_df[["challengee"]].drop_duplicates()) == 1
     ), "Wrong number of challengees"

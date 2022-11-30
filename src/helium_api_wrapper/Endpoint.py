@@ -1,4 +1,5 @@
-"""
+"""Endpoint Module.
+
 .. module:: Endpoint
 
 :synopsis: Classes and functions for Helium API Endpoint
@@ -7,17 +8,22 @@
 
 """
 
-import os
-from dataclasses import dataclass, field
 import logging
+import os
 import time
-from typing import List, Type, Union
-from dotenv import load_dotenv, find_dotenv
+from dataclasses import dataclass
+from dataclasses import field
+from typing import List
+from typing import Type
+from typing import Union
 
 import requests
+from dotenv import find_dotenv
+from dotenv import load_dotenv
 from requests import Response
 
 from helium_api_wrapper.DataObjects import DataObject
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -96,9 +102,10 @@ class Endpoint:
             load_dotenv(dotenv_path)
             api_key = os.getenv("API_KEY")
 
-            assert (
-                api_key
-            ), "No api key found in .env. The helium console api requires an api key."
+            if not api_key:
+                print(
+                    "No api key found in .env. The helium console api requires an api key."
+                )
             self.headers = {
                 "User-Agent": f"HeliumPythonWrapper/0.3{ts}",
                 "key": os.getenv("API_KEY"),
@@ -117,7 +124,8 @@ class Endpoint:
         return response
 
     def request_with_exponential_backoff(self, max_retries: int = -1) -> None:
-        """Send a request and retry with exponential backoff
+        """Send a request and retry with exponential backoff.
+
         if the response code is in the error_codes list.
 
         :param max_retries: The maximum number of retries. -1 means infinite retries.
@@ -150,7 +158,7 @@ class Endpoint:
             self.__handle_response(response)
 
     def crawl_pages(self, page_amount=10) -> None:
-        """Gets the result pages
+        """Gets the result pages.
 
         This function allows user to read next pages of results and save them to the dataframe
         :return: None
@@ -181,11 +189,7 @@ class Endpoint:
             self.params["cursor"] = self.cursor
 
     def __handle_response(self, response) -> Union["data", Exception]:
-        """Handle the response from the Helium API.
-
-        :return: The data from the response.
-        """
-
+        """Handle the response from the Helium API."""
         if self.response_code == 404:
             self.logger.warning("Ressource not found")
             return None

@@ -1,4 +1,5 @@
-"""
+"""DeviceAPI module.
+
 .. module:: DeviceApi
 
 :synopsis: Functions to load device data from Helium API
@@ -9,14 +10,16 @@
 
 import logging
 
+from helium_api_wrapper.DataObjects import Device
+from helium_api_wrapper.DataObjects import Event
 from helium_api_wrapper.Endpoint import Endpoint
-from helium_api_wrapper.DataObjects import Device, Event
+
 
 logging.basicConfig(level=logging.INFO)
 
 
 class DeviceApi:
-    """Class to describe Device API"""
+    """Class to describe Device API."""
 
     def __init__(self, logger: logging.Logger = None):
         if logger is None:

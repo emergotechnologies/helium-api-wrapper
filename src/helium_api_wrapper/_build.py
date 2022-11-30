@@ -1,7 +1,7 @@
 import pandas as pd
-from helium_api_wrapper.helpers import (
-    load_hotspot,
-)
+
+from helium_api_wrapper.helpers import load_hotspot
+
 
 h = pd.read_pickle("../../data/hotspots.pkl")
 c = pd.read_pickle("../../data/challenges_with_location.pkl")

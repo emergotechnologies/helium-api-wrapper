@@ -1,4 +1,5 @@
-"""
+"""Challenge API.
+
 .. module:: ChallengeApi
 
 :synopsis: Functions to load challenges from Helium API
@@ -10,14 +11,17 @@
 import logging
 from typing import List
 
+from helium_api_wrapper.DataObjects import Challenge
+from helium_api_wrapper.DataObjects import ChallengeResolved
+from helium_api_wrapper.DataObjects import DataObject
 from helium_api_wrapper.Endpoint import Endpoint
-from helium_api_wrapper.DataObjects import Challenge, ChallengeResolved, DataObject
+
 
 logging.basicConfig(level=logging.INFO)
 
 
 class ChallengeApi:
-    """Class to describe Challenge API"""
+    """Class to describe Challenge API."""
 
     def __init__(self, logger: logging.Logger = None):
         if logger is None:
@@ -29,7 +33,6 @@ class ChallengeApi:
         self, endpoint_url="challenges", params=None, response: DataObject = Challenge
     ) -> Endpoint:
         """Load the hotspot data.
-
 
         :param endpoint_url: The url of the endpoint, defaults to "challenges"
         :type endpoint_url: str, optional
@@ -52,6 +55,7 @@ class ChallengeApi:
         self, address: str = "", limit: int = 50
     ) -> List[ChallengeResolved]:
         """Get a list of challenges.
+
         When passed an address, it will get the challenges for that hotspot.
 
         :param address: The address of the hotspot, defaults to ""

@@ -1,4 +1,5 @@
-"""
+"""Main module.
+
 .. module:: __main__
 
 :synopsis: Command-line interface
@@ -15,17 +16,15 @@
 
 import click
 
+from helium_api_wrapper.helpers import load_challenge_data
+from helium_api_wrapper.helpers import load_challenges
+from helium_api_wrapper.helpers import load_challenges_for_hotspot
+from helium_api_wrapper.helpers import load_device
+from helium_api_wrapper.helpers import load_hotspot
+from helium_api_wrapper.helpers import load_hotspots
+from helium_api_wrapper.helpers import load_last_event
+from helium_api_wrapper.helpers import load_last_integration
 from helium_api_wrapper.ResultHandler import ResultHandler
-from helium_api_wrapper.helpers import (
-    load_hotspot,
-    load_challenge_data,
-    load_hotspots,
-    load_device,
-    load_challenges_for_hotspot,
-    load_challenges,
-    load_last_integration,
-    load_last_event,
-)
 
 
 @click.command()
@@ -44,9 +43,7 @@ from helium_api_wrapper.helpers import (
 )
 @click.version_option(version="0.1")
 def get_hotspot(address: str, file_format: str, file_name: str, path: str):
-    """
-    This function returns a Hotspot for a given address.
-    """
+    """This function returns a Hotspot for a given address."""
     if address:
         hotspot = load_hotspot(address)
     else:
@@ -71,9 +68,7 @@ def get_hotspot(address: str, file_format: str, file_name: str, path: str):
 )
 @click.version_option(version="0.1")
 def get_hotspots(n: int, file_format: str, file_name: str, path: str):
-    """
-    This function returns a the given number of random Hotspots.
-    """
+    """This function returns a the given number of random Hotspots."""
     hotspots = load_hotspots(n)
     ResultHandler(hotspots, file_format, file_name, path).write()
 
@@ -96,7 +91,7 @@ def get_hotspots(n: int, file_format: str, file_name: str, path: str):
 def get_challenges_for_hotspot(
     address: str, file_format: str, file_name: str, path: str
 ):
-    # print(f"called get_challenge with address {address}")
+    """This function returns a list of challenges for a given hotspot."""
     ResultHandler(
         load_challenges_for_hotspot(address), file_format, file_name, path
     ).write()
@@ -123,7 +118,7 @@ def get_challenges_for_hotspot(
 def get_challenges(
     n: int, incremental: bool, file_format: str, file_name: str, path: str
 ):
-    # print(f"called get_challenge_data")
+    """This function returns a list of challenges."""
     if incremental:
         result_hanlder = ResultHandler(None, file_format, file_name, path)
         challenges = load_challenges(limit=n)
@@ -139,6 +134,7 @@ def get_challenges(
 @click.option("--uuid", type=str, help="UUID of the device")
 @click.version_option(version="0.1")
 def get_device(uuid: str):
+    """This function returns a device for a given UUID."""
     print(f"called get_device with uuid {uuid}")
     device = load_device(uuid)
     print(device)
@@ -149,6 +145,7 @@ def get_device(uuid: str):
 @click.option("--uuid", type=str, help="UUID of the device")
 @click.version_option(version="0.1")
 def get_device_integration(uuid: str):
+    """This function returns the last integration for a given UUID."""
     # print(f"called get_device_integrations with uuid {uuid}")
     integration = load_last_integration(uuid)
     return integration
@@ -158,6 +155,7 @@ def get_device_integration(uuid: str):
 @click.option("--uuid", type=str, help="UUID of the device")
 @click.version_option(version="0.1")
 def get_device_event(uuid: str):
+    """This function returns the last event for a given UUID."""
     # print(f"called get_device_event with uuid {uuid}")
     event = load_last_event(uuid)
     return event
@@ -167,6 +165,7 @@ def get_device_event(uuid: str):
     help="CLI tool to load data from the Helium Blockchain API and Helium Console API"
 )
 def cli():
+    """Not implemented yet."""
     pass
 
 

@@ -1,4 +1,5 @@
-"""
+"""Helpers Module.
+
 .. module:: helpers
 
 :synopsis: Functions to load data from Helium API
@@ -10,10 +11,15 @@
 import logging
 from typing import Union
 
-from haversine import haversine, Unit
+from haversine import Unit
+from haversine import haversine
 
-from helium_api_wrapper import HotspotApi, ChallengeApi, TransactionApi, DeviceApi
+from helium_api_wrapper import ChallengeApi
+from helium_api_wrapper import DeviceApi
+from helium_api_wrapper import HotspotApi
+from helium_api_wrapper import TransactionApi
 from helium_api_wrapper.DataObjects import Hotspot
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -264,9 +270,8 @@ def load_last_integration(uuid: str):
     """
     api = DeviceApi()
     integrations = api.get_integration_events(uuid=uuid)
-    assert (
-        len(integrations) > 0
-    ), f"No Integration Events existing for device with uuid {uuid}"
+    if len(integrations) > 0:
+        print(f"No Integration Events existing for device with uuid {uuid}")
     return integrations[0]
 
 
@@ -278,5 +283,6 @@ def load_last_event(uuid: str):
     """
     api = DeviceApi()
     integrations = api.get_events(uuid=uuid)
-    assert len(integrations) > 0, f"No Events existing for device with uuid {uuid}"
+    if len(integrations) > 0:
+        print(f"No Events existing for device with uuid {uuid}")
     return integrations[0]

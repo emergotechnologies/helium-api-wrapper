@@ -1,4 +1,5 @@
-"""
+"""Data Objects module.
+
 .. module:: DataObjects
 
 :synopsis: Classes for data from Helium API
@@ -7,7 +8,11 @@
 
 """
 
-from typing import List, Dict, Any, Optional
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Optional
+
 from pydantic import BaseModel
 
 
@@ -22,12 +27,14 @@ class DataObject(BaseModel):
 
     # TODO: I don't really think we need as_list and as_dict
     def as_list(self, columns: Optional[List[str]] = None):
+        """Return the data as a list."""
         data = dict(self)
         if columns:
             data = {key: data[key] for key in columns}
         return data.values()
 
     def as_dict(self, columns: Optional[List[str]] = None):
+        """Return the data as a dict."""
         data = dict(self)
         if columns:
             data = {key: data[key] for key in columns}
@@ -125,7 +132,7 @@ class Challenge(DataObject):
 
 
 class ChallengeResolved(DataObject):
-    """Class to describe a resolved Challenge"""
+    """Class to describe a resolved Challenge."""
 
     type: str
     time: int
@@ -151,7 +158,7 @@ class ChallengeResolved(DataObject):
 
 
 class Device(DataObject):
-    """Class to describe Device in Helium API"""
+    """Class to describe Device in Helium API."""
 
     adr_allowed: bool = None
     app_eui: str = None
@@ -170,7 +177,7 @@ class Device(DataObject):
 
 
 class Event(DataObject):
-    """Class to describe an Integration Event"""
+    """Class to describe an Integration Event."""
 
     data: dict
     description: str

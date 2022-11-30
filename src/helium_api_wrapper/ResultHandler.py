@@ -1,4 +1,5 @@
-"""
+"""Result Handler.
+
 .. module:: ResultHandler
 
 :synopsis: Functions to export the data from Helium API to a file
@@ -8,15 +9,14 @@
 """
 
 import logging
+import os
 import types
 
 import pandas as pd
-import os
 
 
 class ResultHandler:
-    """
-    Object to handle the result of the API calls.
+    """Object to handle the result of the API calls.
 
     :param data: The data to be written.
     :type data: Union[dict, list, types.GeneratorType]
@@ -53,9 +53,11 @@ class ResultHandler:
         # self.data = pd.DataFrame(self.data)
 
     def append(self, obj):
+        """Apppends a dataframe to the existing data."""
         self.data = pd.concat([self.data, pd.DataFrame(obj)])
 
     def write(self):
+        """Write the data to a file."""
         # @todo: implement data checks
         self.check_data()
         if self.file_format == "csv":
@@ -73,25 +75,31 @@ class ResultHandler:
         self.logger.info(f"File {self.file_name} saved to {self.path}")
 
     def write_csv(self):
+        """Write the data to a csv file."""
         self.data.to_csv(os.path.join(self.path, self.file_name + ".csv"))
 
     def write_json(self):
+        """Write the data to a json file."""
         self.data.to_json(
             os.path.join(self.path, self.file_name + ".json"), orient="records"
         )
 
     def write_pickle(self):
+        """Write the data to a pickle file."""
         self.data.to_pickle(os.path.join(self.path, self.file_name + ".pkl"))
 
     def write_feather(self):
+        """Write the data to a feather file."""
         self.data.to_feather(os.path.join(self.path, self.file_name + ".feather"))
 
     def write_parquet(self):
+        """Write the data to a parquet file."""
         self.data.to_parquet(
             os.path.join(self.path, self.file_name + ".parquet"),
         )
 
     def check_data(self):
+        """Check the data for potential problems."""
         if self.data is None:
             self.logger.error("No data given.")
             raise ValueError("No data given.")
