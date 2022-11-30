@@ -116,8 +116,7 @@ jobs:
 
   coverage:
     runs-on: ubuntu-latest
-    # Does this really need the tests to be completed?
-    # needs: tests
+    needs: tests
     steps:
       - name: Check out the repository
         uses: actions/checkout@v3
