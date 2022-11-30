@@ -1,9 +1,11 @@
 name: Test
 
 on:
-  - push
-  - pull_request
-
+  pull_request:
+    types: [opened, reopened, synchronize]
+  push:
+    branches:
+      - "main"
 jobs:
   tests:
     name: ${{ matrix.session }} ${{ matrix.python }} / ${{ matrix.os }}
