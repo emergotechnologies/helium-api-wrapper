@@ -112,7 +112,7 @@ To update documentation make sure Sphinx package is installed in your environmen
     sphinx-build --help
 
 If it's not installed, run:
-    
+
     pip install sphinx
 
 When you are done with your changes, go to the helium-api-wrapper/docs folder and run:
@@ -122,7 +122,6 @@ When you are done with your changes, go to the helium-api-wrapper/docs folder an
 Check, if the file build/html/index.html contains now the changes you made.
 
 Commit your changes to the Git repository.
-
 
 It is recommended to open an issue before starting work on anything.
 This will allow a chance to talk it over with the owners and validate your approach.
