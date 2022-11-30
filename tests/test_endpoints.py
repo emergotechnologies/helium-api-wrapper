@@ -1,9 +1,11 @@
 """Test cases for Endpoints."""
-import pytest
+# import pytest
 
 from helium_api_wrapper import HotspotApi, ChallengeApi, TransactionApi
 
 """Test cases for HotspotApi."""
+
+
 def test_get_hotspot_succeeds() -> None:
     """It exits with a status code of zero."""
     address = "11BCGPgrFa2SxFMWfnv7S644uXX7jZTGmWVp3c2yhMh46G6pEbW"
@@ -31,7 +33,10 @@ def test_get_hotspot_roles_succeeds() -> None:
 
 def test_get_hotspots_by_addresses_succeeds() -> None:
     """It exits with a status code of zero."""
-    addresses = ["11BCGPgrFa2SxFMWfnv7S644uXX7jZTGmWVp3c2yhMh46G6pEbW", "11cxkqa2PjpJ9YgY9qK3Njn4uSFu6dyK9xV8XE4ahFSqN1YN2db"]
+    addresses = [
+        "11BCGPgrFa2SxFMWfnv7S644uXX7jZTGmWVp3c2yhMh46G6pEbW",
+        "11cxkqa2PjpJ9YgY9qK3Njn4uSFu6dyK9xV8XE4ahFSqN1YN2db",
+    ]
     result = HotspotApi().get_hotspots_by_addresses(addresses)
     assert type(result[0]).__name__ == "Hotspot"
     assert len(result) == 2
@@ -42,7 +47,6 @@ def test_get_hotspots_by_addresses_succeeds() -> None:
 
 def test_get_challenge_succeeds() -> None:
     """It exits with a status code of zero."""
-    address = "11BCGPgrFa2SxFMWfnv7S644uXX7jZTGmWVp3c2yhMh46G6pEbW"
     result = ChallengeApi().get_challenges(limit=5)
     assert type(result[0]).__name__ == "ChallengeResolved"
     assert len(result) == 5
@@ -53,5 +57,7 @@ def test_get_challenge_succeeds() -> None:
 
 def test_get_transactions_succeeds() -> None:
     """It exits with a status code of zero."""
-    result = TransactionApi().get_transaction(hash="0Q9A9Q0vpobgwy5zdq5EEgyrtQiiLSnZ9_ZxqdqWksQ")
+    result = TransactionApi().get_transaction(
+        hash="0Q9A9Q0vpobgwy5zdq5EEgyrtQiiLSnZ9_ZxqdqWksQ"
+    )
     assert type(result).__name__ == "dict"

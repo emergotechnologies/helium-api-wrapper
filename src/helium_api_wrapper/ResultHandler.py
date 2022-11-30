@@ -35,7 +35,10 @@ class ResultHandler:
 
     :return: None
     """
-    def __init__(self, data, file_format, file_name, path, logger: logging.Logger = None):
+
+    def __init__(
+        self, data, file_format, file_name, path, logger: logging.Logger = None
+    ):
         self.data = data
         self.file_format = file_format
         self.file_name = file_name
@@ -73,7 +76,9 @@ class ResultHandler:
         self.data.to_csv(os.path.join(self.path, self.file_name + ".csv"))
 
     def write_json(self):
-        self.data.to_json(os.path.join(self.path, self.file_name + ".json"), orient="records")
+        self.data.to_json(
+            os.path.join(self.path, self.file_name + ".json"), orient="records"
+        )
 
     def write_pickle(self):
         self.data.to_pickle(os.path.join(self.path, self.file_name + ".pkl"))
@@ -82,7 +87,9 @@ class ResultHandler:
         self.data.to_feather(os.path.join(self.path, self.file_name + ".feather"))
 
     def write_parquet(self):
-        self.data.to_parquet(os.path.join(self.path, self.file_name + ".parquet"), )
+        self.data.to_parquet(
+            os.path.join(self.path, self.file_name + ".parquet"),
+        )
 
     def check_data(self):
         if self.data is None:

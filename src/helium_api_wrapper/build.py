@@ -1,9 +1,7 @@
-import itertools
-
 import pandas as pd
-
-from helium_api_wrapper.helpers import *
-from helium_api_wrapper.ResultHandler import ResultHandler
+from helium_api_wrapper.helpers import (
+    load_hotspot,
+)
 
 h = pd.read_pickle("../../data/hotspots.pkl")
 c = pd.read_pickle("../../data/challenges_with_location.pkl")
@@ -14,16 +12,18 @@ print(len(h))
 
 """ iterate over challenges and check if hotspot is in hotspots """
 for i, row in c.iterrows():
-    if row["challengee_lat"] != 0 and \
-            row["witness_lat"] != 0 and \
-            row["challengee_lng"] != 0 and \
-            row["witness_lng"] != 0:
+    if (
+        row["challengee_lat"] != 0
+        and row["witness_lat"] != 0
+        and row["challengee_lng"] != 0
+        and row["witness_lng"] != 0
+    ):
         continue
 
     if row["challengee"] not in h["address"].values:
         try:
             h.loc[len(h)] = load_hotspot(row["challengee"])
-        except Exception as e:
+        except Exception:
             missings.append(row["challengee"])
             pass
 
@@ -35,7 +35,7 @@ for i, row in c.iterrows():
     if row["witness"] not in h["address"].values:
         try:
             h.loc[len(h)] = load_hotspot(row["witness"])
-        except Exception as e:
+        except Exception:
             missings.append(row["witness"])
             pass
 
@@ -48,7 +48,3 @@ for i, row in c.iterrows():
     pd.to_pickle(c, "../../data/challenges_with_location.pkl")
     pd.to_pickle(h, "../../data/hotspots.pkl")
     pd.to_pickle(missings, "../../data/missings.pkl")
-
-
-
-

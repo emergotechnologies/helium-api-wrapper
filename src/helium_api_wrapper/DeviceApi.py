@@ -8,17 +8,16 @@
 """
 
 import logging
-from typing import Union
 
 from helium_api_wrapper.Endpoint import Endpoint
-from helium_api_wrapper.DataObjects import DataObject, Device, Event
+from helium_api_wrapper.DataObjects import Device, Event
 
 logging.basicConfig(level=logging.INFO)
 
 
 class DeviceApi:
-    """Class to describe Device API
-    """
+    """Class to describe Device API"""
+
     def __init__(self, logger: logging.Logger = None):
         if logger is None:
             self.logger = logging.getLogger(__name__)
@@ -40,7 +39,9 @@ class DeviceApi:
         :return: The endpoint.
         :rtype: Endpoint
         """
-        endpoint = Endpoint(endpoint_url, "GET", {}, response_type=response, type="console")
+        endpoint = Endpoint(
+            endpoint_url, "GET", {}, response_type=response, type="console"
+        )
         return endpoint
 
     def get_device(self, uuid: str) -> Device:
@@ -81,6 +82,8 @@ class DeviceApi:
         :rtype: Event
         """
         self.logger.info(f"Getting Device Events for uuid {uuid}")
-        endpoint = self.get_endpoint(f"devices/{uuid}/events?sub_category=uplink_integration_req")
+        endpoint = self.get_endpoint(
+            f"devices/{uuid}/events?sub_category=uplink_integration_req"
+        )
         endpoint.request_with_exponential_backoff()
         return endpoint.data

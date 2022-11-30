@@ -11,48 +11,50 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath(os.path.join('..', '..')))
+
+sys.path.insert(0, os.path.abspath(os.path.join("..", "..")))
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Helium Api Wrapper'
-copyright = '2022, Lukas Huber'
-author = 'Lukas Huber'
-release = '0.1'
+project = "Helium Api Wrapper"
+copyright = "2022, Lukas Huber"
+author = "Lukas Huber"
+release = "0.1"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.ifconfig',
-    'sphinx.ext.viewcode',
-    'sphinx.ext.githubpages',
-    'sphinx.ext.napoleon',
+    "sphinx.ext.autodoc",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.ifconfig",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.githubpages",
+    "sphinx.ext.napoleon",
 ]
 
-templates_path = ['_templates']
+templates_path = ["_templates"]
 exclude_patterns = []
-autodoc_mock_imports = ['pandas', 
-                        'click', 
-                        'loading_helium_data', 
-                        'haversine', 
-                        'helium_api_wrapper',
-                        'pydantic',
-                        'ChallengeAPI',
-                        'DeviceAPI',
-                        'HotspotApi',
-                        'TransactionAPI',
-                        'Endpoint'
-                        ]
+autodoc_mock_imports = [
+    "pandas",
+    "click",
+    "loading_helium_data",
+    "haversine",
+    "helium_api_wrapper",
+    "pydantic",
+    "ChallengeAPI",
+    "DeviceAPI",
+    "HotspotApi",
+    "TransactionAPI",
+    "Endpoint",
+]
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'sphinx_rtd_theme'
-#html_static_path = ['_static']
+html_theme = "sphinx_rtd_theme"
+# html_static_path = ['_static']

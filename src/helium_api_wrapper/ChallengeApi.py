@@ -8,7 +8,6 @@
 """
 
 import logging
-from dataclasses import asdict
 from typing import List
 
 from helium_api_wrapper.Endpoint import Endpoint
@@ -18,15 +17,17 @@ logging.basicConfig(level=logging.INFO)
 
 
 class ChallengeApi:
-    """Class to describe Challenge API
-    """
+    """Class to describe Challenge API"""
+
     def __init__(self, logger: logging.Logger = None):
         if logger is None:
             self.logger = logging.getLogger(__name__)
         else:
             self.logger = logger
 
-    def get_endpoint(self, endpoint_url="challenges", params=None, response: DataObject = Challenge) -> Endpoint:
+    def get_endpoint(
+        self, endpoint_url="challenges", params=None, response: DataObject = Challenge
+    ) -> Endpoint:
         """Load the hotspot data.
 
 
@@ -47,7 +48,9 @@ class ChallengeApi:
         endpoint = Endpoint(endpoint_url, "GET", params, response_type=response)
         return endpoint
 
-    def get_challenges(self, address: str = "", limit: int = 50) -> List[ChallengeResolved]:
+    def get_challenges(
+        self, address: str = "", limit: int = 50
+    ) -> List[ChallengeResolved]:
         """Get a list of challenges.
         When passed an address, it will get the challenges for that hotspot.
 
@@ -63,14 +66,14 @@ class ChallengeApi:
         if address != "":
             self.logger.info(f"Getting challenges for {address}")
             endpoint = self.get_endpoint(
-                f"hotspots/{address}/challenges", response=Challenge,
-                params={"limit": limit}
+                f"hotspots/{address}/challenges",
+                response=Challenge,
+                params={"limit": limit},
             )
         else:
-            self.logger.info(f"Getting challenges")
+            self.logger.info("Getting challenges")
             endpoint = self.get_endpoint(
-                "challenges", response=Challenge,
-                params={"limit": limit}
+                "challenges", response=Challenge, params={"limit": limit}
             )
 
         endpoint.crawl_pages(page_amount=10)
@@ -94,6 +97,6 @@ class ChallengeApi:
 
         # We can assume the path to be length 0 or 1 because Multihop PoC is deprecated.
         # see https://github.com/helium/HIP/blob/main/0015-beaconing-rewards.md
-        challenge_resolved = {key: challenge[key] for key in challenge if key != 'path'}
-        challenge_resolved.update(challenge['path'][0])
+        challenge_resolved = {key: challenge[key] for key in challenge if key != "path"}
+        challenge_resolved.update(challenge["path"][0])
         return ChallengeResolved(**challenge_resolved)

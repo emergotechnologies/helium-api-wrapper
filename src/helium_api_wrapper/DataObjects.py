@@ -13,6 +13,7 @@ from pydantic import BaseModel
 
 class DataObject(BaseModel):
     """Base class for all data objects."""
+
     def __len__(self):
         return dict(self).__len__()
 
@@ -34,8 +35,8 @@ class DataObject(BaseModel):
 
 
 class Geocode(DataObject):
-    """Class to describe Geocode Object.
-    """
+    """Class to describe Geocode Object."""
+
     long_city: str = None
     long_country: str = None
     long_state: str = None
@@ -49,12 +50,14 @@ class Geocode(DataObject):
 
 class Status(DataObject):
     """Class to describe Status Object."""
+
     height: int = None
     online: str = None
 
 
 class Hotspot(DataObject):
     """Class to describe Hotspot Object."""
+
     address: str = None
     block: int = None
     block_added: int = None
@@ -71,6 +74,7 @@ class Hotspot(DataObject):
 
 class Role(DataObject):
     """Class to describe Role Object."""
+
     type: str
     time: int
     role: str
@@ -80,6 +84,7 @@ class Role(DataObject):
 
 class Witness(DataObject):
     """Class to describe Witness Object."""
+
     timestamp: int
     signal: int
     packet_hash: str
@@ -93,6 +98,7 @@ class Witness(DataObject):
 
 class Receipt(DataObject):
     """Class to describe Receipt Object."""
+
     timestamp: int
     signal: int
     origin: str
@@ -102,6 +108,7 @@ class Receipt(DataObject):
 
 class Challenge(DataObject):
     """Class to describe a Challenge loaded from the Helium API."""
+
     type: str
     time: int
     secret: str
@@ -119,6 +126,7 @@ class Challenge(DataObject):
 
 class ChallengeResolved(DataObject):
     """Class to describe a resolved Challenge"""
+
     type: str
     time: int
     secret: str
@@ -144,6 +152,7 @@ class ChallengeResolved(DataObject):
 
 class Device(DataObject):
     """Class to describe Device in Helium API"""
+
     adr_allowed: bool = None
     app_eui: str = None
     app_key: str = None
@@ -162,6 +171,7 @@ class Device(DataObject):
 
 class Event(DataObject):
     """Class to describe an Integration Event"""
+
     data: dict
     description: str
     device_id: str

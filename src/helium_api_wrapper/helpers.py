@@ -19,8 +19,7 @@ logging.basicConfig(level=logging.INFO)
 
 
 def load_hotspots(page_amount: int = 1, filter_modes: str = "full"):
-    """
-    Load a list of hotspots
+    """Load a list of hotspots.
 
     :param page_amount: Amount of pages to load
     :param filter_modes: Filter modes
@@ -28,12 +27,13 @@ def load_hotspots(page_amount: int = 1, filter_modes: str = "full"):
     """
     api = HotspotApi()
     hotspots = api.get_hotspots(page_amount=page_amount, filter_modes=filter_modes)
-    return [hotspot.as_dict(["address", "location", "lat", "lng"]) for hotspot in hotspots]
+    return [
+        hotspot.as_dict(["address", "location", "lat", "lng"]) for hotspot in hotspots
+    ]
 
 
 def load_roles(address: str, limit: int = 5, filter_types: str = "poc_receipts_v2"):
-    """
-    Load roles for a hotspot
+    """Load roles for a hotspot.
 
     :param address: Address of the hotspot
     :param limit: Limit of roles to load
@@ -41,13 +41,18 @@ def load_roles(address: str, limit: int = 5, filter_types: str = "poc_receipts_v
     :return: List of roles
     """
     api = HotspotApi()
-    roles = api.get_hotspot_roles(address=address, limit=limit, filter_types=filter_types)
-    return [role.as_dict(["type", "role", "hash"]) for role in roles if role.role == "challengee"]
+    roles = api.get_hotspot_roles(
+        address=address, limit=limit, filter_types=filter_types
+    )
+    return [
+        role.as_dict(["type", "role", "hash"])
+        for role in roles
+        if role.role == "challengee"
+    ]
 
 
 def load_challenge(hash: str):
-    """
-    Load a challenge
+    """Load a challenge.
 
     :param hash: Hash of the challenge
     :return: Challenge
@@ -58,20 +63,21 @@ def load_challenge(hash: str):
 
 
 def load_challenges(limit: int = 50):
-    """
-    Load a list of challenges
+    """Load a list of challenges.
 
     :param limit: Limit of challenges to load
     :return: List of challenges
     """
     api = ChallengeApi()
     challenges = api.get_challenges(limit=limit)
-    return [challenge.as_dict(["hash", "witnesses", "time", "challengee"]) for challenge in challenges]
+    return [
+        challenge.as_dict(["hash", "witnesses", "time", "challengee"])
+        for challenge in challenges
+    ]
 
 
 def load_hotspot(address: str):
-    """
-    Load a hotspot
+    """Load a hotspot.
 
     :param address: Address of the hotspot
     :return: Hotspot
@@ -85,8 +91,7 @@ def load_hotspot(address: str):
 
 
 def sort_witnesses(witnesses: list, load_type: str = "all"):
-    """
-    Sort witnesses by signal and limit by load type
+    """Sort witnesses by signal and limit by load type.
 
     :param witnesses: List of witnesses
     :param load_type: Load type
@@ -97,20 +102,27 @@ def sort_witnesses(witnesses: list, load_type: str = "all"):
         return sorted(witnesses, key=lambda witness: witness["signal"], reverse=False)
     elif load_type == "triangulation":
         if len(witnesses) < 3:
-            return sorted(witnesses, key=lambda witness: witness["signal"], reverse=False)
-        return sorted(witnesses, key=lambda witness: witness["signal"], reverse=False)[:3]
+            return sorted(
+                witnesses, key=lambda witness: witness["signal"], reverse=False
+            )
+        return sorted(witnesses, key=lambda witness: witness["signal"], reverse=False)[
+            :3
+        ]
     elif load_type == "best_signal":
         if len(witnesses) == 0:
             return witnesses
-        return sorted(witnesses, key=lambda witness: witness["signal"], reverse=False)[0]
+        return sorted(witnesses, key=lambda witness: witness["signal"], reverse=False)[
+            0
+        ]
     else:
         return sorted(witnesses, key=lambda witness: witness["signal"], reverse=False)
 
 
 # @todo: handle request timeouts
-def load_challenges_for_hotspots(hotspots: list = None, load_type: str = "triangulation", limit: int = 50):
-    """
-    Load challenges for hotspots
+def load_challenges_for_hotspots(
+    hotspots: list = None, load_type: str = "triangulation", limit: int = 50
+):
+    """Load challenges for hotspots.
 
     :param hotspots: List of hotspots
     :param load_type: Load type for witnesses
@@ -125,9 +137,10 @@ def load_challenges_for_hotspots(hotspots: list = None, load_type: str = "triang
         load_challenges_for_hotspot(hotspot, load_type=load_type, limit=limit)
 
 
-def load_challenges_for_hotspot(hotspot: Union[list, str], load_type: str = "triangulation", limit: int = 5):
-    """
-    Load challenges for a hotspot
+def load_challenges_for_hotspot(
+    hotspot: Union[list, str], load_type: str = "triangulation", limit: int = 5
+):
+    """Load challenges for a hotspot.
 
     :param hotspot: Hotspot
     :param load_type: Load type for witnesses
@@ -140,7 +153,9 @@ def load_challenges_for_hotspot(hotspot: Union[list, str], load_type: str = "tri
     else:
         hotspot = hotspot
 
-    roles = load_roles(address=hotspot["address"], filter_types="poc_receipts_v2", limit=limit)
+    roles = load_roles(
+        address=hotspot["address"], filter_types="poc_receipts_v2", limit=limit
+    )
     for role in roles:
         # Load transaction
         challenge = load_challenge(hash=role["hash"])
@@ -153,13 +168,17 @@ def load_challenges_for_hotspot(hotspot: Union[list, str], load_type: str = "tri
                 challenge=challenge,
                 witness=witness,
                 witness_hotspot=witness_hotspot,
-                challengee=hotspot
+                challengee=hotspot,
             )
 
 
-def load_challenge_data(challenges: list = None, load_type: str = "triangulation", limit: int = 50, load_hotspots: bool = True):
-    """
-    Load challenge data
+def load_challenge_data(
+    challenges: list = None,
+    load_type: str = "triangulation",
+    limit: int = 50,
+    load_hotspots: bool = True,
+):
+    """Load challenge data.
 
     :param challenges: List of challenges
     :param load_type: Load type for witnesses
@@ -176,21 +195,13 @@ def load_challenge_data(challenges: list = None, load_type: str = "triangulation
         if load_hotspots:
             challengee = load_hotspot(address=challenge["challengee"])
         else:
-            challengee = {
-                "address": challenge["challengee"],
-                "lat": 0,
-                "lng": 0
-            }
+            challengee = {"address": challenge["challengee"], "lat": 0, "lng": 0}
 
         for witness in witnesses:
             if load_hotspots:
                 witness_hotspot = load_hotspot(address=witness["gateway"])
             else:
-                witness_hotspot = {
-                    "address": witness["gateway"],
-                    "lat": 0,
-                    "lng": 0
-                }
+                witness_hotspot = {"address": witness["gateway"], "lat": 0, "lng": 0}
 
             if witness_hotspot is None or challengee is None:
                 return
@@ -199,13 +210,12 @@ def load_challenge_data(challenges: list = None, load_type: str = "triangulation
                 challenge=challenge,
                 witness=witness,
                 witness_hotspot=witness_hotspot,
-                challengee=challengee
+                challengee=challengee,
             )
 
 
 def get_challenge_data(challenge, witness, witness_hotspot, challengee):
-    """
-    Get challenge data
+    """Get challenge data.
 
     :param challenge: Challenge
     :param witness: Witness
@@ -214,28 +224,31 @@ def get_challenge_data(challenge, witness, witness_hotspot, challengee):
     :return: Challenge data
     """
     # @todo: check if best position for distance
-    distance = haversine((challengee["lat"], challengee["lng"]), (witness_hotspot["lat"], witness_hotspot["lng"]), unit=Unit.METERS)
+    distance = haversine(
+        (challengee["lat"], challengee["lng"]),
+        (witness_hotspot["lat"], witness_hotspot["lng"]),
+        unit=Unit.METERS,
+    )
     return {
-                "challengee": challengee["address"],
-                "challengee_lat": challengee["lat"],
-                "challengee_lng": challengee["lng"],
-                "witness": witness_hotspot["address"],
-                "witness_lat": witness_hotspot["lat"],
-                "witness_lng": witness_hotspot["lng"],
-                "signal": witness["signal"],
-                "snr": witness["snr"],
-                "datarate": witness["datarate"],
-                "is_valid": witness["is_valid"],
-                "hash": challenge["hash"],
-                "time": challenge["time"],
-                "distance": distance
-            }
+        "challengee": challengee["address"],
+        "challengee_lat": challengee["lat"],
+        "challengee_lng": challengee["lng"],
+        "witness": witness_hotspot["address"],
+        "witness_lat": witness_hotspot["lat"],
+        "witness_lng": witness_hotspot["lng"],
+        "signal": witness["signal"],
+        "snr": witness["snr"],
+        "datarate": witness["datarate"],
+        "is_valid": witness["is_valid"],
+        "hash": challenge["hash"],
+        "time": challenge["time"],
+        "distance": distance,
+    }
 
 
 def load_device(uuid: str):
-    """
-    Load a device
-    
+    """Load a device.
+
     :param uuid: UUID of the device
     :return: Device
     """
@@ -244,21 +257,21 @@ def load_device(uuid: str):
 
 
 def load_last_integration(uuid: str):
-    """
-    Load a device integration events
-    
+    """Load a device integration events.
+
     :param uuid: UUID of the device
     :return: Device
     """
     api = DeviceApi()
     integrations = api.get_integration_events(uuid=uuid)
-    assert len(integrations) > 0, f"No Integration Events existing for device with uuid {uuid}"
+    assert (
+        len(integrations) > 0
+    ), f"No Integration Events existing for device with uuid {uuid}"
     return integrations[0]
 
 
 def load_last_event(uuid: str):
-    """
-    Load a device event
+    """Load a device event.
 
     :param uuid: UUID of the device
     :return: Device
