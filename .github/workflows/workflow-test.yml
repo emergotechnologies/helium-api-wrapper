@@ -6,6 +6,10 @@ on:
   push:
     branches:
       - "main"
+
+env:
+  PYTHONPATH: ./src
+
 jobs:
   tests:
     # if: ${{ false }}  # TODO: reenable after testing the other parts
