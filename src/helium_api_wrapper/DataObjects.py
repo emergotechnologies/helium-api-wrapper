@@ -16,7 +16,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class DataObject(BaseModel):  # type: ignore[misc]
+class DataObject(BaseModel):
     """Base class for all data objects."""
 
     def __len__(self) -> int:
