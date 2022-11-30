@@ -9,6 +9,7 @@
 """
 
 import logging
+from typing import Optional
 
 from helium_api_wrapper.DataObjects import Device
 from helium_api_wrapper.DataObjects import Event
@@ -21,13 +22,14 @@ logging.basicConfig(level=logging.INFO)
 class DeviceApi:
     """Class to describe Device API."""
 
-    def __init__(self, logger: logging.Logger = None):
-        if logger is None:
-            self.logger = logging.getLogger(__name__)
-        else:
-            self.logger = logger
+    logger: logging.Logger
 
-    def get_endpoint(self, endpoint_url="devices", response: Device = None) -> Endpoint:
+    def __init__(self, logger: Optional[logging.Logger] = None):
+        self.logger: logging.Logger = logger or logging.getLogger(__name__)
+
+    def get_endpoint(
+        self, endpoint_url: str = "devices", response: Optional[Device] = None
+    ) -> Endpoint:
         """Load the Device data.
 
         :param endpoint_url: The url of the endpoint, defaults to "hotspots"

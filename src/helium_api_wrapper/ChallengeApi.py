@@ -9,7 +9,10 @@
 """
 
 import logging
+from typing import Dict
 from typing import List
+from typing import Optional
+from typing import Union
 
 from helium_api_wrapper.DataObjects import Challenge
 from helium_api_wrapper.DataObjects import ChallengeResolved
@@ -23,14 +26,14 @@ logging.basicConfig(level=logging.INFO)
 class ChallengeApi:
     """Class to describe Challenge API."""
 
-    def __init__(self, logger: logging.Logger = None):
-        if logger is None:
-            self.logger = logging.getLogger(__name__)
-        else:
-            self.logger = logger
+    def __init__(self, logger: Optional[logging.Logger] = None):
+        self.logger: logging.Logger = logger or logging.getLogger(__name__)
 
     def get_endpoint(
-        self, endpoint_url="challenges", params=None, response: DataObject = Challenge
+        self,
+        endpoint_url: str = "challenges",
+        params: Optional[Dict[str, Union[str, int]]] = None,
+        response: DataObject = Challenge,
     ) -> Endpoint:
         """Load the hotspot data.
 

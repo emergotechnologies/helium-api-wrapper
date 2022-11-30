@@ -9,7 +9,9 @@
 """
 
 import logging
+from typing import Dict
 from typing import List
+from typing import Optional
 from typing import Union
 
 from helium_api_wrapper.DataObjects import DataObject
@@ -24,14 +26,14 @@ logging.basicConfig(level=logging.INFO)
 class HotspotApi:
     """Class to describe Hotspot API."""
 
-    def __init__(self, logger: logging.Logger = None):
-        if logger is None:
-            self.logger = logging.getLogger(__name__)
-        else:
-            self.logger = logger
+    def __init__(self, logger: Optional[logging.Logger] = None):
+        self.logger: logging.Logger = logger or logging.getLogger(__name__)
 
     def get_endpoint(
-        self, endpoint_url="hotspots", params=None, response: DataObject = Hotspot
+        self,
+        endpoint_url: str = "hotspots",
+        params: Optional[Dict[str, Union[str, int]]] = None,
+        response: DataObject = Hotspot,
     ) -> Endpoint:
         """Load the hotspot data.
 
@@ -83,7 +85,7 @@ class HotspotApi:
         endpoint.crawl_pages(page_amount=page_amount)
         return endpoint.data
 
-    def get_hotspots_by_addresses(self, addresses: list) -> List[Hotspot]:
+    def get_hotspots_by_addresses(self, addresses: List[str]) -> List[Hotspot]:
         """Get a list of hotspots.
 
         :return: The hotspots.
@@ -96,7 +98,7 @@ class HotspotApi:
         return hotspots
 
     def get_hotspots_by_position(
-        self, lat: float, lon: float, distance: int
+        self, lat: str, lon: str, distance: int
     ) -> List[Hotspot]:
         """Get a list of hotspots by position.
 
@@ -123,7 +125,7 @@ class HotspotApi:
         return endpoint.data
 
     def get_hotspots_box_search(
-        self, swlat: float, swlon: float, nelat: float, nelon: float
+        self, swlat: str, swlon: str, nelat: str, nelon: str
     ) -> List[Hotspot]:
         """Get a list of hotspots by box search.
 
@@ -154,7 +156,7 @@ class HotspotApi:
 
     def get_hotspot_roles(
         self, address: str, limit: int, filter_types: str = ""
-    ) -> List[Role]:
+    ) -> List[DataObject]:
         """Get a list of hotspots by owner.
 
         :param address: The address of the owner, defaults to None
@@ -171,7 +173,7 @@ class HotspotApi:
         """
         self.logger.info(f"Getting hotspot roles for {address}")
 
-        params = {}
+        params: Dict[str, Union[str, int]] = {}
 
         if filter_types != "":
             params["filter_types"] = filter_types
@@ -187,4 +189,5 @@ class HotspotApi:
         endpoint.crawl_pages(page_amount=1)
         if endpoint.data is None:
             raise ValueError("No recent roles found")
-        return endpoint.data
+        data = endpoint.data
+        return data

@@ -8,8 +8,9 @@
 
 """
 
+from typing import Dict, Optional
 import logging
-from typing import Union
+from typing import Any, Union
 
 from helium_api_wrapper.DataObjects import ChallengeResolved
 from helium_api_wrapper.DataObjects import DataObject
@@ -22,14 +23,14 @@ logging.basicConfig(level=logging.INFO)
 class TransactionApi:
     """Class to describe Transaction API."""
 
-    def __init__(self, logger: logging.Logger = None):
-        if logger is None:
-            self.logger = logging.getLogger(__name__)
-        else:
-            self.logger = logger
+    def __init__(self, logger: Optional[logging.Logger] = None):
+        self.logger: logging.Logger = logger or logging.getLogger(__name__)
 
     def get_endpoint(
-        self, endpoint_url="transactions", params=None, response: DataObject = None
+        self,
+        endpoint_url: str = "transactions",
+        params: Optional[Dict[str, Union[str, int]]] = None,
+        response: DataObject = None,
     ) -> Endpoint:
         """Load the hotspot data.
 
@@ -50,7 +51,7 @@ class TransactionApi:
         endpoint = Endpoint(endpoint_url, "GET", params, response_type=response)
         return endpoint
 
-    def get_transaction(self, hash: str) -> dict:
+    def get_transaction(self, hash: str) -> DataObject:
         """Get a hotspot by address.
 
         :param hash: The hash of the transaction, defaults to None
@@ -66,7 +67,9 @@ class TransactionApi:
 
     def get_challenges_from_transactions(
         self, hash: str
-    ) -> Union[ChallengeResolved, dict]:
+    ) -> Union[
+        ChallengeResolved, Dict[str, Any]
+    ]:  # TODO: check if this really returns a Dict
         """Get a hotspot by address.
 
         :param hash: The hash of the transaction, defaults to None

@@ -9,16 +9,16 @@
 """
 
 import logging
-from typing import Union
+from typing import Any, Dict, Generator, List, Optional, Union
 
 from haversine import Unit
 from haversine import haversine
 
-from helium_api_wrapper import ChallengeApi
-from helium_api_wrapper import DeviceApi
-from helium_api_wrapper import HotspotApi
-from helium_api_wrapper import TransactionApi
-from helium_api_wrapper.DataObjects import Hotspot
+from helium_api_wrapper.ChallengeApi import ChallengeApi
+from helium_api_wrapper.DataObjects import Challenge, Device, Event, Hotspot, Witness
+from helium_api_wrapper.DeviceApi import DeviceApi
+from helium_api_wrapper.HotspotApi import HotspotApi
+from helium_api_wrapper.TransactionApi import TransactionApi
 
 
 logging.basicConfig(level=logging.INFO)
@@ -82,7 +82,7 @@ def load_challenges(limit: int = 50):
     ]
 
 
-def load_hotspot(address: str):
+def load_hotspot(address: str) -> Optional[Dict[str, Any]]:
     """Load a hotspot.
 
     :param address: Address of the hotspot
@@ -179,11 +179,11 @@ def load_challenges_for_hotspot(
 
 
 def load_challenge_data(
-    challenges: list = None,
+    challenges: Optional[List[Dict[str, Any]]] = None,
     load_type: str = "triangulation",
     limit: int = 50,
     load_hotspots: bool = True,
-):
+) -> Generator[Dict[str, Any], None, None]:
     """Load challenge data.
 
     :param challenges: List of challenges
@@ -220,7 +220,9 @@ def load_challenge_data(
             )
 
 
-def get_challenge_data(challenge, witness, witness_hotspot, challengee):
+def get_challenge_data(
+    challenge: Challenge, witness: Witness, witness_hotspot: Dict[str, Any], challengee
+) -> Dict[str, Any]:
     """Get challenge data.
 
     :param challenge: Challenge
@@ -235,7 +237,7 @@ def get_challenge_data(challenge, witness, witness_hotspot, challengee):
         (witness_hotspot["lat"], witness_hotspot["lng"]),
         unit=Unit.METERS,
     )
-    return {
+    return {  # TODO: this can be typed
         "challengee": challengee["address"],
         "challengee_lat": challengee["lat"],
         "challengee_lng": challengee["lng"],
@@ -252,7 +254,7 @@ def get_challenge_data(challenge, witness, witness_hotspot, challengee):
     }
 
 
-def load_device(uuid: str):
+def load_device(uuid: str) -> Device:
     """Load a device.
 
     :param uuid: UUID of the device
@@ -262,7 +264,7 @@ def load_device(uuid: str):
     return api.get_device(uuid=uuid)
 
 
-def load_last_integration(uuid: str):
+def load_last_integration(uuid: str) -> Event:
     """Load a device integration events.
 
     :param uuid: UUID of the device
@@ -275,7 +277,7 @@ def load_last_integration(uuid: str):
     return integrations[0]
 
 
-def load_last_event(uuid: str):
+def load_last_event(uuid: str) -> Event:
     """Load a device event.
 
     :param uuid: UUID of the device

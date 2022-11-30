@@ -11,6 +11,7 @@
 import logging
 import os
 import types
+from typing import Any, Dict, Optional, Union
 
 import pandas as pd
 
@@ -37,26 +38,25 @@ class ResultHandler:
     """
 
     def __init__(
-        self, data, file_format, file_name, path, logger: logging.Logger = None
+        self,
+        data: pd.DataFrame,
+        file_format: str,
+        file_name: str,
+        path: str,
+        logger: Optional[logging.Logger] = None,
     ):
         self.data = data
         self.file_format = file_format
         self.file_name = file_name
         self.path = path
         os.makedirs(self.path, exist_ok=True)
-        self.logger = logger
-        if logger is None:
-            self.logger = logging.getLogger(__name__)
-        else:
-            self.logger = logger
-        # self.check_data()
-        # self.data = pd.DataFrame(self.data)
+        self.logger = logger or logging.getLogger(__name__)
 
-    def append(self, obj):
-        """Apppends a dataframe to the existing data."""
+    def append(self, obj: Dict[str, Any]) -> None:
+        """Apppends a dictionary to the existing data."""
         self.data = pd.concat([self.data, pd.DataFrame(obj)])
 
-    def write(self):
+    def write(self) -> None:
         """Write the data to a file."""
         # @todo: implement data checks
         self.check_data()
@@ -74,35 +74,31 @@ class ResultHandler:
             self.logger.error(f"File format {self.file_format} not supported.")
         self.logger.info(f"File {self.file_name} saved to {self.path}")
 
-    def write_csv(self):
+    def write_csv(self) -> None:
         """Write the data to a csv file."""
         self.data.to_csv(os.path.join(self.path, self.file_name + ".csv"))
 
-    def write_json(self):
+    def write_json(self) -> None:
         """Write the data to a json file."""
         self.data.to_json(
             os.path.join(self.path, self.file_name + ".json"), orient="records"
         )
 
-    def write_pickle(self):
+    def write_pickle(self) -> None:
         """Write the data to a pickle file."""
         self.data.to_pickle(os.path.join(self.path, self.file_name + ".pkl"))
 
-    def write_feather(self):
+    def write_feather(self) -> None:
         """Write the data to a feather file."""
         self.data.to_feather(os.path.join(self.path, self.file_name + ".feather"))
 
-    def write_parquet(self):
+    def write_parquet(self) -> None:
         """Write the data to a parquet file."""
-        self.data.to_parquet(
-            os.path.join(self.path, self.file_name + ".parquet"),
-        )
+        self.data.to_parquet(os.path.join(self.path, self.file_name + ".parquet"))
 
-    def check_data(self):
+    # TODO: remove this, THIS is a terrible function and you should only give this class the right data type
+    def check_data(self) -> None:
         """Check the data for potential problems."""
-        if self.data is None:
-            self.logger.error("No data given.")
-            raise ValueError("No data given.")
         if isinstance(self.data, dict):
             self.data = pd.DataFrame(self.data)
             return

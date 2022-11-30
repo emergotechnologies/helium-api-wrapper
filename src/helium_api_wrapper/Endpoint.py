@@ -13,8 +13,9 @@ import os
 import time
 from dataclasses import dataclass
 from dataclasses import field
+from typing import Dict
 from typing import List
-from typing import Type
+from typing import Optional
 from typing import Union
 
 import requests
@@ -30,56 +31,20 @@ logging.basicConfig(level=logging.INFO)
 
 @dataclass
 class Endpoint:
-    """An endpoint for the Helium API.
-
-    :param name: The name of the endpoint, defaults to None
-    :type name: str
-    :example name: "hotspots/11cxkqa2PjpJ9YgY9qK3Njn4uSFu6dyK9xV8XE4ahFSqN1YN2db"
-
-    :param method: The HTTP method to use, defaults to None
-    :type method: str
-    :example method: "GET"
-
-    :param params: The parameters to send with the request, defaults to None
-    :type params: dict, optional
-    :example params: {'address': '11cxkqa2PjpJ9YgY9qK3Njn4uSFu6dyK9xV8XE4ahFSqN1YN2db'}
-
-    :param headers: The headers to send with the request, defaults to None
-    :type headers: dict, optional
-    :example headers: {'Accept': 'application/json'}
-
-    :param response_type: The type of the response, defaults to None
-    :type response_type: DataObject, optional
-    :example response_type: Hotspot
-
-    :param page_amount: The amount of pages to crawl, defaults to 1
-    :type page_amount: int, optional
-    :example page_amount: 10
-
-    :param error_codes: The error codes to retry on, defaults to [429, 500, 502, 503, 504]
-    :type error_codes: list, optional
-    :example error_codes: [429, 500, 502, 503, 504]
-
-    :param data: The data from the response, defaults to []
-    :type data: list[DataObject], optional
-    :example data: [Hotspot, Hotspot, Hotspot]
-
-    :param hash: The hash of the next page, defaults to None
-    :type hash: str, optional
-    """
+    """An endpoint for the Helium API."""
 
     name: str
     # url: str
     method: str = "GET"
-    _params: dict = None
+    params: Dict[str, str] = field(default_factory=dict)
     # response: dict = None
-    response_type: Type[DataObject] = None
-    response_code: int = None
-    headers: dict = None
+    response_type: Optional[DataObject] = None
+    response_code: Optional[int] = None
+    headers: Dict[str, str] = field(default_factory=dict)
     error_codes: List[int] = field(default_factory=lambda: [429, 500, 502, 503])
     data: List[DataObject] = field(default_factory=list)
-    cursor: str = None
-    logger = logging.getLogger(__name__)
+    cursor: Optional[str] = None
+    logger: logging.Logger = logging.getLogger(__name__)
     type: str = "blockchain"
 
     def get_url(self) -> str:
@@ -103,12 +68,15 @@ class Endpoint:
             api_key = os.getenv("API_KEY")
 
             if not api_key:
-                print(
-                    "No api key found in .env. The helium console api requires an api key."
+                self.logger.error(
+                    "No API_KEY key found, please provide one as env variable or .env file"
+                )
+                raise RuntimeError(
+                    "No API_KEY key found, please provide one as env variable or .env file"
                 )
             self.headers = {
                 "User-Agent": f"HeliumPythonWrapper/0.3{ts}",
-                "key": os.getenv("API_KEY"),
+                "key": api_key,
             }
             return f"https://console.helium.com/api/v1/{self.name}"
 
@@ -157,7 +125,7 @@ class Endpoint:
         else:
             self.__handle_response(response)
 
-    def crawl_pages(self, page_amount=10) -> None:
+    def crawl_pages(self, page_amount: int = 10) -> None:
         """Gets the result pages.
 
         This function allows user to read next pages of results and save them to the dataframe
@@ -172,23 +140,14 @@ class Endpoint:
                 break
             self.logger.debug(f"Page {page + 1} of {page_amount} crawled.")
 
-    @property
-    def params(self) -> dict:
-        """Returns the params for the request."""
-        return self._params
-
-    @params.setter
-    def params(self, value) -> None:
-        """Set the params for the request."""
-        # z = x | y
-        self._params = value
-
     def add_cursor_to_params(self) -> None:
         """Add the hash to the params."""
         if self.cursor is not None:
             self.params["cursor"] = self.cursor
 
-    def __handle_response(self, response) -> Union["data", Exception]:
+    def __handle_response(
+        self, response: requests.Response
+    ) -> Union[List[DataObject], Exception, None]:
         """Handle the response from the Helium API."""
         if self.response_code == 404:
             self.logger.warning("Ressource not found")
@@ -228,7 +187,9 @@ class Endpoint:
                 f"Request to {self.get_url()} failed with status code {self.response_code}"
             )
 
-    def __resolve_response_type(self, data: dict) -> Union[Type[DataObject], dict]:
+    def __resolve_response_type(
+        self, data: Dict[str, str]
+    ) -> Union[DataObject, Dict[str, str]]:
         """Resolve the response type.
 
         :param data: The data from the response.

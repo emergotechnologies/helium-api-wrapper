@@ -23,7 +23,7 @@ column_types = {
 address = "11BCGPgrFa2SxFMWfnv7S644uXX7jZTGmWVp3c2yhMh46G6pEbW"
 
 
-def test_challenge_loading_triangulation():
+def test_challenge_loading_triangulation() -> None:
     """Function testing if challenge data is loaded correctly."""
     test_df = pd.DataFrame(helpers.load_challenge_data(limit=1))
 
