@@ -25,13 +25,31 @@ class DataObject(BaseModel):
     def __getitem__(self, item):
         return getattr(self, item)
 
-    def as_list(self, columns: Optional[List[str]] = None):
+    def as_list(self, columns: Optional[List[str]] = None) -> List:
+        """Returns DataObject as List.
+
+        :param columns: List of attributes to include
+        :type columns: list
+
+        :return: Dict of DataObject.
+        :rtype: list
+        """
+
         data = dict(self)
         if columns:
             data = {key: data[key] for key in columns}
         return data.values()
 
-    def as_dict(self, columns: Optional[List[str]] = None):
+    def as_dict(self, columns: Optional[List[str]] = None) -> Dict:
+        """Returns DataObject as Dict.
+
+        :param columns: List of attributes to include
+        :type columns: list
+
+        :return: Dict of DataObject.
+        :rtype: dict
+        """
+
         data = dict(self)
         if columns:
             data = {key: data[key] for key in columns}
