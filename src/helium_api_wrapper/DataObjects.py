@@ -22,8 +22,23 @@ class DataObject(BaseModel):
     def __len__(self) -> int:
         return dict(self).__len__()
 
+    def __getitem__(self, item):
+        return getattr(self, item)
+
+    def as_list(self, columns: Optional[List[str]] = None):
+        data = dict(self)
+        if columns:
+            data = {key: data[key] for key in columns}
+        return data.values()
+
+    def as_dict(self, columns: Optional[List[str]] = None):
+        data = dict(self)
+        if columns:
+            data = {key: data[key] for key in columns}
+        return data
+
     class Config:
-        """Config Class for DataObject"""
+        """Config Class for DataObject."""
 
         arbitrary_types_allowed = True
 

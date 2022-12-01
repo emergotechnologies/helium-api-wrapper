@@ -49,7 +49,7 @@ class DeviceApi:
             method="GET",
             params={},
             response_type=response,
-            type="console"
+            type="console",
         )
         return endpoint
 

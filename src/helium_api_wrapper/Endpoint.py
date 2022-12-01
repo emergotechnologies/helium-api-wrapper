@@ -16,6 +16,7 @@ from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Type
+
 import requests
 from dotenv import find_dotenv
 from dotenv import load_dotenv
@@ -108,7 +109,8 @@ class Endpoint(
         ):
             num_of_retries += 1
             self.logger.info(
-                f"Got status code {self.response_code} on {self.get_url()}. Sleeping for {exponential_sleep_time} seconds"
+                f"Got status code {self.response_code} on {self.get_url()}. "
+                f"Sleeping for {exponential_sleep_time} seconds"
             )
             exponential_sleep_time = min(600, exponential_sleep_time * 2)
             time.sleep(exponential_sleep_time)
@@ -145,6 +147,7 @@ class Endpoint(
 
     def __handle_response(self, response: requests.Response) -> None:
         """Handle the response from the Helium API."""
+
         if self.response_code == 404:
             self.logger.warning("Resource not found")
             return
@@ -160,9 +163,21 @@ class Endpoint(
                 self.cursor = r["cursor"]
                 self.add_cursor_to_params()
 
-            if "data" not in r:
-                raise Exception("No data received.")
-            self.data.append(self.__resolve_response_type(i) for i in r["data"])
+            if self.type == "blockchain":
+                if "data" not in r:
+                    raise Exception("No data received.")
+
+                if isinstance(r["data"], list):
+                    self.data.extend(
+                        [self.__resolve_response_type(i) for i in r["data"]]
+                    )
+                else:
+                    self.data.append(self.__resolve_response_type(r["data"]))
+            else:
+                if isinstance(r, list):
+                    self.data.extend([self.__resolve_response_type(i) for i in r])
+                else:
+                    self.data.append(self.__resolve_response_type(r))
         else:
             raise Exception(
                 f"Request to {self.get_url()} failed with status code {self.response_code}"
@@ -176,4 +191,5 @@ class Endpoint(
 
         :return: The response type.
         """
+
         return self.response_type(**data)
