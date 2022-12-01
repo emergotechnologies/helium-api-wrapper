@@ -11,7 +11,7 @@
 import logging
 import os
 import time
-from dataclasses import field
+from dataclasses import Field
 from typing import Any
 from typing import Dict
 from typing import List
@@ -38,9 +38,9 @@ class Endpoint(
     params: Dict[str, str] = field(default_factory=dict)
     response_type: DataObject
     response_code: Optional[int] = None
-    headers: Dict[str, str] = field(default_factory=dict)
-    error_codes: List[int] = field(default_factory=lambda: [429, 500, 502, 503])
-    data: List[DataObject] = field(default_factory=list)
+    headers: Dict[str, str] = Field(default_factory=dict)
+    error_codes: List[int] = Field(default_factory=lambda: [429, 500, 502, 503])
+    data: List[DataObject] = Field(default_factory=list)
     cursor: Optional[str] = None
     logger: logging.Logger = logging.getLogger(__name__)
     type: str = "blockchain"
