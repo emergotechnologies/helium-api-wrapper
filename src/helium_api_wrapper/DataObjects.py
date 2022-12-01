@@ -23,8 +23,6 @@ class DataObject(BaseModel):
         return dict(self).__len__()
 
     class Config:
-        """ Configuration for DataObject """
-
         arbitrary_types_allowed = True
 
 

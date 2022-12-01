@@ -11,26 +11,26 @@
 import logging
 import os
 import time
+from pydantic import Field
+from typing import Any, Union
 from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Type
-from typing import Union
 
 import requests
 from dotenv import find_dotenv
 from dotenv import load_dotenv
-from pydantic import Field
 from requests import Response
 
 from helium_api_wrapper.DataObjects import DataObject
 
+
 logging.basicConfig(level=logging.INFO)
 
 
-class Endpoint(
-    DataObject
-):
+class Endpoint(DataObject):
+    # type: ignore[misc]
     # TODO: check if this causes problems, I changed it from a dataclass to a DataObject
     """An endpoint for the Helium API."""
 
@@ -105,7 +105,7 @@ class Endpoint(
         num_of_retries = 0
         is_error = self.response_code in self.error_codes
         while (is_error and max_retries == -1) or (
-                is_error and num_of_retries < max_retries
+            is_error and num_of_retries < max_retries
         ):
             num_of_retries += 1
             self.logger.info(
@@ -185,7 +185,7 @@ class Endpoint(
             )
 
     def __resolve_response_type(
-        self, data: Dict[str, str]
+            self, data: Dict[str, str]
     ) -> Union[DataObject, Dict[str, str]]:
         """Resolve the response type.
 

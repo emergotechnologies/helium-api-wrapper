@@ -12,8 +12,8 @@ import logging
 from typing import Dict
 from typing import List
 from typing import Optional
-from typing import Type
 from typing import Union
+from typing import Type
 
 from helium_api_wrapper.DataObjects import Challenge
 from helium_api_wrapper.DataObjects import ChallengeResolved
@@ -52,9 +52,7 @@ class ChallengeApi:
         """
         if params is None:
             params = {}
-        endpoint = Endpoint(
-            name=endpoint_url, method="GET", params=params, response_type=response
-        )
+        endpoint = Endpoint(name=endpoint_url, method="GET", params=params, response_type=response)
         return endpoint
 
     def get_challenges(
