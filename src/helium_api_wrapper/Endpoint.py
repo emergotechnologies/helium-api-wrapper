@@ -35,7 +35,7 @@ class Endpoint(
 
     name: str
     method: str = "GET"
-    params: Dict[str, str] = field(default_factory=dict)
+    params: Dict[str, str] = Field(default_factory=dict)
     response_type: DataObject
     response_code: Optional[int] = None
     headers: Dict[str, str] = Field(default_factory=dict)
