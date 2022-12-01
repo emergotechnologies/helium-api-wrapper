@@ -201,7 +201,7 @@ def load_challenge_data(
         witnesses = sort_witnesses(challenge["witnesses"], load_type=load_type)
         if load_hotspots:
             challengee = load_hotspot(address=challenge["challengee"])
-        else:  # TODO: what is this supposed to do?
+        else:
             challengee = Hotspot(address=challenge["challengee"], lat=0, lng=0)
 
         for witness in witnesses:

@@ -12,10 +12,11 @@ import logging
 import os
 import time
 from pydantic import Field
-from typing import Any
+from typing import Any, Union
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Type
 
 import requests
 from dotenv import find_dotenv
@@ -28,15 +29,15 @@ from helium_api_wrapper.DataObjects import DataObject
 logging.basicConfig(level=logging.INFO)
 
 
-class Endpoint(
-    DataObject  # type: ignore[misc]
-):  # TODO: check if this causes problems, I changed it from a dataclass to a DataObject
+class Endpoint(DataObject):
+    # type: ignore[misc]
+    # TODO: check if this causes problems, I changed it from a dataclass to a DataObject
     """An endpoint for the Helium API."""
 
     name: str
     method: str = "GET"
     params: Dict[str, str] = Field(default_factory=dict)
-    response_type: DataObject
+    response_type: Type[DataObject]
     response_code: Optional[int] = None
     headers: Dict[str, str] = Field(default_factory=dict)
     error_codes: List[int] = Field(default_factory=lambda: [429, 500, 502, 503])
@@ -160,15 +161,32 @@ class Endpoint(
                 self.cursor = r["cursor"]
                 self.add_cursor_to_params()
 
-            if "data" not in r:
-                raise Exception("No data received.")
-            self.data.append(self.__resolve_response_type(i) for i in r["data"])
+            # @todo: find better way to handle this (maybe use subclasses)
+            if self.type == "blockchain":
+                if "data" not in r:
+                    raise Exception("No data received.")
+
+                if isinstance(r["data"], list):
+                    self.data.extend(
+                        [self.__resolve_response_type(i) for i in r["data"]]
+                    )
+                else:
+                    self.data.append(self.__resolve_response_type(r["data"]))
+            else:
+                if isinstance(r, list):
+                    self.data.extend([self.__resolve_response_type(i) for i in r])
+                else:
+                    self.data.append(self.__resolve_response_type(r))
+
+            return self.data
         else:
             raise Exception(
                 f"Request to {self.get_url()} failed with status code {self.response_code}"
             )
 
-    def __resolve_response_type(self, data: Dict[str, Any]) -> DataObject:
+    def __resolve_response_type(
+            self, data: Dict[str, str]
+    ) -> Union[DataObject, Dict[str, str]]:
         """Resolve the response type.
 
         :param data: The data from the response.
@@ -176,4 +194,8 @@ class Endpoint(
 
         :return: The response type.
         """
-        return self.response_type(**data)
+        if self.response_type is None:
+            self.logger.debug("No response type specified. Returning raw data.")
+            return data
+        else:
+            return self.response_type(**data)
