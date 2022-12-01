@@ -100,6 +100,7 @@ def get_device(uuid: str):
 def get_device_integration(uuid: str):
     # print(f"called get_device_integrations with uuid {uuid}")
     integration = load_last_integration(uuid)
+    print(integration)
     return integration
 
 
@@ -109,6 +110,7 @@ def get_device_integration(uuid: str):
 def get_device_event(uuid: str):
     # print(f"called get_device_event with uuid {uuid}")
     event = load_last_event(uuid)
+    print(event)
     return event
 
 @click.group(help="CLI tool to load data from the Helium Blockchain API and Helium Console API")
