@@ -23,8 +23,10 @@ class DataObject(BaseModel):
         return dict(self).__len__()
 
     class Config:
-        """ Config Class for DataObject """
+        """Config Class for DataObject"""
+
         arbitrary_types_allowed = True
+
 
 class Geocode(DataObject):
     """Class to describe Geocode Object."""

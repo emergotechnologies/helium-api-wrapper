@@ -11,15 +11,14 @@
 import logging
 import os
 import time
-from pydantic import Field
 from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
-
 import requests
 from dotenv import find_dotenv
 from dotenv import load_dotenv
+from pydantic import Field
 from requests import Response
 
 from helium_api_wrapper.DataObjects import DataObject
