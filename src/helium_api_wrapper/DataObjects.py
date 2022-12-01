@@ -12,6 +12,7 @@ from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Union
 
 from pydantic import BaseModel
 
@@ -22,10 +23,10 @@ class DataObject(BaseModel):
     def __len__(self) -> int:
         return dict(self).__len__()
 
-    def __getitem__(self, item):
+    def __getitem__(self, item) -> str:
         return getattr(self, item)
 
-    def as_list(self, columns: Optional[List[str]] = None) -> List:
+    def as_list(self, columns: Optional[List[str]] = None) -> List[Union[str, int]]:
         """Returns DataObject as List.
 
         :param columns: List of attributes to include
@@ -40,7 +41,7 @@ class DataObject(BaseModel):
             data = {key: data[key] for key in columns}
         return data.values()
 
-    def as_dict(self, columns: Optional[List[str]] = None) -> Dict:
+    def as_dict(self, columns: Optional[List[str]] = None) -> Dict[str, int]:
         """Returns DataObject as Dict.
 
         :param columns: List of attributes to include

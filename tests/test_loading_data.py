@@ -20,8 +20,6 @@ column_types = {
     "distance": float,
 }
 
-address = "11BCGPgrFa2SxFMWfnv7S644uXX7jZTGmWVp3c2yhMh46G6pEbW"
-
 
 def test_challenge_loading_triangulation() -> None:
     """Function testing if challenge data is loaded correctly."""
@@ -48,10 +46,3 @@ def test_challenge_loading_triangulation() -> None:
     assert (
         len(test_df[["challengee", "witness"]].drop_duplicates()) == 3
     ), "Wrong number of witnesses"
-
-    # TESTING CHALLENGE VALIDITIES
-    # checking, that none are False
-    # assert test_df['valid'].value_counts()[True] == len(test_df)
-
-    # TESTING FOR MAXIMUM DISTANCE
-    # assert test_df['distance'].max() <= MAX_DISTANCE, "Distance too large"

@@ -60,8 +60,6 @@ class ResultHandler:
 
     def write(self) -> None:
         """Write the data to a file."""
-        # @todo: implement data checks
-        self.check_data()
         if self.file_format == "csv":
             self.write_csv()
         elif self.file_format == "json":
@@ -97,21 +95,3 @@ class ResultHandler:
     def write_parquet(self) -> None:
         """Write the data to a parquet file."""
         self.data.to_parquet(os.path.join(self.path, self.file_name + ".parquet"))
-
-    # TODO: remove this, THIS is a terrible function and you should only give this class the right data type
-    def check_data(self) -> None:
-        """Check the data for potential problems."""
-        if isinstance(self.data, dict):
-            self.data = pd.DataFrame(self.data)
-            return
-        if isinstance(self.data, list):
-            return
-        if isinstance(self.data, types.GeneratorType):
-            self.logger.info("Generator given. Start scraping ...")
-            self.data = pd.DataFrame(self.data)
-            return
-        if isinstance(self.data, pd.DataFrame):
-            return
-        else:
-            self.logger.error("Data is not usable.")
-            raise ValueError("Data is not usable.")
