@@ -31,7 +31,7 @@ class TransactionApi:
         self,
         endpoint_url: str = "transactions",
         params: Optional[Dict[str, Union[str, int]]] = None,
-        response: DataObject = None,
+        response: DataObject = DataObject,
     ) -> Endpoint:
         """Load the hotspot data.
 

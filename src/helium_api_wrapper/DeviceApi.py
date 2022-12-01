@@ -45,7 +45,11 @@ class DeviceApi:
         :rtype: Endpoint
         """
         endpoint = Endpoint(
-            name=endpoint_url, method="GET", params={}, response_type=response, type="console"
+            name=endpoint_url,
+            method="GET",
+            params={},
+            response_type=response,
+            type="console"
         )
         return endpoint
 

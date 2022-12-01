@@ -15,6 +15,7 @@ from typing import Any
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Type
 import requests
 from dotenv import find_dotenv
 from dotenv import load_dotenv
@@ -35,7 +36,7 @@ class Endpoint(
     name: str
     method: str = "GET"
     params: Dict[str, str] = Field(default_factory=dict)
-    response_type: DataObject
+    response_type: Type[DataObject]
     response_code: Optional[int] = None
     headers: Dict[str, str] = Field(default_factory=dict)
     error_codes: List[int] = Field(default_factory=lambda: [429, 500, 502, 503])
