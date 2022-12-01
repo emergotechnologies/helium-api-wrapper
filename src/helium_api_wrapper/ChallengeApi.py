@@ -13,7 +13,6 @@ from typing import Dict
 from typing import List
 from typing import Optional
 from typing import Union
-from typing import Type
 
 from helium_api_wrapper.DataObjects import Challenge
 from helium_api_wrapper.DataObjects import ChallengeResolved
@@ -34,7 +33,7 @@ class ChallengeApi:
         self,
         endpoint_url: str = "challenges",
         params: Optional[Dict[str, Union[str, int]]] = None,
-        response: Type[DataObject] = Challenge,
+        response: DataObject = Challenge,
     ) -> Endpoint:
         """Load the hotspot data.
 
@@ -52,7 +51,7 @@ class ChallengeApi:
         """
         if params is None:
             params = {}
-        endpoint = Endpoint(name=endpoint_url, method="GET", params=params, response_type=response)
+        endpoint = Endpoint(endpoint_url, "GET", params, response_type=response)
         return endpoint
 
     def get_challenges(
@@ -85,13 +84,12 @@ class ChallengeApi:
             )
 
         endpoint.crawl_pages(page_amount=10)
-        print(endpoint.data)
         resolved_challenges: List[ChallengeResolved] = [
             self.resolve_challenge(challenge) for challenge in endpoint.data
         ]
         return resolved_challenges
 
-    def resolve_challenge(self, challenge: Type[Challenge]) -> ChallengeResolved:
+    def resolve_challenge(self, challenge: Challenge) -> ChallengeResolved:
         """Resolve a challenge.
 
         :param challenge: The challenge to resolve, defaults to None
@@ -101,7 +99,7 @@ class ChallengeApi:
         :rtype: ChallengeResolved
         """
         self.logger.info(f"Resolving challenge {challenge.hash}")
-        challenge = dict(challenge)
+        challenge = challenge.as_dict()
 
         # We can assume the path to be length 0 or 1 because Multihop PoC is deprecated.
         # see https://github.com/helium/HIP/blob/main/0015-beaconing-rewards.md
