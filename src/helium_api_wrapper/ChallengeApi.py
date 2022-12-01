@@ -101,7 +101,7 @@ class ChallengeApi:
         :rtype: ChallengeResolved
         """
         self.logger.info(f"Resolving challenge {challenge.hash}")
-        challenge = challenge.as_dict()
+        challenge = challenge.dict()
 
         # We can assume the path to be length 0 or 1 because Multihop PoC is deprecated.
         # see https://github.com/helium/HIP/blob/main/0015-beaconing-rewards.md

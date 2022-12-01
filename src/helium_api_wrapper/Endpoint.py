@@ -147,7 +147,6 @@ class Endpoint(
 
     def __handle_response(self, response: requests.Response) -> None:
         """Handle the response from the Helium API."""
-
         if self.response_code == 404:
             self.logger.warning("Resource not found")
             return
@@ -191,5 +190,4 @@ class Endpoint(
 
         :return: The response type.
         """
-
         return self.response_type(**data)

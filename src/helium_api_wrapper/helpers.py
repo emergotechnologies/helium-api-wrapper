@@ -143,7 +143,7 @@ def load_challenges_for_hotspots(
         hotspots = load_hotspots()
 
     for hotspot in hotspots:
-        load_challenges_for_hotspot(hotspot, load_type=load_type, limit=limit)
+        load_challenges_for_hotspot(hotspot.address, load_type=load_type, limit=limit)
 
 
 def load_challenges_for_hotspot(
@@ -165,11 +165,11 @@ def load_challenges_for_hotspot(
         )
         for role in roles:
             # Load transaction
-            challenge = load_challenge(hash=role["hash"])
-            witnesses = sort_witnesses(challenge["witnesses"], load_type=load_type)
+            challenge = load_challenge(hash=role.hash)
+            witnesses = sort_witnesses(challenge.witnesses, load_type=load_type)
             for witness in witnesses:
                 # Load witness
-                witness_hotspot = load_hotspot(address=witness["address"])
+                witness_hotspot = load_hotspot(address=witness.gateway)
                 # Add to row
                 yield get_challenge_data(
                     challenge=challenge,
@@ -198,17 +198,17 @@ def load_challenge_data(
         challenges = challenges
 
     for challenge in challenges:
-        witnesses = sort_witnesses(challenge["witnesses"], load_type=load_type)
+        witnesses = sort_witnesses(challenge.witnesses, load_type=load_type)
         if load_hotspots:
-            challengee = load_hotspot(address=challenge["challengee"])
+            challengee = load_hotspot(address=challenge.challengee)
         else:  # TODO: what is this supposed to do?
-            challengee = Hotspot(address=challenge["challengee"], lat=0, lng=0)
+            challengee = Hotspot(address=challenge.challengee, lat=0, lng=0)
 
         for witness in witnesses:
             if load_hotspots:
-                witness_hotspot = load_hotspot(address=witness["gateway"])
+                witness_hotspot = load_hotspot(address=witness.gateway)
             else:
-                witness_hotspot = Hotspot(address=witness["gateway"], lat=0, lng=0)
+                witness_hotspot = Hotspot(address=witness.gateway, lat=0, lng=0)
 
             if witness_hotspot is None or challengee is None:
                 return
@@ -222,7 +222,7 @@ def load_challenge_data(
 
 
 def get_challenge_data(  # TODO: check if this works I did a lot of changes here I might have messed stuff up
-    challenge: Challenge,
+    challenge: ChallengeResolved,
     witness: Witness,
     hotspot: Hotspot,
     challengee: Hotspot,
@@ -231,29 +231,29 @@ def get_challenge_data(  # TODO: check if this works I did a lot of changes here
 
     :param challenge: Challenge
     :param witness: Witness
-    :param witness_hotspot: Witness hotspot
+    :param hotspot: Witness hotspot
     :param challengee: Challengee
     :return: Challenge data
     """
     # @todo: check if best position for distance
     distance = haversine(
-        (challengee["lat"], challengee["lng"]),
-        (hotspot["lat"], hotspot["lng"]),
+        (challengee.lat, challengee.lng),
+        (hotspot.lat, hotspot.lng),
         unit=Unit.METERS,
     )
     return ChallengeResult(
-        challengee=challengee["address"],
-        challengee_lat=challengee["lat"],
-        challengee_lng=challengee["lng"],
-        witness_address=hotspot["address"],
-        witness_lat=hotspot["lat"],
-        witness_lng=hotspot["lng"],
-        signal=witness["signal"],
-        snr=witness["snr"],
-        datarate=witness["datarate"],
-        is_valid=witness["is_valid"],
-        hash=challenge["hash"],
-        time=challenge["time"],
+        challengee=challengee.address,
+        challengee_lat=challengee.lat,
+        challengee_lng=challengee.lng,
+        witness_address=hotspot.address,
+        witness_lat=hotspot.lat,
+        witness_lng=hotspot.lng,
+        signal=witness.signal,
+        snr=witness.snr,
+        datarate=witness.datarate,
+        is_valid=witness.is_valid,
+        hash=challenge.hash,
+        time=challenge.time,
         distance=distance,
     )
 
