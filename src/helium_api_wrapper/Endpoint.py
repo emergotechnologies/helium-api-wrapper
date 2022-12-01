@@ -11,7 +11,7 @@
 import logging
 import os
 import time
-from dataclasses import Field
+from pydantic import Field
 from typing import Any
 from typing import Dict
 from typing import List
