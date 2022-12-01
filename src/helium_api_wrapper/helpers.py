@@ -19,7 +19,6 @@ from haversine import Unit
 from haversine import haversine
 
 from helium_api_wrapper.ChallengeApi import ChallengeApi
-from helium_api_wrapper.DataObjects import Challenge
 from helium_api_wrapper.DataObjects import ChallengeResolved
 from helium_api_wrapper.DataObjects import ChallengeResult
 from helium_api_wrapper.DataObjects import Device
@@ -180,10 +179,9 @@ def load_challenges_for_hotspot(
 
 
 def load_challenge_data(
-    challenges: Optional[List[Dict[str, Any]]] = None,
+    challenges: Optional[ChallengeResolved] = None,
     load_type: str = "triangulation",
     limit: int = 50,
-    load_hotspots: bool = True,
 ) -> Generator[Dict[str, Any], None, None]:
     """Load challenge data.
 
@@ -199,16 +197,10 @@ def load_challenge_data(
 
     for challenge in challenges:
         witnesses = sort_witnesses(challenge.witnesses, load_type=load_type)
-        if load_hotspots:
-            challengee = load_hotspot(address=challenge.challengee)
-        else:  # TODO: what is this supposed to do?
-            challengee = Hotspot(address=challenge.challengee, lat=0, lng=0)
+        challengee = load_hotspot(address=challenge.challengee)
 
         for witness in witnesses:
-            if load_hotspots:
-                witness_hotspot = load_hotspot(address=witness.gateway)
-            else:
-                witness_hotspot = Hotspot(address=witness.gateway, lat=0, lng=0)
+            witness_hotspot = load_hotspot(address=witness.gateway)
 
             if witness_hotspot is None or challengee is None:
                 return
