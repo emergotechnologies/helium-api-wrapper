@@ -152,6 +152,7 @@ def get_device_integration(uuid: str) -> Event:
     """This function returns the last integration for a given UUID."""
     # print(f"called get_device_integrations with uuid {uuid}")
     integration = load_last_integration(uuid)
+    print(integration)
     return integration
 
 
@@ -162,6 +163,7 @@ def get_device_event(uuid: str) -> Event:
     """This function returns the last event for a given UUID."""
     # print(f"called get_device_event with uuid {uuid}")
     event = load_last_event(uuid)
+    print(event)
     return event
 
 
