@@ -61,4 +61,4 @@ def test_get_transactions_succeeds() -> None:
     result = TransactionApi().get_transaction(
         hash="0Q9A9Q0vpobgwy5zdq5EEgyrtQiiLSnZ9_ZxqdqWksQ"
     )
-    assert type(result).__name__ == "DataObject"
+    assert type(result).__name__ == "BaseModel"
