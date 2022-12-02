@@ -20,7 +20,6 @@ from typing import Type
 import requests
 from dotenv import find_dotenv
 from dotenv import load_dotenv
-from pydantic import Field
 from requests import Response
 
 from helium_api_wrapper.DataObjects import BaseModel
@@ -33,16 +32,41 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
     """An endpoint for the Helium API."""
 
     name: str
-    method: str = "GET"
-    params: Dict[str, str] = Field(default_factory=dict)
     response_type: Type[BaseModel]
-    response_code: Optional[int] = None
-    headers: Dict[str, str] = Field(default_factory=dict)
-    error_codes: List[int] = Field(default_factory=lambda: [429, 500, 502, 503])
-    data: List[BaseModel] = Field(default_factory=list)
-    cursor: Optional[str] = None
-    logger: logging.Logger = logging.getLogger(__name__)
+    response_code: Optional[int]
+    method: str = "GET"
+    headers: Dict[str, str]
+    params: Dict[str, str]
+    error_codes: List[int]
+    data: List[BaseModel]
+    cursor: Optional[str]
+    logger: logging.Logger
     type: str = "blockchain"
+
+    def __init__(
+        self,
+        name: str,
+        response_type: Type[BaseModel],
+        response_code: Optional[int] = None,
+        method: str = "GET",
+        headers: Optional[Dict[str, str]] = None,
+        params: Optional[Dict[str, str]] = None,
+        error_codes: Optional[List[int]] = None,
+        cursor: Optional[str] = None,
+        logger: Optional[logging.Logger] = None,
+        type: str = "blockchain",
+    ):
+        self.name = name
+        self.response_type = response_type
+        self.response_code = response_code
+        self.method = method
+        self.headers = headers or {}
+        self.params = params or {}
+        self.error_codes = error_codes or [429, 500, 502, 503]
+        self.cursor = cursor
+        self.logger = logger or logging.getLogger(__name__)
+        self.type = type
+        self.data = []
 
     def get_url(self) -> str:
         """Get the URL for the endpoint.
@@ -138,11 +162,6 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
                 break
             self.logger.debug(f"Page {page + 1} of {page_amount} crawled.")
 
-    def add_cursor_to_params(self) -> None:
-        """Add the hash to the params."""
-        if self.cursor is not None:
-            self.params["cursor"] = self.cursor
-
     def __handle_response(self, response: requests.Response) -> None:
         """Handle the response from the Helium API."""
         if self.response_code == 404:
@@ -157,8 +176,9 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
 
         if self.response_code == 200:
             if "cursor" in r:
-                self.cursor = r["cursor"]
-                self.add_cursor_to_params()
+                cursor: str = r["cursor"]
+                self.cursor = cursor
+                self.params["cursor"] = cursor
 
             if self.type == "blockchain":
                 if "data" not in r:
