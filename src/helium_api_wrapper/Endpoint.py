@@ -23,25 +23,25 @@ from dotenv import load_dotenv
 from pydantic import Field
 from requests import Response
 
-from helium_api_wrapper.DataObjects import DataObject
+from helium_api_wrapper.DataObjects import BaseModel
 
 
 logging.basicConfig(level=logging.INFO)
 
 
 class Endpoint(
-    DataObject  # type: ignore[misc]
+    BaseModel  # type: ignore[misc]
 ):  # TODO: check if this causes problems, I changed it from a dataclass to a DataObject
     """An endpoint for the Helium API."""
 
     name: str
     method: str = "GET"
     params: Dict[str, str] = Field(default_factory=dict)
-    response_type: Type[DataObject]
+    response_type: Type[BaseModel]
     response_code: Optional[int] = None
     headers: Dict[str, str] = Field(default_factory=dict)
     error_codes: List[int] = Field(default_factory=lambda: [429, 500, 502, 503])
-    data: List[DataObject] = Field(default_factory=list)
+    data: List[BaseModel] = Field(default_factory=list)
     cursor: Optional[str] = None
     logger: logging.Logger = logging.getLogger(__name__)
     type: str = "blockchain"
@@ -182,7 +182,7 @@ class Endpoint(
                 f"Request to {self.get_url()} failed with status code {self.response_code}"
             )
 
-    def __resolve_response_type(self, data: Dict[str, Any]) -> DataObject:
+    def __resolve_response_type(self, data: Dict[str, Any]) -> BaseModel:
         """Resolve the response type.
 
         :param data: The data from the response.

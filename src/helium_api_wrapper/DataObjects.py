@@ -16,19 +16,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class DataObject(BaseModel):
-    """Base class for all data objects."""
-
-    def __len__(self) -> int:
-        return dict(self).__len__()
-
-    class Config:
-        """Config Class for DataObject."""
-
-        arbitrary_types_allowed = True
-
-
-class Geocode(DataObject):
+class Geocode(BaseModel):
     """Class to describe Geocode Object."""
 
     long_city: Optional[str] = None
@@ -42,14 +30,14 @@ class Geocode(DataObject):
     city_id: Optional[str] = None
 
 
-class Status(DataObject):
+class Status(BaseModel):
     """Class to describe Status Object."""
 
     height: Optional[int] = None
     online: Optional[str] = None
 
 
-class Hotspot(DataObject):
+class Hotspot(BaseModel):
     """Class to describe Hotspot Object."""
 
     address: Optional[str] = None
@@ -66,7 +54,7 @@ class Hotspot(DataObject):
     status: Optional[Status] = None
 
 
-class Role(DataObject):
+class Role(BaseModel):
     """Class to describe Role Object."""
 
     type: str
@@ -76,7 +64,7 @@ class Role(DataObject):
     hash: Optional[str] = None
 
 
-class Witness(DataObject):
+class Witness(BaseModel):
     """Class to describe Witness Object."""
 
     timestamp: int
@@ -90,7 +78,7 @@ class Witness(DataObject):
     snr: Optional[float] = None
 
 
-class Receipt(DataObject):
+class Receipt(BaseModel):
     """Class to describe Receipt Object."""
 
     timestamp: int
@@ -100,7 +88,7 @@ class Receipt(DataObject):
     data: str
 
 
-class Challenge(DataObject):
+class Challenge(BaseModel):
     """Class to describe a Challenge loaded from the Helium API."""
 
     type: str
@@ -118,7 +106,7 @@ class Challenge(DataObject):
     fee: Optional[int] = None
 
 
-class ChallengeResult(DataObject):
+class ChallengeResult(BaseModel):
     """Class to describe a Challenge loaded from the Helium API."""
 
     challengee: Optional[str]
@@ -136,7 +124,7 @@ class ChallengeResult(DataObject):
     distance: Optional[float]
 
 
-class ChallengeResolved(DataObject):
+class ChallengeResolved(BaseModel):
     """Class to describe a resolved Challenge."""
 
     type: str
@@ -162,7 +150,7 @@ class ChallengeResolved(DataObject):
     fee: Optional[int] = None
 
 
-class Device(DataObject):
+class Device(BaseModel):
     """Class to describe Device in Helium API."""
 
     adr_allowed: Optional[bool] = None
@@ -181,7 +169,7 @@ class Device(DataObject):
     total_packets: Optional[int] = None
 
 
-class Event(DataObject):
+class Event(BaseModel):
     """Class to describe an Integration Event."""
 
     data: Dict[str, Any]

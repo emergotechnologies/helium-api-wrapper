@@ -14,9 +14,9 @@ from typing import List
 from typing import Optional
 from typing import Union
 
+from helium_api_wrapper.DataObjects import BaseModel
 from helium_api_wrapper.DataObjects import Challenge
 from helium_api_wrapper.DataObjects import ChallengeResolved
-from helium_api_wrapper.DataObjects import DataObject
 from helium_api_wrapper.Endpoint import Endpoint
 
 
@@ -33,7 +33,7 @@ class ChallengeApi:
         self,
         endpoint_url: str = "challenges",
         params: Optional[Dict[str, Union[str, int]]] = None,
-        response: DataObject = Challenge,
+        response: BaseModel = Challenge,
     ) -> Endpoint:
         """Load the hotspot data.
 

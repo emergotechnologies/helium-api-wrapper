@@ -13,8 +13,8 @@ from typing import Dict
 from typing import Optional
 from typing import Union
 
+from helium_api_wrapper.DataObjects import BaseModel
 from helium_api_wrapper.DataObjects import ChallengeResolved
-from helium_api_wrapper.DataObjects import DataObject
 from helium_api_wrapper.Endpoint import Endpoint
 
 
@@ -31,7 +31,7 @@ class TransactionApi:
         self,
         endpoint_url: str = "transactions",
         params: Optional[Dict[str, Union[str, int]]] = None,
-        response: DataObject = DataObject,
+        response: BaseModel = BaseModel,
     ) -> Endpoint:
         """Load the hotspot data.
 
@@ -54,7 +54,7 @@ class TransactionApi:
         )
         return endpoint
 
-    def get_transaction(self, hash: str) -> DataObject:
+    def get_transaction(self, hash: str) -> BaseModel:
         """Get a hotspot by address.
 
         :param hash: The hash of the transaction, defaults to None

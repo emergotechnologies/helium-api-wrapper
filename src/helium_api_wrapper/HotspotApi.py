@@ -14,7 +14,7 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-from helium_api_wrapper.DataObjects import DataObject
+from helium_api_wrapper.DataObjects import BaseModel
 from helium_api_wrapper.DataObjects import Hotspot
 from helium_api_wrapper.DataObjects import Role
 from helium_api_wrapper.Endpoint import Endpoint
@@ -35,7 +35,7 @@ class HotspotApi:
         self,
         endpoint_url: str = "hotspots",
         params: Optional[Dict[str, Union[str, int]]] = None,
-        response: DataObject = Hotspot,
+        response: BaseModel = Hotspot,
     ) -> Endpoint:
         """Load the hotspot data.
 
@@ -87,7 +87,7 @@ class HotspotApi:
 
         endpoint = self.get_endpoint(params={"filter_modes": filter_modes})
         endpoint.crawl_pages(page_amount=page_amount)
-        data: List[DataObject] = endpoint.data
+        data: List[BaseModel] = endpoint.data
         return data
 
     def get_hotspots_by_addresses(self, addresses: List[str]) -> List[Hotspot]:
@@ -127,7 +127,7 @@ class HotspotApi:
             params={"lat": lat, "lon": lon, "distance": distance},
         )
         endpoint.crawl_pages(page_amount=10)
-        data: List[DataObject] = endpoint.data
+        data: List[BaseModel] = endpoint.data
         return data
 
     def get_hotspots_box_search(
@@ -158,7 +158,7 @@ class HotspotApi:
             params={"swlat": swlat, "swlon": swlon, "nelat": nelat, "nelon": nelon},
         )
         endpoint.crawl_pages(page_amount=10)
-        data: List[DataObject] = endpoint.data
+        data: List[BaseModel] = endpoint.data
         return data
 
     def get_hotspot_roles(

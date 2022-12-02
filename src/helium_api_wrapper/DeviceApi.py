@@ -77,7 +77,9 @@ class DeviceApi:
         :rtype: Event
         """
         self.logger.info(f"Getting Device Integration Events for uuid {uuid}")
-        endpoint = self.get_endpoint(f"devices/{uuid}/events?sub_category=uplink_integration_req")
+        endpoint = self.get_endpoint(
+            f"devices/{uuid}/events?sub_category=uplink_integration_req"
+        )
         endpoint.request_with_exponential_backoff()
         return endpoint.data
 
