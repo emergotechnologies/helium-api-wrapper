@@ -73,9 +73,7 @@ def get_hotspot(address: str, file_format: str, file_name: str, path: str) -> No
 def get_hotspots(n: int, file_format: str, file_name: str, path: str) -> None:
     """This function returns a the given number of random Hotspots."""
     hotspots = load_hotspots(n)
-    df = pd.DataFrame(
-        [hotspot.dict() for hotspot in hotspots]
-    )
+    df = pd.DataFrame([hotspot.dict() for hotspot in hotspots])
     ResultHandler(df, file_format, file_name, path).write()
 
 
