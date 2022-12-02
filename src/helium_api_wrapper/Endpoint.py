@@ -29,9 +29,7 @@ from helium_api_wrapper.DataObjects import BaseModel
 logging.basicConfig(level=logging.INFO)
 
 
-class Endpoint(
-    BaseModel  # type: ignore[misc]
-):  # TODO: check if this causes problems, I changed it from a dataclass to a DataObject
+class Endpoint:  # TODO: check if this causes problems, I changed it from a dataclass to a DataObject
     """An endpoint for the Helium API."""
 
     name: str
