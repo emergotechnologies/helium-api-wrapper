@@ -53,7 +53,7 @@ class HotspotApi:
         """
         if params is None:
             params = {}
-        endpoint = Endpoint(name=endpoint_url, params=params, response_type=response)
+        endpoint = Endpoint(url=endpoint_url, params=params, response_type=response)
         return endpoint
 
     def get_hotspot_by_address(self, address: str) -> Union[Hotspot, None]:

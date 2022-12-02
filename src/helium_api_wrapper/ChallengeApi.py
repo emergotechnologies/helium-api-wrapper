@@ -51,7 +51,7 @@ class ChallengeApi:
         """
         if params is None:
             params = {}
-        endpoint = Endpoint(name=endpoint_url, params=params, response_type=response)
+        endpoint = Endpoint(url=endpoint_url, params=params, response_type=response)
         return endpoint
 
     def get_challenges(

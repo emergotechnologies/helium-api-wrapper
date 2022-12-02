@@ -11,15 +11,10 @@
 import logging
 import os
 import time
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Type
+from typing import Dict, List, Optional, Type
 
 import requests
-from dotenv import find_dotenv
-from dotenv import load_dotenv
+from dotenv import find_dotenv, load_dotenv
 from requests import Response
 
 from helium_api_wrapper.DataObjects import BaseModel
@@ -31,7 +26,7 @@ logging.basicConfig(level=logging.INFO)
 class Endpoint:  # TODO: check if this causes problems, I changed it from a dataclass to a DataObject
     """An endpoint for the Helium API."""
 
-    name: str
+    url: str
     response_type: Type[BaseModel]
     response_code: Optional[int]
     headers: Dict[str, str]
@@ -44,7 +39,7 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
 
     def __init__(
         self,
-        name: str,
+        url: str,
         response_type: Type[BaseModel],
         response_code: Optional[int] = None,
         headers: Optional[Dict[str, str]] = None,
@@ -54,7 +49,7 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
         logger: Optional[logging.Logger] = None,
         type: str = "blockchain",
     ):
-        self.name = name
+        self.url = url
         self.response_type = response_type
         self.response_code = response_code
         self.headers = headers or {}
@@ -65,7 +60,7 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
         self.type = type
         self.data = []
 
-    def get_url(self) -> str:
+    def __set_url(self) -> str:
         """Get the URL for the endpoint.
 
         :return: The URL for the endpoint.
@@ -76,7 +71,7 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
             # self.headers = {
             #     "User-Agent": "Mozilla/5.0."
             # }
-            return f"https://api.helium.io/v1/{self.name}"
+            return f"https://api.helium.io/v1/{self.url}"
         else:
             # if package is installed globally look for .env in cwd
             if not (dotenv_path := find_dotenv()):
@@ -96,14 +91,14 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
                 "User-Agent": f"HeliumPythonWrapper/0.3{ts}",
                 "key": api_key,
             }
-            return f"https://console.helium.com/api/v1/{self.name}"
+            return f"https://console.helium.com/api/v1/{self.url}"
 
     def __request(self) -> Response:
         """Send a simple request to the Helium API and return the response."""
-        self.logger.debug(f"Requesting {self.name}...")
+        self.logger.debug(f"Requesting {self.url}...")
         response = requests.request(
             "GET",
-            self.get_url(),
+            self.__set_url(),
             params=self.params,
             headers=self.headers,
         )
@@ -128,7 +123,7 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
         ):
             num_of_retries += 1
             self.logger.info(
-                f"Got status code {self.response_code} on {self.get_url()}. "
+                f"Got status code {self.response_code} on {self.__set_url()}. "
                 f"Sleeping for {exponential_sleep_time} seconds"
             )
             exponential_sleep_time = min(600, exponential_sleep_time * 2)
@@ -139,7 +134,7 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
 
         if self.response_code in self.error_codes:
             raise Exception(
-                f"Request to {self.get_url()} failed with status code {self.response_code}"
+                f"Request to {self.__set_url()} failed with status code {self.response_code}"
             )
         else:
             self.__handle_response(response)
@@ -182,27 +177,15 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
                     raise Exception("No data received.")
 
                 if isinstance(r["data"], list):
-                    self.data.extend(
-                        [self.__resolve_response_type(i) for i in r["data"]]
-                    )
+                    self.data.extend([self.response_type(**i) for i in r["data"]])
                 else:
-                    self.data.append(self.__resolve_response_type(r["data"]))
+                    self.data.append(self.response_type(**r["data"]))
             else:
                 if isinstance(r, list):
-                    self.data.extend([self.__resolve_response_type(i) for i in r])
+                    self.data.extend([self.response_type(**i) for i in r])
                 else:
-                    self.data.append(self.__resolve_response_type(r))
+                    self.data.append(self.response_type(**r))
         else:
             raise Exception(
-                f"Request to {self.get_url()} failed with status code {self.response_code}"
+                f"Request to {self.__set_url()} failed with status code {self.response_code}"
             )
-
-    def __resolve_response_type(self, data: Dict[str, Any]) -> BaseModel:
-        """Resolve the response type.
-
-        :param data: The data from the response.
-        :type data: dict
-
-        :return: The response type.
-        """
-        return self.response_type(**data)

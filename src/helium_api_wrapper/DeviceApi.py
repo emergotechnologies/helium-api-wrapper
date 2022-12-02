@@ -45,7 +45,7 @@ class DeviceApi:
         :rtype: Endpoint
         """
         endpoint = Endpoint(
-            name=endpoint_url,
+            url=endpoint_url,
             params={},
             response_type=response,
             type="console",
