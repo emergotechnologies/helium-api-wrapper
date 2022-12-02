@@ -161,7 +161,7 @@ class Device(BaseModel):
     dev_eui: Optional[str] = None
     id: Optional[str] = None
     in_xor_filter: Optional[bool] = None
-    labels: Optional[List[str]] = None
+    labels: Optional[List[Any]] = None
     last_connected: Optional[str] = None
     name: Optional[str] = None
     organization_id: Optional[str] = None
