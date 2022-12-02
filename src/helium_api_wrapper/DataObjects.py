@@ -124,7 +124,7 @@ class ChallengeResult(DataObject):
     challengee: Optional[str]
     challengee_lat: Optional[float]
     challengee_lng: Optional[float]
-    witness_address: Optional[str]
+    witness: Optional[str]
     witness_lat: Optional[float]
     witness_lng: Optional[float]
     signal: Optional[int]

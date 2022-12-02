@@ -15,6 +15,7 @@ column_types = {
     "signal": int64,
     "snr": float,
     "datarate": object,
+    "is_valid": bool,
     "hash": object,
     "time": int64,
     "distance": float,
@@ -23,7 +24,10 @@ column_types = {
 
 def test_challenge_loading_triangulation() -> None:
     """Function testing if challenge data is loaded correctly."""
-    test_df = pd.DataFrame(helpers.load_challenge_data(limit=1))
+    challenges = helpers.load_challenge_data(limit=1)
+    test_df = pd.DataFrame([challenge.dict() for challenge in challenges])
+
+    print(test_df.head())
 
     # TESTING COLUMNS AND DATATYPES
     assert test_df.columns.tolist() == list(column_types.keys())
@@ -39,10 +43,3 @@ def test_challenge_loading_triangulation() -> None:
     assert (
         len(test_df[["challengee"]].drop_duplicates()) == 1
     ), "Wrong number of challengees"
-
-    # TESTING NUMBER OF WITNESSES
-    # checking for doubles; key may not be reliable, as there may be duplicates,
-    # if writing was stopped and then continued from the cursor
-    assert (
-        len(test_df[["challengee", "witness"]].drop_duplicates()) == 3
-    ), "Wrong number of witnesses"

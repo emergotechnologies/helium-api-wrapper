@@ -237,7 +237,7 @@ def get_challenge_data(  # TODO: check if this works I did a lot of changes here
         challengee=challengee.address,
         challengee_lat=challengee.lat,
         challengee_lng=challengee.lng,
-        witness_address=hotspot.address,
+        witness=hotspot.address,
         witness_lat=hotspot.lat,
         witness_lng=hotspot.lng,
         signal=witness.signal,

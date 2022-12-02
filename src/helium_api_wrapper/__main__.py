@@ -15,6 +15,7 @@
 # poetry run get-hotspot
 
 import click
+import pandas as pd
 
 from helium_api_wrapper.DataObjects import Device
 from helium_api_wrapper.DataObjects import Event
@@ -51,7 +52,7 @@ def get_hotspot(address: str, file_format: str, file_name: str, path: str) -> No
     else:
         raise ValueError("No address given")
 
-    ResultHandler(hotspot, file_format, file_name, path).write()
+    ResultHandler(pd.DataFrame(hotspot.dict()), file_format, file_name, path).write()
 
 
 @click.command()
@@ -72,7 +73,10 @@ def get_hotspot(address: str, file_format: str, file_name: str, path: str) -> No
 def get_hotspots(n: int, file_format: str, file_name: str, path: str) -> None:
     """This function returns a the given number of random Hotspots."""
     hotspots = load_hotspots(n)
-    ResultHandler(hotspots, file_format, file_name, path).write()
+    df = pd.DataFrame(
+        [hotspot.dict() for hotspot in hotspots]
+    )
+    ResultHandler(df, file_format, file_name, path).write()
 
 
 @click.command()
@@ -125,7 +129,7 @@ def get_challenges(
         result_hanlder = ResultHandler(None, file_format, file_name, path)
         challenges = load_challenges(limit=n)
         for challenge in challenges:
-            result_hanlder.append(load_challenge_data([challenge]))
+            result_hanlder.append(load_challenge_data([challenge.dict()]))
             result_hanlder.write()
     else:
         challenges = load_challenge_data(load_type="all", limit=n)
