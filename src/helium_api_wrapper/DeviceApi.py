@@ -28,7 +28,7 @@ class DeviceApi:
         self.logger: logging.Logger = logger or logging.getLogger(__name__)
 
     def get_endpoint(
-        self, endpoint_url: str = "devices", response: Optional[Device] = None
+        self, endpoint_url: str = "devices", response: Optional[Device] = Device
     ) -> Endpoint:
         """Load the Device data.
 
