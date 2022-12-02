@@ -30,7 +30,8 @@ def test_challenge_loading_triangulation() -> None:
     print(test_df.head())
 
     # TESTING COLUMNS AND DATATYPES
-    assert test_df.columns.tolist() == list(column_types.keys())
+    # Following assertion is deactivated because we return everything, and don't filter it before.
+    # assert test_df.columns.tolist() == list(column_types.keys())
     for key in column_types:
         assert key in test_df.columns, f"{key} is not a column"
         assert (
