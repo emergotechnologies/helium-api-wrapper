@@ -46,7 +46,6 @@ class DeviceApi:
         """
         endpoint = Endpoint(
             name=endpoint_url,
-            method="GET",
             params={},
             response_type=response,
             type="console",

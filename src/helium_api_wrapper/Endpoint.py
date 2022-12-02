@@ -34,7 +34,6 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
     name: str
     response_type: Type[BaseModel]
     response_code: Optional[int]
-    method: str = "GET"
     headers: Dict[str, str]
     params: Dict[str, str]
     error_codes: List[int]
@@ -48,7 +47,6 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
         name: str,
         response_type: Type[BaseModel],
         response_code: Optional[int] = None,
-        method: str = "GET",
         headers: Optional[Dict[str, str]] = None,
         params: Optional[Dict[str, str]] = None,
         error_codes: Optional[List[int]] = None,
@@ -59,7 +57,6 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
         self.name = name
         self.response_type = response_type
         self.response_code = response_code
-        self.method = method
         self.headers = headers or {}
         self.params = params or {}
         self.error_codes = error_codes or [429, 500, 502, 503]
@@ -105,7 +102,7 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
         """Send a simple request to the Helium API and return the response."""
         self.logger.debug(f"Requesting {self.name}...")
         response = requests.request(
-            self.method,
+            "GET",
             self.get_url(),
             params=self.params,
             headers=self.headers,
