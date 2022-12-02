@@ -97,7 +97,7 @@ def get_challenges_for_hotspot(
 ) -> None:
     """This function returns a list of challenges for a given hotspot."""
     ResultHandler(
-        load_challenges_for_hotspot(address), file_format, file_name, path
+        pd.DataFrame(load_challenges_for_hotspot(address)), file_format, file_name, path
     ).write()
 
 
@@ -131,7 +131,7 @@ def get_challenges(
             result_hanlder.write()
     else:
         challenges = load_challenge_data(load_type="all", limit=n)
-        ResultHandler(challenges, file_format, file_name, path).write()
+        ResultHandler(pd.DataFrame(challenges), file_format, file_name, path).write()
 
 
 @click.command()
