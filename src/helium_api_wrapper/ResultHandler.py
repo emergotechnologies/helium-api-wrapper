@@ -10,12 +10,9 @@
 
 import logging
 import os
-import types
-
 from typing import Any
 from typing import Dict
 from typing import Optional
-from typing import Union
 
 import pandas as pd
 
