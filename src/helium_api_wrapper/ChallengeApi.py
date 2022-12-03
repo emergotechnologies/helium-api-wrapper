@@ -21,13 +21,11 @@ from helium_api_wrapper.Endpoint import Endpoint
 
 
 logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class ChallengeApi:
     """Class to describe Challenge API."""
-
-    def __init__(self, logger: Optional[logging.Logger] = None):
-        self.logger: logging.Logger = logger or logging.getLogger(__name__)
 
     def get_endpoint(
         self,
@@ -54,8 +52,28 @@ class ChallengeApi:
         endpoint = Endpoint(url=endpoint_url, params=params, response_type=response)
         return endpoint
 
-    def get_challenges(
-        self, address: str = "", limit: int = 50
+    def get_challenges(self, limit: int = 50) -> List[ChallengeResolved]:
+        """Get a list of challenges, starts by .
+
+        :param limit: The amount of challenges to get. Defaults to 50
+        :type limit: int
+
+        :return: The challenges.
+        :rtype: list[Challenge]
+        """
+        logger.info("Getting challenges")
+        endpoint = self.get_endpoint(
+            "challenges", response=Challenge, params={"limit": limit}
+        )
+
+        endpoint.crawl_pages(page_amount=10)
+        resolved_challenges: List[ChallengeResolved] = [
+            self.resolve_challenge(challenge) for challenge in endpoint.data
+        ]
+        return resolved_challenges
+
+    def get_challenges_of_hotspot(
+        self, address: str, limit: int = 50
     ) -> List[ChallengeResolved]:
         """Get a list of challenges.
 
@@ -70,18 +88,12 @@ class ChallengeApi:
         :return: The challenges.
         :rtype: list[Challenge]
         """
-        if address != "":
-            self.logger.info(f"Getting challenges for {address}")
-            endpoint = self.get_endpoint(
-                f"hotspots/{address}/challenges",
-                response=Challenge,
-                params={"limit": limit},
-            )
-        else:
-            self.logger.info("Getting challenges")
-            endpoint = self.get_endpoint(
-                "challenges", response=Challenge, params={"limit": limit}
-            )
+        logger.info(f"Getting challenges for {address}")
+        endpoint = self.get_endpoint(
+            f"hotspots/{address}/challenges",
+            response=Challenge,
+            params={"limit": limit},
+        )
 
         endpoint.crawl_pages(page_amount=10)
         resolved_challenges: List[ChallengeResolved] = [
@@ -98,7 +110,7 @@ class ChallengeApi:
         :return: The resolved challenge.
         :rtype: ChallengeResolved
         """
-        self.logger.info(f"Resolving challenge {challenge.hash}")
+        logger.info(f"Resolving challenge {challenge.hash}")
         challenge = challenge.dict()
 
         # We can assume the path to be length 0 or 1 because Multihop PoC is deprecated.

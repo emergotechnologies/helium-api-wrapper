@@ -11,14 +11,10 @@
 import logging
 import os
 import time
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Type
+from typing import Dict, List, Optional, Type
 
 import requests
-from dotenv import find_dotenv
-from dotenv import load_dotenv
+from dotenv import find_dotenv, load_dotenv
 from requests import Response
 
 from helium_api_wrapper.DataObjects import BaseModel
@@ -52,7 +48,7 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
         cursor: Optional[str] = None,
         logger: Optional[logging.Logger] = None,
         type: str = "blockchain",
-    ) -> None:
+    ):
         self.url = url
         self.response_type = response_type
         self.response_code = response_code

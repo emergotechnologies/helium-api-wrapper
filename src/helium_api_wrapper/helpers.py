@@ -48,7 +48,7 @@ def load_hotspots(page_amount: int = 1, filter_modes: str = "full") -> List[Hots
     return hotspots
 
 
-def load_roles(
+def __load_roles(
     address: str, limit: int = 5, filter_types: str = "poc_receipts_v2"
 ) -> List[Role]:
     """Load roles for a hotspot.
@@ -65,7 +65,7 @@ def load_roles(
     return roles
 
 
-def load_challenge(hash: str) -> ChallengeResolved:
+def __load_challenge(hash: str) -> ChallengeResolved:
     """Load a challenge.
 
     :param hash: Hash of the challenge
@@ -159,18 +159,18 @@ def load_challenges_for_hotspot(
     if hotspot is None or hotspot.address is None:
         yield None
     else:
-        roles = load_roles(
+        roles = __load_roles(
             address=hotspot.address or "", filter_types="poc_receipts_v2", limit=limit
         )
         for role in roles:
             # Load transaction
-            challenge = load_challenge(hash=role.hash)
+            challenge = __load_challenge(hash=role.hash)
             witnesses = sort_witnesses(challenge.witnesses, load_type=load_type)
             for witness in witnesses:
                 # Load witness
                 witness_hotspot = load_hotspot(address=witness.gateway)
                 # Add to row
-                yield get_challenge_data(
+                yield __get_challenge_data(
                     challenge=challenge,
                     witness=witness,
                     hotspot=witness_hotspot,
@@ -205,7 +205,7 @@ def load_challenge_data(
             if witness_hotspot is None or challengee is None:
                 return
 
-            yield get_challenge_data(
+            yield __get_challenge_data(
                 challenge=challenge,
                 witness=witness,
                 hotspot=witness_hotspot,
@@ -213,7 +213,7 @@ def load_challenge_data(
             )
 
 
-def get_challenge_data(  # TODO: check if this works I did a lot of changes here I might have messed stuff up
+def __get_challenge_data(  # TODO: check if this works I did a lot of changes here I might have messed stuff up
     challenge: ChallengeResolved,
     witness: Witness,
     hotspot: Hotspot,

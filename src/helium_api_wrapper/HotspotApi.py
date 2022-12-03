@@ -21,6 +21,7 @@ from helium_api_wrapper.Endpoint import Endpoint
 
 
 logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class HotspotApi:
@@ -28,8 +29,8 @@ class HotspotApi:
 
     data: List[Hotspot]
 
-    def __init__(self, logger: Optional[logging.Logger] = None):
-        self.logger: logging.Logger = logger or logging.getLogger(__name__)
+    def __init__(self) -> None:
+        pass
 
     def get_endpoint(
         self,
@@ -65,7 +66,7 @@ class HotspotApi:
         :return: The hotspot.
         :rtype: Hotspot
         """
-        self.logger.info(f"Getting hotspot for adress {address}")
+        logger.info(f"Getting hotspot for adress {address}")
         endpoint = self.get_endpoint(f"hotspots/{address}")
         endpoint.request_with_exponential_backoff()
         if len(endpoint.data) == 0:
@@ -81,25 +82,27 @@ class HotspotApi:
         :return: The hotspots.
         :rtype: list[Hotspot]
         """
-        self.logger.info("Getting hotspots")
+        logger.info("Getting hotspots")
 
         endpoint = self.get_endpoint(params={"filter_modes": filter_modes})
         endpoint.crawl_pages(page_amount=page_amount)
         data: List[BaseModel] = endpoint.data
         return data
 
+    # ONLY USED IN TESTS
     def get_hotspots_by_addresses(self, addresses: List[str]) -> List[Hotspot]:
         """Get a list of hotspots.
 
         :return: The hotspots.
         :rtype: list[Hotspot]
         """
-        self.logger.info("Getting hotspots for addresses")
+        logger.info("Getting hotspots for addresses")
         hotspots = []
         for adress in addresses:
             hotspots.append(self.get_hotspot_by_address(adress))
         return hotspots
 
+    # UNUSED
     def get_hotspots_by_position(
         self, lat: str, lon: str, distance: int
     ) -> List[Hotspot]:
@@ -117,7 +120,7 @@ class HotspotApi:
         :return: The hotspots.
         :rtype: list[Hotspot]
         """
-        self.logger.info(
+        logger.info(
             f"Getting hotspots for position {lat}, {lon} within {distance} meters"
         )
         endpoint = self.get_endpoint(
@@ -128,6 +131,7 @@ class HotspotApi:
         data: List[BaseModel] = endpoint.data
         return data
 
+    # UNUSED
     def get_hotspots_box_search(
         self, swlat: str, swlon: str, nelat: str, nelon: str
     ) -> List[Hotspot]:
@@ -148,7 +152,7 @@ class HotspotApi:
         :return: The hotspots.
         :rtype: list[Hotspot]
         """
-        self.logger.info(
+        logger.info(
             f"Getting hotspots for box search {swlat}, {swlon}, {nelat}, {nelon}"
         )
         endpoint = self.get_endpoint(
@@ -176,7 +180,7 @@ class HotspotApi:
         :return: The hotspots.
         :rtype: list[Role]
         """
-        self.logger.info(f"Getting hotspot roles for {address}")
+        logger.info(f"Getting hotspot roles for {address}")
 
         if limit < 0:
             raise ValueError("Limit must be greater than 0")

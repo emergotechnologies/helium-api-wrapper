@@ -19,13 +19,11 @@ from helium_api_wrapper.Endpoint import Endpoint
 
 
 logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class TransactionApi:
     """Class to describe Transaction API."""
-
-    def __init__(self, logger: Optional[logging.Logger] = None):
-        self.logger: logging.Logger = logger or logging.getLogger(__name__)
 
     def get_endpoint(
         self,
@@ -61,14 +59,12 @@ class TransactionApi:
         :return: The transaction.
         :rtype: Transaction
         """
-        self.logger.info(f"Getting transaction for hash {hash}")
+        logger.info(f"Getting transaction for hash {hash}")
         endpoint = self.get_endpoint(f"transactions/{hash}")
         endpoint.request_with_exponential_backoff()
         return endpoint.data[0]
 
-    def get_challenges_from_transactions(
-        self, hash: str
-    ) -> ChallengeResolved:  # TODO: check if this really returns a Dict
+    def get_challenges_from_transactions(self, hash: str) -> ChallengeResolved:
         """Get a hotspot by address.
 
         :param hash: The hash of the transaction, defaults to None
@@ -77,9 +73,9 @@ class TransactionApi:
         :return: The resolved challenge or raw data.
         :rtype: ChallengeResolved, dict
         """
-        self.logger.info(f"Getting challenges from transaction {hash}")
+        logger.info(f"Getting challenges from transaction {hash}")
         challenge = self.get_transaction(hash)
-        self.logger.info(challenge)
+        logger.info(challenge)
         if challenge["type"] == "poc_receipts_v2":
             # flatten the data, this is dangerous we should look over this
             challenge_resolved = {
@@ -88,5 +84,5 @@ class TransactionApi:
             challenge_resolved.update(challenge["path"][0])
             return ChallengeResolved(**challenge_resolved)
         else:
-            self.logger.info(f"Transaction {hash} is not a challenge. Returning Data")
+            logger.info(f"Transaction {hash} is not a challenge. Returning Data")
             return None  # TODO: should we return none or why do we only use poc_receipts_v2?
