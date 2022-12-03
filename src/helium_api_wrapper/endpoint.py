@@ -29,18 +29,18 @@ logger = logging.getLogger(__name__)
 def request(
     url: str,
     endpoint: str = "api",
-    params: Optional[Dict[str, str]] = None,
+    params: Optional[Dict[str, Any]] = None,
     pages: int = 1,
 ) -> List[Dict[str, Any]]:
-    """Handle request to Helium API
+    """Handle request to Helium API.
 
     :param url: The url to request
-    :param endpoint: The endpoint to request
+    :param endpoint: The endpoint to request. Either "api" or "console".
     :param params: The parameters to send with the request
     :param pages: The number of pages to request
     :return: The response from the API
     """
-    assert endpoint in ["api", "console"], "Endpoint should be either api or console."
+    # assert endpoint in ["api", "console"], "Endpoint should be either api or console."
     url = __get_url(url=url, endpoint=endpoint)
     headers = __get_headers(endpoint=endpoint)
 
@@ -63,7 +63,7 @@ def request(
 
 
 def __get_headers(endpoint: str) -> Dict[str, str]:
-    headers = {"User-Agent": f"HeliumPythonWrapper/0.0.1"}
+    headers = {"User-Agent": "HeliumPythonWrapper/0.3.1"}
     if endpoint == "console":
         # if package is installed globally look for .env in cwd
         if not (dotenv_path := find_dotenv()):
@@ -72,15 +72,14 @@ def __get_headers(endpoint: str) -> Dict[str, str]:
         load_dotenv(dotenv_path)
         api_key = os.getenv("API_KEY")
 
-        assert (
-            api_key
-        ), "No api key found in .env. The helium console api requires an api key."
+        if api_key is None or api_key == "":
+            raise Exception("No api key found in .env")
         headers["key"] = os.getenv("API_KEY")
     return headers
 
 
 def __request_with_exponential_backoff(
-    url: str, headers: Dict[str, str], params: Dict[str, str], max_retries: int = -1
+    url: str, headers: Dict[str, str], params: Dict[str, Any], max_retries: int = -1
 ) -> Dict[str, Any]:
     """Send a request and retry with exponential backoff.
 
@@ -136,9 +135,9 @@ def __handle_response(response: requests.Response) -> Dict[str, Any]:
             data["cursor"] = r["cursor"]
 
         if "data" not in r:
-            raise Exception("No data received.")
-
-        data["data"] = r["data"]
+            data["data"] = r
+        else:
+            data["data"] = r["data"]
 
         return data
 
@@ -165,6 +164,6 @@ def __get_url(url: str, endpoint: str) -> str:
     """
     if endpoint == "console":
         # TODO: load from .env
-        return f"https://{endpoint}.helium.io/v1/{url}"
+        return f"https://{endpoint}.helium.com/api/v1/{url}"
     else:
         return f"https://{endpoint}.helium.io/v1/{url}"

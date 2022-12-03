@@ -8,24 +8,18 @@
 
 """
 
-# To start from cli:
-# Install poetry then run the script defined in the pyproject.toml file under [tool.poetry.scripts]
-
-# poetry install
-# poetry run get-hotspot
-
 import click
 
+from helium_api_wrapper.challenges import get_challenges
+from helium_api_wrapper.challenges import get_challenges_by_address
+from helium_api_wrapper.challenges import load_challenge_data
 from helium_api_wrapper.DataObjects import Device
 from helium_api_wrapper.DataObjects import Event
-from helium_api_wrapper.helpers import load_challenge_data
-from helium_api_wrapper.helpers import load_challenges
-from helium_api_wrapper.helpers import load_challenges_for_hotspot
-from helium_api_wrapper.helpers import load_device
-from helium_api_wrapper.helpers import load_hotspot
-from helium_api_wrapper.helpers import load_hotspots
-from helium_api_wrapper.helpers import load_last_event
-from helium_api_wrapper.helpers import load_last_integration
+from helium_api_wrapper.devices import get_device_by_uuid
+from helium_api_wrapper.devices import get_last_event
+from helium_api_wrapper.devices import get_last_integration
+from helium_api_wrapper.hotspots import get_hotspot_by_address
+from helium_api_wrapper.hotspots import get_hotspots
 from helium_api_wrapper.ResultHandler import write
 
 
@@ -47,7 +41,7 @@ from helium_api_wrapper.ResultHandler import write
 def get_hotspot(address: str, file_format: str, file_name: str, path: str) -> None:
     """This function returns a Hotspot for a given address."""
     if address:
-        hotspot = load_hotspot(address)
+        hotspot = get_hotspot_by_address(address)
     else:
         raise ValueError("No address given")
 
@@ -74,9 +68,9 @@ def get_hotspot(address: str, file_format: str, file_name: str, path: str) -> No
     "--path", default="./data", type=str, help="Defines the path for the output file."
 )
 @click.version_option(version="0.1")
-def get_hotspots(n: int, file_format: str, file_name: str, path: str) -> None:
-    """This function returns a the given number of random Hotspots."""
-    hotspots = load_hotspots(n)
+def load_hotspots(n: int, file_format: str, file_name: str, path: str) -> None:
+    """This function returns a given number of random Hotspots."""
+    hotspots = get_hotspots(n)
     write(
         data=hotspots,
         file_format=file_format,
@@ -105,11 +99,11 @@ def get_challenges_for_hotspot(
 ) -> None:
     """This function returns a list of challenges for a given hotspot."""
     write(
-        load_challenges_for_hotspot(address),
+        get_challenges_by_address(address),
         file_format=file_format,
         file_name=file_name,
         path=path,
-    ).write()
+    )
 
 
 @click.command()
@@ -130,19 +124,19 @@ def get_challenges_for_hotspot(
     "--path", default="./data", type=str, help="Defines the path for the output file."
 )
 @click.version_option(version="0.1")
-def get_challenges(
+def load_challenges(
     n: int, incremental: bool, file_format: str, file_name: str, path: str
 ) -> None:
     """This function returns a list of challenges."""
     if incremental:
-        challenges = load_challenges(limit=n)
+        challenges = get_challenges(limit=n)
         write(
             load_challenge_data(challenges),
             file_format=file_format,
             file_name=file_name,
             path=path,
         )
-    else:  # TODO: Split this into two functions. A function should only do one thing and do it well ideally.
+    else:
         write(
             load_challenge_data(load_type="all", limit=n),
             file_format=file_format,
@@ -156,8 +150,7 @@ def get_challenges(
 @click.version_option(version="0.1")
 def get_device(uuid: str) -> Device:
     """This function returns a device for a given UUID."""
-    print(f"called get_device with uuid {uuid}")
-    device = load_device(uuid)
+    device = get_device_by_uuid(uuid)
     print(device)
     return device
 
@@ -167,8 +160,7 @@ def get_device(uuid: str) -> Device:
 @click.version_option(version="0.1")
 def get_device_integration(uuid: str) -> Event:
     """This function returns the last integration for a given UUID."""
-    # print(f"called get_device_integrations with uuid {uuid}")
-    integration = load_last_integration(uuid)
+    integration = get_last_integration(uuid)
     print(integration)
     return integration
 
@@ -178,8 +170,7 @@ def get_device_integration(uuid: str) -> Event:
 @click.version_option(version="0.1")
 def get_device_event(uuid: str) -> Event:
     """This function returns the last event for a given UUID."""
-    # print(f"called get_device_event with uuid {uuid}")
-    event = load_last_event(uuid)
+    event = get_last_event(uuid)
     print(event)
     return event
 
@@ -193,8 +184,8 @@ def cli() -> None:
 
 
 cli.add_command(get_hotspot)
-cli.add_command(get_hotspots)
-cli.add_command(get_challenges)
+cli.add_command(load_hotspots)
+cli.add_command(load_challenges)
 cli.add_command(get_challenges_for_hotspot)
 cli.add_command(get_device)
 cli.add_command(get_device_integration)
