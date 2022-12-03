@@ -11,10 +11,14 @@
 import logging
 import os
 import time
-from typing import Dict, List, Optional, Type
+from typing import Dict
+from typing import List
+from typing import Optional
+from typing import Type
 
 import requests
-from dotenv import find_dotenv, load_dotenv
+from dotenv import find_dotenv
+from dotenv import load_dotenv
 from requests import Response
 
 from helium_api_wrapper.DataObjects import BaseModel

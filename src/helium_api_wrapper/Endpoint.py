@@ -19,12 +19,12 @@ from typing import Type
 import requests
 from dotenv import find_dotenv
 from dotenv import load_dotenv
+from pydantic import BaseModel
 from requests import Response
-
-from helium_api_wrapper.DataObjects import BaseModel
 
 
 logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class Endpoint:  # TODO: check if this causes problems, I changed it from a dataclass to a DataObject
@@ -38,7 +38,6 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
     error_codes: List[int]
     data: List[BaseModel]
     cursor: Optional[str]
-    logger: logging.Logger
     type: str = "blockchain"
 
     def __init__(
@@ -50,7 +49,6 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
         params: Optional[Dict[str, str]] = None,
         error_codes: Optional[List[int]] = None,
         cursor: Optional[str] = None,
-        logger: Optional[logging.Logger] = None,
         type: str = "blockchain",
     ) -> None:
         self.url = url
@@ -60,7 +58,6 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
         self.params = params or {}
         self.error_codes = error_codes or [429, 500, 502, 503]
         self.cursor = cursor
-        self.logger = logger or logging.getLogger(__name__)
         self.type = type
         self.data = []
 
@@ -85,7 +82,7 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
             api_key = os.getenv("API_KEY")
 
             if not api_key:
-                self.logger.error(
+                logger.error(
                     "No API_KEY key found, please provide one as env variable or .env file"
                 )
                 raise RuntimeError(
@@ -99,7 +96,7 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
 
     def __request(self) -> Response:
         """Send a simple request to the Helium API and return the response."""
-        self.logger.debug(f"Requesting {self.url}...")
+        logger.debug(f"Requesting {self.url}...")
         response = requests.request(
             "GET",
             self.__set_url(),
@@ -126,7 +123,7 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
             is_error and num_of_retries < max_retries
         ):
             num_of_retries += 1
-            self.logger.info(
+            logger.info(
                 f"Got status code {self.response_code} on {self.__set_url()}. "
                 f"Sleeping for {exponential_sleep_time} seconds"
             )
@@ -152,20 +149,20 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
         for page in range(page_amount):
             self.request_with_exponential_backoff()
             if self.cursor is None:
-                self.logger.debug(
+                logger.debug(
                     f"Finished crawling data at page {page + 1} of {page_amount}."
                 )
                 break
-            self.logger.debug(f"Page {page + 1} of {page_amount} crawled.")
+            logger.debug(f"Page {page + 1} of {page_amount} crawled.")
 
     def __handle_response(self, response: requests.Response) -> None:
         """Handle the response from the Helium API."""
         if self.response_code == 404:
-            self.logger.warning("Resource not found")
+            logger.warning("Resource not found")
             return
 
         if self.response_code == 204:
-            self.logger.warning("No content")
+            logger.warning("No content")
             return
         else:
             r = response.json()

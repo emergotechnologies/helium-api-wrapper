@@ -15,7 +15,6 @@
 # poetry run get-hotspot
 
 import click
-import pandas as pd
 
 from helium_api_wrapper.DataObjects import Device
 from helium_api_wrapper.DataObjects import Event
@@ -27,7 +26,7 @@ from helium_api_wrapper.helpers import load_hotspot
 from helium_api_wrapper.helpers import load_hotspots
 from helium_api_wrapper.helpers import load_last_event
 from helium_api_wrapper.helpers import load_last_integration
-from helium_api_wrapper.ResultHandler import ResultHandler
+from helium_api_wrapper.ResultHandler import write
 
 
 @click.command()
@@ -52,7 +51,12 @@ def get_hotspot(address: str, file_format: str, file_name: str, path: str) -> No
     else:
         raise ValueError("No address given")
 
-    ResultHandler(pd.DataFrame(hotspot.dict()), file_format, file_name, path).write()
+    write(
+        data=hotspot,
+        file_format=file_format,
+        file_name=file_name,
+        path=path,
+    )
 
 
 @click.command()
@@ -73,8 +77,12 @@ def get_hotspot(address: str, file_format: str, file_name: str, path: str) -> No
 def get_hotspots(n: int, file_format: str, file_name: str, path: str) -> None:
     """This function returns a the given number of random Hotspots."""
     hotspots = load_hotspots(n)
-    df = pd.DataFrame([hotspot.dict() for hotspot in hotspots])
-    ResultHandler(df, file_format, file_name, path).write()
+    write(
+        data=hotspots,
+        file_format=file_format,
+        file_name=file_name,
+        path=path,
+    )
 
 
 @click.command()
@@ -96,8 +104,11 @@ def get_challenges_for_hotspot(
     address: str, file_format: str, file_name: str, path: str
 ) -> None:
     """This function returns a list of challenges for a given hotspot."""
-    ResultHandler(
-        pd.DataFrame(load_challenges_for_hotspot(address)), file_format, file_name, path
+    write(
+        load_challenges_for_hotspot(address),
+        file_format=file_format,
+        file_name=file_name,
+        path=path,
     ).write()
 
 
@@ -124,14 +135,20 @@ def get_challenges(
 ) -> None:
     """This function returns a list of challenges."""
     if incremental:
-        result_hanlder = ResultHandler(None, file_format, file_name, path)
         challenges = load_challenges(limit=n)
-        for challenge in challenges:
-            result_hanlder.append(load_challenge_data([challenge.dict()]))
-            result_hanlder.write()
-    else:
-        challenges = load_challenge_data(load_type="all", limit=n)
-        ResultHandler(pd.DataFrame(challenges), file_format, file_name, path).write()
+        write(
+            load_challenge_data(challenges),
+            file_format=file_format,
+            file_name=file_name,
+            path=path,
+        )
+    else:  # TODO: Split this into two functions. A function should only do one thing and do it well ideally.
+        write(
+            load_challenge_data(load_type="all", limit=n),
+            file_format=file_format,
+            file_name=file_name,
+            path=path,
+        )
 
 
 @click.command()

@@ -179,7 +179,7 @@ def load_challenges_for_hotspot(
 
 
 def load_challenge_data(
-    challenges: Optional[ChallengeResolved] = None,
+    challenges: Optional[List[ChallengeResolved]] = None,
     load_type: str = "triangulation",
     limit: int = 50,
 ) -> Generator[Dict[str, Any], None, None]:
