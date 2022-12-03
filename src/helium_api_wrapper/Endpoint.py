@@ -9,7 +9,6 @@
 """
 
 import logging
-import os
 import time
 from typing import Dict
 from typing import List
@@ -17,8 +16,6 @@ from typing import Optional
 from typing import Type
 
 import requests
-from dotenv import find_dotenv
-from dotenv import load_dotenv
 from pydantic import BaseModel
 from requests import Response
 
@@ -38,7 +35,6 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
     error_codes: List[int]
     data: List[BaseModel]
     cursor: Optional[str]
-    type: str = "blockchain"
 
     def __init__(
         self,
@@ -49,61 +45,15 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
         params: Optional[Dict[str, str]] = None,
         error_codes: Optional[List[int]] = None,
         cursor: Optional[str] = None,
-        type: str = "blockchain",
     ) -> None:
         self.url = url
         self.response_type = response_type
         self.response_code = response_code
-        self.headers = headers or {}
+        self.headers = headers or {"User-Agent": "HeliumPythonWrapper/0.3.1"}
         self.params = params or {}
         self.error_codes = error_codes or [429, 500, 502, 503]
         self.cursor = cursor
-        self.type = type
         self.data = []
-
-    def __set_url(self) -> str:
-        """Get the URL for the endpoint.
-
-        :return: The URL for the endpoint.
-        """
-        ts = ".1"  # int(time.time())
-        if self.type == "blockchain":
-            self.headers = {"User-Agent": f"HeliumPythonWrapper/0.3{ts}"}
-            # self.headers = {
-            #     "User-Agent": "Mozilla/5.0."
-            # }
-            return f"https://api.helium.io/v1/{self.url}"
-        else:
-            # if package is installed globally look for .env in cwd
-            if not (dotenv_path := find_dotenv()):
-                dotenv_path = find_dotenv(usecwd=True)
-
-            load_dotenv(dotenv_path)
-            api_key = os.getenv("API_KEY")
-
-            if not api_key:
-                logger.error(
-                    "No API_KEY key found, please provide one as env variable or .env file"
-                )
-                raise RuntimeError(
-                    "No API_KEY key found, please provide one as env variable or .env file"
-                )
-            self.headers = {
-                "User-Agent": f"HeliumPythonWrapper/0.3{ts}",
-                "key": api_key,
-            }
-            return f"https://console.helium.com/api/v1/{self.url}"
-
-    def __request(self) -> Response:
-        """Send a simple request to the Helium API and return the response."""
-        logger.debug(f"Requesting {self.url}...")
-        response = requests.request(
-            "GET",
-            self.__set_url(),
-            params=self.params,
-            headers=self.headers,
-        )
-        return response
 
     def request_with_exponential_backoff(self, max_retries: int = -1) -> None:
         """Send a request and retry with exponential backoff.
@@ -114,7 +64,8 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
         :type max_retries: int
         :return: None
         """
-        response = self.__request()
+        print(self.url)
+        response = request(url=self.url, headers=self.headers, params=self.params)
         self.response_code = response.status_code
         exponential_sleep_time = 1
         num_of_retries = 0
@@ -124,18 +75,22 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
         ):
             num_of_retries += 1
             logger.info(
-                f"Got status code {self.response_code} on {self.__set_url()}. "
+                f"Got status code {self.response_code} on {get_url(url=self.url)}. "
                 f"Sleeping for {exponential_sleep_time} seconds"
             )
             exponential_sleep_time = min(600, exponential_sleep_time * 2)
             time.sleep(exponential_sleep_time)
-            response = self.__request()
+            response = request(
+                url=self.url,
+                headers=self.headers,
+                params=self.params,
+            )
             self.response_code = response.status_code
             is_error = self.response_code in self.error_codes
 
         if self.response_code in self.error_codes:
             raise Exception(
-                f"Request to {self.__set_url()} failed with status code {self.response_code}"
+                f"Request to {get_url(url=self.url)} failed with status code {self.response_code}"
             )
         else:
             self.__handle_response(response)
@@ -173,20 +128,37 @@ class Endpoint:  # TODO: check if this causes problems, I changed it from a data
                 self.cursor = cursor
                 self.params["cursor"] = cursor
 
-            if self.type == "blockchain":
-                if "data" not in r:
-                    raise Exception("No data received.")
+            if "data" not in r:
+                raise Exception("No data received.")
 
-                if isinstance(r["data"], list):
-                    self.data.extend([self.response_type(**i) for i in r["data"]])
-                else:
-                    self.data.append(self.response_type(**r["data"]))
+            if isinstance(r["data"], list):
+                self.data.extend([self.response_type(**i) for i in r["data"]])
             else:
-                if isinstance(r, list):
-                    self.data.extend([self.response_type(**i) for i in r])
-                else:
-                    self.data.append(self.response_type(**r))
+                self.data.append(self.response_type(**r["data"]))
+
         else:
             raise Exception(
-                f"Request to {self.__set_url()} failed with status code {self.response_code}"
+                f"Request to {get_url(url=self.url)} failed with status code {self.response_code}"
             )
+
+
+# TODO: make private
+def request(url: str, params: Dict[str, str], headers: Dict[str, str]) -> Response:
+    """Send a simple request to the Helium API and return the response."""
+    logger.debug(f"Requesting {url}...")
+    response = requests.request(
+        "GET",
+        get_url(url=url),
+        params=params,
+        headers=headers,
+    )
+    return response
+
+
+# TODO: make private
+def get_url(url: str) -> str:
+    """Get the URL for the endpoint.
+
+    :return: The URL for the endpoint.
+    """
+    return f"https://api.helium.io/v1/{url}"

@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 def write(data: List[BaseModel], path: str, file_name: str, file_format: str) -> None:
     """Write the data to a file."""
-    parsed_data = pd.DataFrame(data)
+    parsed_data = pd.DataFrame([x.dict() for x in data])
     os.makedirs(path, exist_ok=True)
     if file_format == "csv":
         __write_csv(parsed_data, path, file_name)

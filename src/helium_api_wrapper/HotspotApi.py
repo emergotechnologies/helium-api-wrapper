@@ -14,7 +14,8 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-from helium_api_wrapper.DataObjects import BaseModel
+from pydantic import BaseModel
+
 from helium_api_wrapper.DataObjects import Hotspot
 from helium_api_wrapper.DataObjects import Role
 from helium_api_wrapper.Endpoint import Endpoint

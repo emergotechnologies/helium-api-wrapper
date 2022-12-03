@@ -14,7 +14,8 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-from helium_api_wrapper.DataObjects import BaseModel
+from pydantic import BaseModel
+
 from helium_api_wrapper.DataObjects import Challenge
 from helium_api_wrapper.DataObjects import ChallengeResolved
 from helium_api_wrapper.Endpoint import Endpoint
@@ -47,9 +48,9 @@ class ChallengeApi:
         :return: The endpoint.
         :rtype: Endpoint
         """
-        if params is None:
-            params = {}
-        endpoint = Endpoint(url=endpoint_url, params=params, response_type=response)
+        endpoint = Endpoint(
+            url=endpoint_url, params=params or {}, response_type=response
+        )
         return endpoint
 
     def get_challenges(self, limit: int = 50) -> List[ChallengeResolved]:
