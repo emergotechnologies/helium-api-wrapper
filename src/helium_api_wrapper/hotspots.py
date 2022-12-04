@@ -41,7 +41,8 @@ def get_hotspots(pages: int = 1, filter_modes: str = "full") -> List[Hotspot]:
         url="hotspots/",
         endpoint="api",
         params={"filter_modes": filter_modes},
-        pages=pages)
+        pages=pages,
+    )
     return [Hotspot(**i) for i in hotspots]
 
 
@@ -58,7 +59,8 @@ def load_roles(
     roles = request(
         url=f"hotspots/{address}/roles",
         endpoint="api",
-        params={"limit": limit, "filter_types": filter_types})
+        params={"limit": limit, "filter_types": filter_types},
+    )
 
     return [Role(**i) for i in roles]
 
@@ -87,7 +89,8 @@ def get_hotspots_box_search(
     hotspots = request(
         url="hotspots/location/box_search",
         endpoint="api",
-        params={"swlat": swlat, "swlon": swlon, "nelat": nelat, "nelon": nelon})
+        params={"swlat": swlat, "swlon": swlon, "nelat": nelat, "nelon": nelon},
+    )
     return [Hotspot(**i) for i in hotspots]
 
 
