@@ -37,7 +37,8 @@ def get_hotspots(pages: int = 1, filter_modes: str = "full") -> List[Hotspot]:
     :param filter_modes: Filter modes
     :return: List of hotspots
     """
-    hotspots = request(url=f"hotspots/", endpoint="api", params={"filter_modes": filter_modes}, pages=pages)
+    hotspots = request(url="hotspots/", endpoint="api", params={"filter_modes": filter_modes}, pages=pages)
+
     return [Hotspot(**i) for i in hotspots]
 
 
