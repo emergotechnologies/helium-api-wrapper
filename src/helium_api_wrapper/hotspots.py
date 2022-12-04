@@ -37,8 +37,11 @@ def get_hotspots(pages: int = 1, filter_modes: str = "full") -> List[Hotspot]:
     :param filter_modes: Filter modes
     :return: List of hotspots
     """
-    hotspots = request(url="hotspots/", endpoint="api", params={"filter_modes": filter_modes}, pages=pages)
-
+    hotspots = request(
+        url="hotspots/",
+        endpoint="api",
+        params={"filter_modes": filter_modes},
+        pages=pages)
     return [Hotspot(**i) for i in hotspots]
 
 
@@ -52,7 +55,11 @@ def load_roles(
     :param filter_types: Filter types for roles
     :return: List of roles
     """
-    roles = request(url=f"hotspots/{address}/roles", endpoint="api", params={"limit": limit, "filter_types": filter_types})
+    roles = request(
+        url=f"hotspots/{address}/roles",
+        endpoint="api",
+        params={"limit": limit, "filter_types": filter_types})
+
     return [Role(**i) for i in roles]
 
 
@@ -76,16 +83,15 @@ def get_hotspots_box_search(
     :return: The hotspots.
     :rtype: list[Hotspot]
     """
-    logger.info(
-        f"Getting hotspots for box search {swlat}, {swlon}, {nelat}, {nelon}"
-    )
-    hotspots = request(url="hotspots/location/box_search", endpoint="api", params={"swlat": swlat, "swlon": swlon, "nelat": nelat, "nelon": nelon})
+    logger.info(f"Getting hotspots for box search {swlat}, {swlon}, {nelat}, {nelon}")
+    hotspots = request(
+        url="hotspots/location/box_search",
+        endpoint="api",
+        params={"swlat": swlat, "swlon": swlon, "nelat": nelat, "nelon": nelon})
     return [Hotspot(**i) for i in hotspots]
 
 
-def get_hotspots_by_position(
-    lat: str, lon: str, distance: int
-) -> List[Hotspot]:
+def get_hotspots_by_position(lat: str, lon: str, distance: int) -> List[Hotspot]:
     """Get a list of hotspots by position.
 
     :param lat: The latitude of the position, defaults to None
@@ -100,9 +106,7 @@ def get_hotspots_by_position(
     :return: The hotspots.
     :rtype: list[Hotspot]
     """
-    logger.info(
-        f"Getting hotspots for position {lat}, {lon} within {distance} meters"
-    )
+    logger.info(f"Getting hotspots for position {lat}, {lon} within {distance} meters")
     hotspots = request(
         "hotspots/location/distance",
         params={"lat": lat, "lon": lon, "distance": distance},
