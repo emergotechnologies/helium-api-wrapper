@@ -43,6 +43,7 @@ def request(
     # assert endpoint in ["api", "console"], "Endpoint should be either api or console."
     url = __get_url(url=url, endpoint=endpoint)
     headers = __get_headers(endpoint=endpoint)
+    params = params or {}
 
     data = []
 

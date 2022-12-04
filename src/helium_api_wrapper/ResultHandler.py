@@ -10,7 +10,7 @@
 
 import logging
 import os
-from typing import List
+from typing import Generator, List, Union
 
 import pandas as pd
 from pydantic import BaseModel
@@ -20,7 +20,12 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def write(data: List[BaseModel], path: str, file_name: str, file_format: str) -> None:
+def write(
+    data: Union[List[BaseModel], Generator[BaseModel, None, None]],
+    path: str,
+    file_name: str,
+    file_format: str,
+) -> None:
     """Write the data to a file."""
     parsed_data = pd.DataFrame([x.dict() for x in data])
     os.makedirs(path, exist_ok=True)
