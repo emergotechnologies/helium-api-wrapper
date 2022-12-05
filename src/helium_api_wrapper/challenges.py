@@ -9,8 +9,6 @@
 """
 
 import logging
-from typing import Any
-from typing import Dict
 from typing import Generator
 from typing import List
 from typing import Optional
@@ -111,7 +109,7 @@ def load_challenge_data(
             witnesses = __sort_witnesses(challenge.witnesses, load_type=load_type)
         if challenge.challengee is not None:
             challengee = get_hotspot_by_address(address=challenge.challengee)
-        
+
         for witness in witnesses:
             witness_hotspot = get_hotspot_by_address(address=witness.gateway)
 
@@ -177,7 +175,9 @@ def __resolve_challenge(challenge: Challenge) -> ChallengeResolved:
 
     # We can assume the path to be length 0 or 1 because Multihop PoC is deprecated.
     # see https://github.com/helium/HIP/blob/main/0015-beaconing-rewards.md
-    challenge_resolved = {key: challenge_dict[key] for key in challenge_dict if key != "path"}
+    challenge_resolved = {
+        key: challenge_dict[key] for key in challenge_dict if key != "path"
+    }
     challenge_resolved.update(challenge_dict["path"][0])
     return ChallengeResolved(**challenge_resolved)
 
