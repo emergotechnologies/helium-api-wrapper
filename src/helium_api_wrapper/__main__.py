@@ -46,10 +46,10 @@ def get_hotspot(address: str, file_format: str, file_name: str, path: str) -> No
         raise ValueError("No address given")
 
     write(
-        data=hotspot,
-        file_format=file_format,
-        file_name=file_name,
-        path=path,
+        data = hotspot,
+        file_format = file_format,
+        file_name = file_name,
+        path = path,
     )
 
 

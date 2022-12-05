@@ -11,8 +11,9 @@
 import logging
 import os
 from typing import Generator
-from typing import List
+from typing import List, Sequence
 from typing import Union
+#from typing import Any
 
 import pandas as pd
 from pydantic import BaseModel
@@ -23,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 def write(
-    data: Union[List[BaseModel], Generator[BaseModel, None, None]],
+    data: Union[Sequence[BaseModel], Generator[BaseModel, None, None]],
     path: str,
     file_name: str,
     file_format: str,
