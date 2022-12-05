@@ -107,14 +107,16 @@ def load_challenge_data(
         challenges = challenges
 
     for challenge in challenges:
-        witnesses = __sort_witnesses(challenge.witnesses, load_type=load_type)
-        challengee = get_hotspot_by_address(address=challenge.challengee)
-
+        if challenge.witnesses is not None:
+            witnesses = __sort_witnesses(challenge.witnesses, load_type=load_type)
+        if challenge.challengee is not None:
+            challengee = get_hotspot_by_address(address=challenge.challengee)
+        
         for witness in witnesses:
             witness_hotspot = get_hotspot_by_address(address=witness.gateway)
 
-            if witness_hotspot is None or challengee is None:
-                yield
+            # if witness_hotspot is None:
+            #    yield
 
             yield __get_challenge_data(
                 challenge=challenge,
@@ -171,12 +173,12 @@ def __resolve_challenge(challenge: Challenge) -> ChallengeResolved:
     :rtype: ChallengeResolved
     """
     logger.info(f"Resolving challenge {challenge.hash}")
-    challenge = challenge.dict()
+    challenge_dict = challenge.dict()
 
     # We can assume the path to be length 0 or 1 because Multihop PoC is deprecated.
     # see https://github.com/helium/HIP/blob/main/0015-beaconing-rewards.md
-    challenge_resolved = {key: challenge[key] for key in challenge if key != "path"}
-    challenge_resolved.update(challenge["path"][0])
+    challenge_resolved = {key: challenge_dict[key] for key in challenge_dict if key != "path"}
+    challenge_resolved.update(challenge_dict["path"][0])
     return ChallengeResolved(**challenge_resolved)
 
 
