@@ -64,6 +64,7 @@ def request(
 
 
 def __get_headers(endpoint: str) -> Dict[str, str]:
+    
     headers = {"User-Agent": "HeliumPythonWrapper/0.3.1"}
     if endpoint == "console":
         # if package is installed globally look for .env in cwd
@@ -74,9 +75,12 @@ def __get_headers(endpoint: str) -> Dict[str, str]:
         api_key = os.getenv("API_KEY")
 
         if api_key is None or api_key == "":
+            assert headers is not None
             raise Exception("No api key found in .env")
         headers["key"] = os.getenv("API_KEY")
     return headers
+
+
 
 
 def __request_with_exponential_backoff(
