@@ -75,7 +75,8 @@ def __get_headers(endpoint: str) -> Dict[str, str]:
 
         if api_key is None or api_key == "":
             raise Exception("No api key found in .env")
-        headers["key"] = os.getenv("API_KEY")
+        if api_key is not None:
+            headers["key"] = api_key
     return headers
 
 
