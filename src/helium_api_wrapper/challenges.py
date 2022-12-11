@@ -109,9 +109,12 @@ def load_challenge_data(
             witnesses = __sort_witnesses(challenge.witnesses, load_type=load_type)
         if challenge.challengee is not None:
             challengee = get_hotspot_by_address(address=challenge.challengee)
-
+            if challengee=="hotspot not found at the moment":
+                continue
         for witness in witnesses:
             witness_hotspot = get_hotspot_by_address(address=witness.gateway)
+            if witness_hotspot=="hotspot not found at the moment":
+                continue
 
             # if witness_hotspot is None:
             #    yield

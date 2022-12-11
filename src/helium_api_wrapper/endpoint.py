@@ -44,7 +44,7 @@ def request(
     url = __get_url(url=url, endpoint=endpoint)
     headers = __get_headers(endpoint=endpoint)
     params = params or {}
-
+    
     data = []
 
     for page in range(pages):
@@ -147,7 +147,7 @@ def __handle_response(response: requests.Response) -> Dict[str, Any]:
         raise Exception(f"Request failed with status code {response.status_code}")
 
 
-def __request(url: str, params: Dict[str, str], headers: Dict[str, str]) -> Response:
+def __request(url: str, params: Dict[str, Any], headers: Dict[str, str]) -> Response:
     """Send a simple request to the Helium API and return the response."""
     logger.debug(f"Requesting {url}...")
     response = requests.request(
