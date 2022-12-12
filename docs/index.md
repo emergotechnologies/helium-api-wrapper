@@ -19,5 +19,5 @@ reference
 contributing
 Code of Conduct <codeofconduct>
 License <license>
-Changelog <https://github.com/g4challenge/helium-api-wrapper/releases>
+Changelog <https://github.com/emergotechnologies/helium-api-wrapper/releases>
 ```

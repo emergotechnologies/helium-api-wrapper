@@ -5,15 +5,15 @@ description = "Helium Api Wrapper"
 authors = ["Lukas Huber <lukas.huber@fh-kufstein.ac.at>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/g4challenge/helium-api-wrapper"
-repository = "https://github.com/g4challenge/helium-api-wrapper"
+homepage = "https://github.com/emergotechnologies/helium-api-wrapper"
+repository = "https://github.com/emergotechnologies/helium-api-wrapper"
 documentation = "https://helium-api-wrapper.readthedocs.io"
 classifiers = [
     "Development Status :: 3 - Alpha",
 ]
 
 [tool.poetry.urls]
-Changelog = "https://github.com/g4challenge/helium-api-wrapper/releases"
+Changelog = "https://github.com/emergotechnologies/helium-api-wrapper/releases"
 
 [tool.poetry.dependencies]
 python = "^3.8"
