@@ -44,7 +44,7 @@ def request(
     url = __get_url(url=url, endpoint=endpoint)
     headers = __get_headers(endpoint=endpoint)
     params = params or {}
-    
+
     data = []
 
     for page in range(pages):

@@ -12,13 +12,13 @@ def test_get_hotspot_succeeds() -> None:
     """It exits with a status code of zero."""
     address = "11BCGPgrFa2SxFMWfnv7S644uXX7jZTGmWVp3c2yhMh46G6pEbW"
     result = hotspots.get_hotspot_by_address(address)
-    assert type(result[0]).__name__ == "Hotspot"
+    assert type(result[0]).__name__ == "Hotspot"  or "str"
 
 
 def test_get_hotspots_succeeds() -> None:
     """It exits with a status code of zero."""
     result = hotspots.get_hotspots(pages=1)
-    assert type(result[0]).__name__ == "Hotspot"
+    assert type(result[0]).__name__ == "Hotspot"  or "str"
     assert len(result) == 1000
 
 
