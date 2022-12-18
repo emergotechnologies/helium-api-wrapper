@@ -9,8 +9,6 @@
 """
 import __main__
 
-from helium_api_wrapper import helpers
-from helium_api_wrapper.ChallengeApi import ChallengeApi
-from helium_api_wrapper.DeviceApi import DeviceApi
-from helium_api_wrapper.HotspotApi import HotspotApi
-from helium_api_wrapper.TransactionApi import TransactionApi
+from helium_api_wrapper import challenges as challenges
+from helium_api_wrapper import devices as devices
+from helium_api_wrapper import hotspots as hotspots

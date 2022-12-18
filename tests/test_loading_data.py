@@ -1,8 +1,8 @@
-"""Test cases for the helpers module."""
+"""Test cases data loading."""
 import pandas as pd
 from numpy import int64
 
-from helium_api_wrapper import helpers
+from helium_api_wrapper import challenges as challenges
 
 
 column_types = {
@@ -22,10 +22,10 @@ column_types = {
 }
 
 
-def test_challenge_loading_triangulation() -> None:
+def test_challenge_loading_trilateration() -> None:
     """Function testing if challenge data is loaded correctly."""
-    challenges = helpers.load_challenge_data(limit=1)
-    test_df = pd.DataFrame([challenge.dict() for challenge in challenges])
+    data = challenges.load_challenge_data(limit=1)
+    test_df = pd.DataFrame([challenge.dict() for challenge in data])
 
     print(test_df.head())
 

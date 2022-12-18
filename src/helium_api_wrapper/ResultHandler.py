@@ -10,87 +10,62 @@
 
 import logging
 import os
-from typing import Any
-from typing import Dict
-from typing import Optional
+from typing import Generator
+from typing import Sequence
+from typing import Union
 
 import pandas as pd
+from pydantic import BaseModel
 
 
-class ResultHandler:
-    """Object to handle the result of the API calls.
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-    :param data: The data to be written.
-    :type data: Union[dict, list, types.GeneratorType]
 
-    :param file_format: The file format to be written.
-    :type file_format: str
+def write(
+    data: Union[Sequence[BaseModel], Generator[BaseModel, None, None]],
+    path: str,
+    file_name: str,
+    file_format: str,
+) -> None:
+    """Write the data to a file."""
+    parsed_data = pd.DataFrame([x.dict() for x in data])
+    os.makedirs(path, exist_ok=True)
+    if file_format == "csv":
+        __write_csv(parsed_data, path, file_name)
+    elif file_format == "json":
+        __write_json(parsed_data, path, file_name)
+    elif file_format == "pickle":
+        __write_pickle(parsed_data, path, file_name)
+    elif file_format == "feather":
+        __write_feather(parsed_data, path, file_name)
+    elif file_format == "parquet":
+        __write_parquet(parsed_data, path, file_name)
+    else:
+        logger.error(f"File format {file_format} not supported.")
+    logger.info(f"File {file_name} saved to {path}")
 
-    :param file_name: The name of the file to be written.
-    :type file_name: str
 
-    :param path: The path to the file to be written.
-    :type path: str
+def __write_csv(data: pd.DataFrame, path: str, file_name: str) -> None:
+    """Write the data to a csv file."""
+    data.to_csv(os.path.join(path, file_name + ".csv"))
 
-    :param logger: The logger to be used, defaults to None
-    :type logger: logging.Logger
 
-    :return: None
-    """
+def __write_json(data: pd.DataFrame, path: str, file_name: str) -> None:
+    """Write the data to a json file."""
+    data.to_json(os.path.join(path, file_name + ".json"), orient="records")
 
-    def __init__(
-        self,
-        data: pd.DataFrame,
-        file_format: str,
-        file_name: str,
-        path: str,
-        logger: Optional[logging.Logger] = None,
-    ):
-        self.data = data
-        self.file_format = file_format
-        self.file_name = file_name
-        self.path = path
-        os.makedirs(self.path, exist_ok=True)
-        self.logger = logger or logging.getLogger(__name__)
 
-    def append(self, obj: Dict[str, Any]) -> None:
-        """Apppends a dictionary to the existing data."""
-        self.data = pd.concat([self.data, pd.DataFrame(obj)])
+def __write_pickle(data: pd.DataFrame, path: str, file_name: str) -> None:
+    """Write the data to a pickle file."""
+    data.to_pickle(os.path.join(path, file_name + ".pkl"))
 
-    def write(self) -> None:
-        """Write the data to a file."""
-        if self.file_format == "csv":
-            self.write_csv()
-        elif self.file_format == "json":
-            self.write_json()
-        elif self.file_format == "pickle":
-            self.write_pickle()
-        elif self.file_format == "feather":
-            self.write_feather()
-        elif self.file_format == "parquet":
-            self.write_parquet()
-        else:
-            self.logger.error(f"File format {self.file_format} not supported.")
-        self.logger.info(f"File {self.file_name} saved to {self.path}")
 
-    def write_csv(self) -> None:
-        """Write the data to a csv file."""
-        self.data.to_csv(os.path.join(self.path, self.file_name + ".csv"))
+def __write_feather(data: pd.DataFrame, path: str, file_name: str) -> None:
+    """Write the data to a feather file."""
+    data.to_feather(os.path.join(path, file_name + ".feather"))
 
-    def write_json(self) -> None:
-        """Write the data to a json file."""
-        self.data.to_json(
-            os.path.join(self.path, self.file_name + ".json"), orient="records"
-        )
 
-    def write_pickle(self) -> None:
-        """Write the data to a pickle file."""
-        self.data.to_pickle(os.path.join(self.path, self.file_name + ".pkl"))
-
-    def write_feather(self) -> None:
-        """Write the data to a feather file."""
-        self.data.to_feather(os.path.join(self.path, self.file_name + ".feather"))
-
-    def write_parquet(self) -> None:
-        """Write the data to a parquet file."""
-        self.data.to_parquet(os.path.join(self.path, self.file_name + ".parquet"))
+def __write_parquet(data: pd.DataFrame, path: str, file_name: str) -> None:
+    """Write the data to a parquet file."""
+    data.to_parquet(os.path.join(path, file_name + ".parquet"))

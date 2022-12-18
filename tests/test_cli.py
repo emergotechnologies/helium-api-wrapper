@@ -11,7 +11,7 @@ def runner() -> CliRunner:
     return CliRunner()
 
 
-def test_main_succeeds(runner: CliRunner) -> None:
+def c(runner: CliRunner) -> None:
     """It exits with a status code of zero."""
     result = runner.invoke(
         get_hotspot,
