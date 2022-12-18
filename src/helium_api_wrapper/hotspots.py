@@ -27,6 +27,8 @@ def get_hotspot_by_address(address: str) -> List[Hotspot]:
     :return: Hotspot
     """
     logger.info(f"Getting hotspot for address {address}")
+    # Blockchain API returns inconsistent results for this endpoint
+    # returning empty lists if the hotspot is temporarily not found
     try:
         hotspot = request(url=f"hotspots/{address}", endpoint="api")
         return [Hotspot(**hotspot[0])]

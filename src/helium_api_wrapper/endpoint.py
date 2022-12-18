@@ -72,7 +72,7 @@ def __get_headers(endpoint: str) -> Dict[str, str]:
         load_dotenv(dotenv_path)
         api_key = os.getenv("API_KEY")
 
-        if api_key is None or api_key == "":
+        if not api_key:
             raise Exception("No api key found in .env")
         if api_key is not None:
             headers["key"] = api_key
@@ -170,13 +170,13 @@ def __get_url(url: str, endpoint: str) -> str:
 
     if endpoint == "console":
         console_endpoint = os.getenv("CONSOLE_ENDPOINT")
-        if console_endpoint is None or console_endpoint == "":
+        if not console_endpoint:
             return f"https://{endpoint}.helium.com/api/v1/{url}"
         else:
             return f"{console_endpoint}/{url}"
     else:
         api_endpoint = os.getenv("API_ENDPOINT")
-        if api_endpoint is None or api_endpoint == "":
+        if not api_endpoint:
             return f"https://{endpoint}.helium.io/v1/{url}"
         else:
             return f"{api_endpoint}/{url}"
