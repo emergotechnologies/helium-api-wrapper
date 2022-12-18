@@ -84,18 +84,19 @@ def get_challenges_by_address(address: str, limit: int = 50) -> List[ChallengeRe
         params={"limit": limit},
     )
 
-    return [__resolve_challenge(Challenge(**challenge)) for challenge in challenges]
+    challenge_resolved = [__resolve_challenge(Challenge(**challenge)) for challenge in challenges]
+    return challenge_resolved
 
 
 def load_challenge_data(
     challenges: Optional[List[ChallengeResolved]] = None,
-    load_type: str = "trilateration",
+    load_type: str = "all",
     limit: int = 50,
 ) -> Generator[ChallengeResult, None, None]:
     """Load challenge data.
 
     :param challenges: List of challenges
-    :param load_type: Load type for witnesses
+    :param load_type: Load type for witnesses all, triangulation or best_signal
     :param limit: Limit of challenges to load
     :return: List of challenges
     """
@@ -107,18 +108,16 @@ def load_challenge_data(
     for challenge in challenges:
         if challenge.witnesses is not None:
             witnesses = __sort_witnesses(challenge.witnesses, load_type=load_type)
+
         if challenge.challengee is not None:
-            print(challenge.challengee)
             challengee = get_hotspot_by_address(address=challenge.challengee)
-            # if challengee == "hotspot not found at the moment":
-            #    continue
+            if len(challengee) == 0:
+                continue
+
         for witness in witnesses:
             witness_hotspot = get_hotspot_by_address(address=witness.gateway)
-            # if witness_hotspot == "hotspot not found at the moment":
-            #    continue
-
-            # if witness_hotspot is None:
-            #    yield
+            if len(witness_hotspot) == 0:
+                continue
 
             yield __get_challenge_data(
                 challenge=challenge,
@@ -128,7 +127,7 @@ def load_challenge_data(
             )
 
 
-def __get_challenge_data(  # TODO: check if this works I did a lot of changes here I might have messed stuff up
+def __get_challenge_data(
     challenge: ChallengeResolved,
     witness: Witness,
     hotspot: Hotspot,
