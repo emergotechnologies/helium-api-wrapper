@@ -6,7 +6,9 @@ import pytest
 from helium_api_wrapper import challenges as challenges
 from helium_api_wrapper import devices as devices
 from helium_api_wrapper import hotspots as hotspots
-from helium_api_wrapper.DataObjects import Challenge, Device, Event
+from helium_api_wrapper.DataObjects import Challenge
+from helium_api_wrapper.DataObjects import Device
+from helium_api_wrapper.DataObjects import Event
 from helium_api_wrapper.DataObjects import Hotspot
 
 
@@ -81,7 +83,8 @@ def test_get_challenge_succeeds(mocker, mock_challenges) -> None:
     mocker.patch(
         "helium_api_wrapper.challenges.get_challenges",
         return_value=[
-            challenges.__resolve_challenge(Challenge(**challenge)) for challenge in mock_challenges
+            challenges.__resolve_challenge(Challenge(**challenge))
+            for challenge in mock_challenges
         ],
         autospec=True,
     )

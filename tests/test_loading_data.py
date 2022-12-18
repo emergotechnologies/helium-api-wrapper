@@ -3,10 +3,11 @@ import json
 
 import pandas as pd
 import pytest
-from helium_api_wrapper.DataObjects import Hotspot, Challenge
 from numpy import int64
 
 from helium_api_wrapper import challenges as challenges
+from helium_api_wrapper.DataObjects import Challenge
+from helium_api_wrapper.DataObjects import Hotspot
 
 
 column_types = {
@@ -40,7 +41,9 @@ def mock_challenges():
     return challenge
 
 
-def test_challenge_loading_trilateration(mocker, mock_hotspots, mock_challenges) -> None:
+def test_challenge_loading_trilateration(
+    mocker, mock_hotspots, mock_challenges
+) -> None:
     """Function testing if challenge data is loaded correctly."""
     mocker.patch(
         "helium_api_wrapper.hotspots.get_hotspot_by_address",
@@ -50,9 +53,7 @@ def test_challenge_loading_trilateration(mocker, mock_hotspots, mock_challenges)
 
     mocker.patch(
         "helium_api_wrapper.challenges.get_challenges",
-        return_value=[
-            challenges.__resolve_challenge(Challenge(**mock_challenges[0]))
-        ],
+        return_value=[challenges.__resolve_challenge(Challenge(**mock_challenges[0]))],
         autospec=True,
     )
 
