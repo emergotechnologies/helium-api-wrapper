@@ -195,6 +195,7 @@ def __sort_witnesses(witnesses: List[Witness], load_type: str = "all") -> List[W
     :return: List of witnesses
     """
     return_witnesses: List[Witness]
+    
     if load_type == "trilateration":
         return_witnesses = sorted(
             witnesses, key=lambda witness: witness.signal, reverse=False
