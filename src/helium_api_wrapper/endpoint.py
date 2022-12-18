@@ -165,18 +165,20 @@ def __get_url(url: str, endpoint: str) -> str:
 
     :return: The URL for the endpoint.
     """
+    if not (dotenv_path := find_dotenv()):
+        dotenv_path = find_dotenv(usecwd=True)
+
+    load_dotenv(dotenv_path)
+
     if endpoint == "console":
-        # TODO: load from .env
-        # if package is installed globally look for .env in cwd
-        if not (dotenv_path := find_dotenv()):
-            dotenv_path = find_dotenv(usecwd=True)
-
-        load_dotenv(dotenv_path)
         console_endpoint = os.getenv("CONSOLE_ENDPOINT")
-
         if console_endpoint is None or console_endpoint == "":
             return f"https://{endpoint}.helium.com/api/v1/{url}"
         else:
             return f"{console_endpoint}/{url}"
     else:
-        return f"https://{endpoint}.helium.io/v1/{url}"
+        api_endpoint = os.getenv("API_ENDPOINT")
+        if api_endpoint is None or api_endpoint == "":
+            return f"https://{endpoint}.helium.io/v1/{url}"
+        else:
+            return f"{api_endpoint}/{url}"
