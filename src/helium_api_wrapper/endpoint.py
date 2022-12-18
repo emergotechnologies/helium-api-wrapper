@@ -40,12 +40,13 @@ def request(
     :param pages: The number of pages to request
     :return: The response from the API
     """
-    # assert endpoint in ["api", "console"], "Endpoint should be either api or console."
     url = __get_url(url=url, endpoint=endpoint)
     headers = __get_headers(endpoint=endpoint)
     params = params or {}
 
     data = []
+
+    logger.info(f"Requesting {url}...")
 
     for page in range(pages):
         res = __request_with_exponential_backoff(
@@ -105,7 +106,7 @@ def __request_with_exponential_backoff(
     ):
         num_of_retries += 1
         logger.info(
-            f"Got status code {response.status_code}"
+            f"Got status code {response.status_code} "
             f"Sleeping for {exponential_sleep_time} seconds"
         )
         exponential_sleep_time = min(600, exponential_sleep_time * 2)
@@ -166,6 +167,16 @@ def __get_url(url: str, endpoint: str) -> str:
     """
     if endpoint == "console":
         # TODO: load from .env
-        return f"https://{endpoint}.helium.com/api/v1/{url}"
+        # if package is installed globally look for .env in cwd
+        if not (dotenv_path := find_dotenv()):
+            dotenv_path = find_dotenv(usecwd=True)
+
+        load_dotenv(dotenv_path)
+        console_endpoint = os.getenv("CONSOLE_ENDPOINT")
+
+        if console_endpoint is None or console_endpoint == "":
+            return f"https://{endpoint}.helium.com/api/v1/{url}"
+        else:
+            return f"{console_endpoint}/{url}"
     else:
         return f"https://{endpoint}.helium.io/v1/{url}"
