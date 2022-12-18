@@ -1,5 +1,9 @@
 """Test cases data loading."""
+import json
+
 import pandas as pd
+import pytest
+from helium_api_wrapper.DataObjects import Hotspot, Challenge
 from numpy import int64
 
 from helium_api_wrapper import challenges as challenges
@@ -22,8 +26,36 @@ column_types = {
 }
 
 
-def test_challenge_loading_trilateration() -> None:
+@pytest.fixture
+def mock_hotspots():
+    with open("./data/hotspots.json") as file:
+        hotspot = json.load(file)
+    return hotspot
+
+
+@pytest.fixture
+def mock_challenges():
+    with open("./data/challenges.json") as file:
+        challenge = json.load(file)
+    return challenge
+
+
+def test_challenge_loading_trilateration(mocker, mock_hotspots, mock_challenges) -> None:
     """Function testing if challenge data is loaded correctly."""
+    mocker.patch(
+        "helium_api_wrapper.hotspots.get_hotspot_by_address",
+        return_value=Hotspot(**mock_hotspots[0]),
+        autospec=True,
+    )
+
+    mocker.patch(
+        "helium_api_wrapper.challenges.get_challenges",
+        return_value=[
+            challenges.__resolve_challenge(Challenge(**mock_challenges[0]))
+        ],
+        autospec=True,
+    )
+
     data = challenges.load_challenge_data(limit=1)
     test_df = pd.DataFrame([challenge.dict() for challenge in data])
 
