@@ -64,7 +64,6 @@ def request(
 
 
 def __get_headers(endpoint: str) -> Dict[str, str]:
-    
     headers = {"User-Agent": "HeliumPythonWrapper/0.3.1"}
     if endpoint == "console":
         # if package is installed globally look for .env in cwd
@@ -75,12 +74,10 @@ def __get_headers(endpoint: str) -> Dict[str, str]:
         api_key = os.getenv("API_KEY")
 
         if api_key is None or api_key == "":
-            assert headers is not None
             raise Exception("No api key found in .env")
-        headers["key"] = os.getenv("API_KEY")
+        if api_key is not None:
+            headers["key"] = api_key
     return headers
-
-
 
 
 def __request_with_exponential_backoff(
@@ -150,7 +147,7 @@ def __handle_response(response: requests.Response) -> Dict[str, Any]:
         raise Exception(f"Request failed with status code {response.status_code}")
 
 
-def __request(url: str, params: Dict[str, str], headers: Dict[str, str]) -> Response:
+def __request(url: str, params: Dict[str, Any], headers: Dict[str, str]) -> Response:
     """Send a simple request to the Helium API and return the response."""
     logger.debug(f"Requesting {url}...")
     response = requests.request(

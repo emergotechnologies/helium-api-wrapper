@@ -89,7 +89,7 @@ def get_challenges_by_address(address: str, limit: int = 50) -> List[ChallengeRe
 
 def load_challenge_data(
     challenges: Optional[List[ChallengeResolved]] = None,
-    load_type: str = "triangulation",
+    load_type: str = "trilateration",
     limit: int = 50,
 ) -> Generator[ChallengeResult, None, None]:
     """Load challenge data.
@@ -108,13 +108,10 @@ def load_challenge_data(
         if challenge.witnesses is not None:
             witnesses = __sort_witnesses(challenge.witnesses, load_type=load_type)
         if challenge.challengee is not None:
+            print(challenge.challengee)
             challengee = get_hotspot_by_address(address=challenge.challengee)
-
         for witness in witnesses:
             witness_hotspot = get_hotspot_by_address(address=witness.gateway)
-
-            # if witness_hotspot is None:
-            #    yield
 
             yield __get_challenge_data(
                 challenge=challenge,
@@ -190,7 +187,8 @@ def __sort_witnesses(witnesses: List[Witness], load_type: str = "all") -> List[W
     :return: List of witnesses
     """
     return_witnesses: List[Witness]
-    if load_type == "triangulation":
+    
+    if load_type == "trilateration":
         return_witnesses = sorted(
             witnesses, key=lambda witness: witness.signal, reverse=False
         )[: max(3, len(witnesses))]

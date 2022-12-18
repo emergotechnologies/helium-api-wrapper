@@ -12,7 +12,7 @@ env:
 
 jobs:
   tests:
-    # if: ${{ false }}  # TODO: reenable after testing the other parts
+    # if: ${{ false }}  # This can be used to disable the pipeline
     name: ${{ matrix.session }} ${{ matrix.python }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:

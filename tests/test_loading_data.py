@@ -22,7 +22,7 @@ column_types = {
 }
 
 
-def test_challenge_loading_triangulation() -> None:
+def test_challenge_loading_trilateration() -> None:
     """Function testing if challenge data is loaded correctly."""
     data = challenges.load_challenge_data(limit=1)
     test_df = pd.DataFrame([challenge.dict() for challenge in data])
