@@ -84,7 +84,9 @@ def get_challenges_by_address(address: str, limit: int = 50) -> List[ChallengeRe
         params={"limit": limit},
     )
 
-    challenge_resolved = [__resolve_challenge(Challenge(**challenge)) for challenge in challenges]
+    challenge_resolved = [
+        __resolve_challenge(Challenge(**challenge)) for challenge in challenges
+    ]
     return challenge_resolved
 
 
