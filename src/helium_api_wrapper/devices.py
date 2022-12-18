@@ -26,7 +26,7 @@ def get_device_by_uuid(uuid: str) -> Device:
     :param uuid: UUID of the device
     :return: Device
     """
-    logger.info(f"Getting Device Integration Events for uuid {uuid}")
+    logger.info(f"Getting Device for uuid {uuid}")
     device = request(url=f"devices/{uuid}", endpoint="console")
     return Device(**device[0])
 
