@@ -80,7 +80,7 @@ def test_challenge_loading_trilateration(
     # Following assertion is deactivated because we return everything, and don't filter it before.
     # assert test_df.columns.tolist() == list(column_types.keys())
     for key in column_types:
-        assert key in test_df.columns, f"{key} is not a column"
+        assert key in test_df.columns.tolist(), f"{key} is not a column"
         assert (
             test_df[key].dtype == column_types[key]
         ), f"{key} not of {column_types[key]}"
