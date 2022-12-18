@@ -46,8 +46,6 @@ def request(
 
     data = []
 
-    logger.info(f"Requesting {url}...")
-
     for page in range(pages):
         res = __request_with_exponential_backoff(
             url=url, headers=headers, params=params

@@ -53,6 +53,7 @@ def get_last_event(uuid: str) -> Event:
     :param uuid: UUID of the device
     :return: Device
     """
+    logger.info(f"Getting Device Event for uuid {uuid}")
     events = get_events_for_device(uuid)
     return events[0]
 

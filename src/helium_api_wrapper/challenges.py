@@ -36,6 +36,7 @@ def get_challenges(limit: int = 50) -> List[ChallengeResolved]:
     :param limit: Limit of challenges to load
     :return: List of challenges
     """
+    logger.info(f"Getting {limit} challenges")
     challenges = request(
         url="challenges",
         endpoint="api",
@@ -53,8 +54,6 @@ def get_challenge_by_id(id: str) -> Union[ChallengeResolved, None]:
     """
     logger.info(f"Getting challenges from transaction {id}")
     transaction = request(url=f"transactions/{id}", endpoint="api")
-    # todo: check if transaction is a challenge
-    logger.info(transaction)
     if transaction[0]["type"] != "poc_receipts_v1":
         logger.warning(f"Transaction {id} is not a challengee")
         logger.warning(transaction)
@@ -102,6 +101,7 @@ def load_challenge_data(
     :param limit: Limit of challenges to load
     :return: List of challenges
     """
+    logger.info(f"Loading challenge data")
     if challenges is None:
         challenges = get_challenges(limit=limit)
     else:
