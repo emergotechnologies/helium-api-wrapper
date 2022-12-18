@@ -1,8 +1,6 @@
 """Test cases for Endpoints."""
 import json
 from typing import Any
-from typing import Dict
-from typing import List
 
 import pytest
 from pytest_mock import MockFixture

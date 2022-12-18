@@ -1,8 +1,6 @@
 """Test cases data loading."""
 import json
 from typing import Any
-from typing import Dict
-from typing import List
 
 import pandas as pd
 import pytest
