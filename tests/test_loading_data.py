@@ -38,7 +38,7 @@ def mock_hotspots() -> Any:
     :return: List of hotspots
     :rtype: Any
     """
-    with open("./data/hotspots.json") as file:
+    with open("tests/data/hotspots.json") as file:
         hotspot = json.load(file)
     return hotspot
 
@@ -50,7 +50,7 @@ def mock_challenges() -> Any:
     :return: List of Challenges
     :rtype: Any
     """
-    with open("./data/challenges.json") as file:
+    with open("tests/data/challenges.json") as file:
         challenge = json.load(file)
     return challenge
 
