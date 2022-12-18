@@ -1,5 +1,6 @@
 """Test cases data loading."""
 import json
+from typing import Any
 from typing import Dict
 from typing import List
 
@@ -31,11 +32,11 @@ column_types = {
 
 
 @pytest.fixture
-def mock_hotspots() -> List[Dict]:
+def mock_hotspots() -> Any:
     """Mock hotspots.
 
     :return: List of hotspots
-    :rtype: List[Dict]
+    :rtype: Any
     """
     with open("./data/hotspots.json") as file:
         hotspot = json.load(file)
@@ -43,11 +44,11 @@ def mock_hotspots() -> List[Dict]:
 
 
 @pytest.fixture
-def mock_challenges() -> List[Dict]:
+def mock_challenges() -> Any:
     """Mock challenges.
 
     :return: List of Challenges
-    :rtype: List[Dict]
+    :rtype: Any
     """
     with open("./data/challenges.json") as file:
         challenge = json.load(file)
@@ -55,7 +56,9 @@ def mock_challenges() -> List[Dict]:
 
 
 def test_challenge_loading_trilateration(
-    mocker: MockFixture, mock_hotspots: List[Dict], mock_challenges: List[Dict]
+    mocker: MockFixture,
+    mock_hotspots: Any,
+    mock_challenges: Any,
 ) -> None:
     """Function testing if challenge data is loaded correctly."""
     mocker.patch(
