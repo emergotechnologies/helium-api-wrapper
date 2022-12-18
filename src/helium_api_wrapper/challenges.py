@@ -110,15 +110,8 @@ def load_challenge_data(
         if challenge.challengee is not None:
             print(challenge.challengee)
             challengee = get_hotspot_by_address(address=challenge.challengee)
-            # if challengee == "hotspot not found at the moment":
-            #    continue
         for witness in witnesses:
             witness_hotspot = get_hotspot_by_address(address=witness.gateway)
-            # if witness_hotspot == "hotspot not found at the moment":
-            #    continue
-
-            # if witness_hotspot is None:
-            #    yield
 
             yield __get_challenge_data(
                 challenge=challenge,
@@ -194,6 +187,7 @@ def __sort_witnesses(witnesses: List[Witness], load_type: str = "all") -> List[W
     :return: List of witnesses
     """
     return_witnesses: List[Witness]
+    
     if load_type == "trilateration":
         return_witnesses = sorted(
             witnesses, key=lambda witness: witness.signal, reverse=False

@@ -26,13 +26,6 @@ def get_hotspot_by_address(address: str) -> List[Hotspot]:
     :param address: Address of the hotspot
     :return: Hotspot
     """
-    # hotspot = request(url=f"hotspots/{address}", endpoint="api")
-    # return [Hotspot(**hotspot[0])]
-    # try:
-    #     hotspot = request(url=f"hotspots/{address}", endpoint="api")
-    #     return [Hotspot(**hotspot[0])]
-    # except TypeError:
-    #     return "hotspot not found at the moment"
     hotspot = request(url=f"hotspots/{address}", endpoint="api")
     return [Hotspot(**hotspot[0])]
 
