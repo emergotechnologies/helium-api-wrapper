@@ -101,7 +101,7 @@ def load_challenge_data(
     :param limit: Limit of challenges to load
     :return: List of challenges
     """
-    logger.info(f"Loading challenge data")
+    logger.info("Loading challenge data")
     if challenges is None:
         challenges = get_challenges(limit=limit)
     else:

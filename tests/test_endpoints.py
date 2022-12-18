@@ -1,7 +1,10 @@
 """Test cases for Endpoints."""
 import json
+from typing import Dict
+from typing import List
 
 import pytest
+from pytest_mock import MockFixture
 
 from helium_api_wrapper import challenges as challenges
 from helium_api_wrapper import devices as devices
@@ -13,35 +16,60 @@ from helium_api_wrapper.DataObjects import Hotspot
 
 
 @pytest.fixture
-def mock_hotspots():
+def mock_hotspots() -> List[Dict]:
+    """Mock hotspots.
+
+    :return: List of hotspots
+    :rtype: List[Dict]
+    """
     with open("./data/hotspots.json") as file:
         hotspot = json.load(file)
     return hotspot
 
 
 @pytest.fixture
-def mock_challenges():
+def mock_challenges() -> List[Dict]:
+    """Mock challenges.
+
+    :return: List of Challenges
+    :rtype: List[Dict]
+    """
     with open("./data/challenges.json") as file:
         challenge = json.load(file)
     return challenge
 
 
 @pytest.fixture
-def mock_devices():
+def mock_devices() -> List[Dict]:
+    """Mock devices.
+
+    :return: List of devices
+    :rtype: List[Dict]
+    """
     with open("./data/devices.json") as file:
         device = json.load(file)
     return device
 
 
 @pytest.fixture
-def mock_integrations():
+def mock_integrations() -> List[Dict]:
+    """Mock integrations.
+
+    :return: List of integrations
+    :rtype: List[Dict]
+    """
     with open("./data/integration_events.json") as file:
         integration = json.load(file)
     return integration
 
 
 @pytest.fixture
-def mock_events():
+def mock_events() -> List[Dict]:
+    """Mock events.
+
+    :return: List of events
+    :rtype: List[Dict]
+    """
     with open("./data/events.json") as file:
         event = json.load(file)
     return event
@@ -50,7 +78,7 @@ def mock_events():
 """Test cases for HotspotApi."""
 
 
-def test_get_hotspot_succeeds(mocker, mock_hotspots) -> None:
+def test_get_hotspot_succeeds(mocker: MockFixture, mock_hotspots: List[Dict]) -> None:
     """It exits with a status code of zero."""
     mocker.patch(
         "helium_api_wrapper.hotspots.get_hotspot_by_address",
@@ -62,7 +90,7 @@ def test_get_hotspot_succeeds(mocker, mock_hotspots) -> None:
     assert type(result).__name__ == "Hotspot"
 
 
-def test_get_hotspots_succeeds(mocker, mock_hotspots) -> None:
+def test_get_hotspots_succeeds(mocker: MockFixture, mock_hotspots: List[Dict]) -> None:
     """It exits with a status code of zero."""
     mocker.patch(
         "helium_api_wrapper.hotspots.get_hotspots",
@@ -78,7 +106,9 @@ def test_get_hotspots_succeeds(mocker, mock_hotspots) -> None:
 """Test cases for ChallengeApi."""
 
 
-def test_get_challenge_succeeds(mocker, mock_challenges) -> None:
+def test_get_challenge_succeeds(
+    mocker: MockFixture, mock_challenges: List[Dict]
+) -> None:
     """It exits with a status code of zero."""
     mocker.patch(
         "helium_api_wrapper.challenges.get_challenges",
@@ -97,7 +127,9 @@ def test_get_challenge_succeeds(mocker, mock_challenges) -> None:
 """Test cases for TransactionApi."""
 
 
-def test_get_transactions_succeeds(mocker, mock_challenges) -> None:
+def test_get_transactions_succeeds(
+    mocker: MockFixture, mock_challenges: List[Dict]
+) -> None:
     """It exits with a status code of zero."""
     mocker.patch(
         "helium_api_wrapper.challenges.get_challenge_by_id",
@@ -113,7 +145,7 @@ def test_get_transactions_succeeds(mocker, mock_challenges) -> None:
 """Test cases for DeviceApi."""
 
 
-def test_get_devices_succeeds(mocker, mock_devices) -> None:
+def test_get_devices_succeeds(mocker: MockFixture, mock_devices: List[Dict]) -> None:
     """It exits with a status code of zero."""
     mocker.patch(
         "helium_api_wrapper.devices.get_device_by_uuid",
@@ -124,7 +156,7 @@ def test_get_devices_succeeds(mocker, mock_devices) -> None:
     assert type(result).__name__ == "Device"
 
 
-def test_get_device_events(mocker, mock_events) -> None:
+def test_get_device_events(mocker: MockFixture, mock_events: List[Dict]) -> None:
     """It exits with a status code of zero."""
     mocker.patch(
         "helium_api_wrapper.devices.get_events_for_device",
@@ -136,7 +168,7 @@ def test_get_device_events(mocker, mock_events) -> None:
     assert len(result) == 69
 
 
-def test_get_device_last_event(mocker, mock_events) -> None:
+def test_get_device_last_event(mocker: MockFixture, mock_events: List[Dict]) -> None:
     """It exits with a status code of zero."""
     mocker.patch(
         "helium_api_wrapper.devices.get_last_event",
@@ -147,7 +179,9 @@ def test_get_device_last_event(mocker, mock_events) -> None:
     assert type(result).__name__ == "Event"
 
 
-def test_get_device_integration(mocker, mock_integrations) -> None:
+def test_get_device_integration(
+    mocker: MockFixture, mock_integrations: List[Dict]
+) -> None:
     """It exits with a status code of zero."""
     mocker.patch(
         "helium_api_wrapper.devices.get_last_integration",

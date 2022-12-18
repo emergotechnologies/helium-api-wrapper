@@ -41,7 +41,7 @@ def get_hotspots(pages: int = 1, filter_modes: str = "full") -> List[Hotspot]:
     :param filter_modes: Filter modes
     :return: List of hotspots
     """
-    logger.info(f"Getting hotspots")
+    logger.info("Getting hotspots")
     hotspots = request(
         url="hotspots/",
         endpoint="api",

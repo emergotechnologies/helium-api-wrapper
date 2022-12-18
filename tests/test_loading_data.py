@@ -1,9 +1,12 @@
 """Test cases data loading."""
 import json
+from typing import Dict
+from typing import List
 
 import pandas as pd
 import pytest
 from numpy import int64
+from pytest_mock import MockFixture
 
 from helium_api_wrapper import challenges as challenges
 from helium_api_wrapper.DataObjects import Challenge
@@ -28,21 +31,31 @@ column_types = {
 
 
 @pytest.fixture
-def mock_hotspots():
+def mock_hotspots() -> List[Dict]:
+    """Mock hotspots.
+
+    :return: List of hotspots
+    :rtype: List[Dict]
+    """
     with open("./data/hotspots.json") as file:
         hotspot = json.load(file)
     return hotspot
 
 
 @pytest.fixture
-def mock_challenges():
+def mock_challenges() -> List[Dict]:
+    """Mock challenges.
+
+    :return: List of Challenges
+    :rtype: List[Dict]
+    """
     with open("./data/challenges.json") as file:
         challenge = json.load(file)
     return challenge
 
 
 def test_challenge_loading_trilateration(
-    mocker, mock_hotspots, mock_challenges
+    mocker: MockFixture, mock_hotspots: List[Dict], mock_challenges: List[Dict]
 ) -> None:
     """Function testing if challenge data is loaded correctly."""
     mocker.patch(
