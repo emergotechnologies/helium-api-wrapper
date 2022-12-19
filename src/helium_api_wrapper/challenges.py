@@ -36,6 +36,7 @@ def get_challenges(limit: int = 50) -> List[ChallengeResolved]:
     :param limit: Limit of challenges to load
     :return: List of challenges
     """
+    logger.info(f"Getting {limit} challenges")
     challenges = request(
         url="challenges",
         endpoint="api",
@@ -53,8 +54,6 @@ def get_challenge_by_id(id: str) -> Union[ChallengeResolved, None]:
     """
     logger.info(f"Getting challenges from transaction {id}")
     transaction = request(url=f"transactions/{id}", endpoint="api")
-    # todo: check if transaction is a challenge
-    logger.info(transaction)
     if transaction[0]["type"] != "poc_receipts_v1":
         logger.warning(f"Transaction {id} is not a challengee")
         logger.warning(transaction)
@@ -84,21 +83,25 @@ def get_challenges_by_address(address: str, limit: int = 50) -> List[ChallengeRe
         params={"limit": limit},
     )
 
-    return [__resolve_challenge(Challenge(**challenge)) for challenge in challenges]
+    challenge_resolved = [
+        __resolve_challenge(Challenge(**challenge)) for challenge in challenges
+    ]
+    return challenge_resolved
 
 
 def load_challenge_data(
     challenges: Optional[List[ChallengeResolved]] = None,
-    load_type: str = "trilateration",
+    load_type: str = "all",
     limit: int = 50,
 ) -> Generator[ChallengeResult, None, None]:
     """Load challenge data.
 
     :param challenges: List of challenges
-    :param load_type: Load type for witnesses
+    :param load_type: Load type for witnesses all, triangulation or best_signal
     :param limit: Limit of challenges to load
     :return: List of challenges
     """
+    logger.info("Loading challenge data")
     if challenges is None:
         challenges = get_challenges(limit=limit)
     else:
@@ -107,11 +110,16 @@ def load_challenge_data(
     for challenge in challenges:
         if challenge.witnesses is not None:
             witnesses = __sort_witnesses(challenge.witnesses, load_type=load_type)
+
         if challenge.challengee is not None:
-            print(challenge.challengee)
             challengee = get_hotspot_by_address(address=challenge.challengee)
+            if len(challengee) == 0:
+                continue
+
         for witness in witnesses:
             witness_hotspot = get_hotspot_by_address(address=witness.gateway)
+            if len(witness_hotspot) == 0:
+                continue
 
             yield __get_challenge_data(
                 challenge=challenge,
@@ -121,7 +129,7 @@ def load_challenge_data(
             )
 
 
-def __get_challenge_data(  # TODO: check if this works I did a lot of changes here I might have messed stuff up
+def __get_challenge_data(
     challenge: ChallengeResolved,
     witness: Witness,
     hotspot: Hotspot,
@@ -187,7 +195,7 @@ def __sort_witnesses(witnesses: List[Witness], load_type: str = "all") -> List[W
     :return: List of witnesses
     """
     return_witnesses: List[Witness]
-    
+
     if load_type == "trilateration":
         return_witnesses = sorted(
             witnesses, key=lambda witness: witness.signal, reverse=False

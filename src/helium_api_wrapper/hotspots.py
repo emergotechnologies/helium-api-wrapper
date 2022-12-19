@@ -26,8 +26,14 @@ def get_hotspot_by_address(address: str) -> List[Hotspot]:
     :param address: Address of the hotspot
     :return: Hotspot
     """
-    hotspot = request(url=f"hotspots/{address}", endpoint="api")
-    return [Hotspot(**hotspot[0])]
+    logger.info(f"Getting hotspot for address {address}")
+    # Blockchain API returns inconsistent results for this endpoint
+    # returning empty lists if the hotspot is temporarily not found
+    try:
+        hotspot = request(url=f"hotspots/{address}", endpoint="api")
+        return [Hotspot(**hotspot[0])]
+    except TypeError:
+        return []
 
 
 def get_hotspots(pages: int = 1, filter_modes: str = "full") -> List[Hotspot]:
@@ -37,6 +43,7 @@ def get_hotspots(pages: int = 1, filter_modes: str = "full") -> List[Hotspot]:
     :param filter_modes: Filter modes
     :return: List of hotspots
     """
+    logger.info("Getting hotspots")
     hotspots = request(
         url="hotspots/",
         endpoint="api",
@@ -56,6 +63,7 @@ def load_roles(
     :param filter_types: Filter types for roles
     :return: List of roles
     """
+    logger.info(f"Getting roles for hotspot {address}")
     roles = request(
         url=f"hotspots/{address}/roles",
         endpoint="api",
