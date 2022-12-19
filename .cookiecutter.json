@@ -6,7 +6,7 @@
   "development_status": "Development Status :: 3 - Alpha",
   "email": "lukas.huber@fh-kufstein.ac.at",
   "friendly_name": "Helium Api Wrapper",
-  "github_user": "g4challenge",
+  "github_user": "emergotechnologies",
   "license": "MIT",
   "package_name": "helium_api_wrapper",
   "project_name": "helium-api-wrapper",

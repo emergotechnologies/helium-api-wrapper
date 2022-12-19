@@ -1,4 +1,5 @@
-"""
+"""Data Objects module.
+
 .. module:: DataObjects
 
 :synopsis: Classes for data from Helium API
@@ -7,92 +8,79 @@
 
 """
 
-from typing import List, Dict, Any, Optional
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Optional
+
 from pydantic import BaseModel
 
 
-class DataObject(BaseModel):
-    """Base class for all data objects."""
-    def __len__(self):
-        return dict(self).__len__()
+class Geocode(BaseModel):
+    """Class to describe Geocode Object."""
 
-    def __getitem__(self, item):
-        return getattr(self, item)
-
-    # TODO: I don't really think we need as_list and as_dict
-    def as_list(self, columns: Optional[List[str]] = None):
-        data = dict(self)
-        if columns:
-            data = {key: data[key] for key in columns}
-        return data.values()
-
-    def as_dict(self, columns: Optional[List[str]] = None):
-        data = dict(self)
-        if columns:
-            data = {key: data[key] for key in columns}
-        return data
+    long_city: Optional[str] = None
+    long_country: Optional[str] = None
+    long_state: Optional[str] = None
+    long_street: Optional[str] = None
+    short_city: Optional[str] = None
+    short_country: Optional[str] = None
+    short_state: Optional[str] = None
+    short_street: Optional[str] = None
+    city_id: Optional[str] = None
 
 
-class Geocode(DataObject):
-    """Class to describe Geocode Object.
-    """
-    long_city: str = None
-    long_country: str = None
-    long_state: str = None
-    long_street: str = None
-    short_city: str = None
-    short_country: str = None
-    short_state: str = None
-    short_street: str = None
-    city_id: str = None
-
-
-class Status(DataObject):
+class Status(BaseModel):
     """Class to describe Status Object."""
-    height: int = None
-    online: str = None
+
+    height: Optional[int] = None
+    online: Optional[str] = None
 
 
-class Hotspot(DataObject):
+class Hotspot(BaseModel):
     """Class to describe Hotspot Object."""
-    address: str = None
-    block: int = None
-    block_added: int = None
-    geocode: Geocode = None
-    lat: float = None
-    lng: float = None
-    location: str = None
-    name: str = None
-    nonce: int = None
-    owner: str = None
-    reward_scale: float = None
-    status: Status = None
+
+    address: Optional[str] = None
+    block: Optional[int] = None
+    block_added: Optional[int] = None
+    geocode: Optional[Geocode] = None
+    lat: Optional[float] = None
+    lng: Optional[float] = None
+    location: Optional[str] = None
+    name: Optional[str] = None
+    nonce: Optional[int] = None
+    owner: Optional[str] = None
+    reward_scale: Optional[float] = None
+    status: Optional[Status] = None
 
 
-class Role(DataObject):
+class Role(BaseModel):
     """Class to describe Role Object."""
+
     type: str
     time: int
     role: str
-    height: int = None
-    hash: str = None
+    height: Optional[int] = None
+    hash: Optional[str] = None
 
 
-class Witness(DataObject):
+class Witness(BaseModel):
     """Class to describe Witness Object."""
+
     timestamp: int
     signal: int
     packet_hash: str
     owner: str
     location: str
     gateway: str
-    is_valid: bool = None
-    datarate: str = None
-    snr: float = None
+    is_valid: Optional[bool] = None
+    datarate: Optional[str] = None
+    snr: Optional[float] = None
 
 
-class Receipt(DataObject):
+class Receipt(BaseModel):
     """Class to describe Receipt Object."""
+
     timestamp: int
     signal: int
     origin: str
@@ -100,73 +88,95 @@ class Receipt(DataObject):
     data: str
 
 
-class Challenge(DataObject):
+class Challenge(BaseModel):
     """Class to describe a Challenge loaded from the Helium API."""
+
     type: str
     time: int
     secret: str
-    path: List[Dict[str, Any]] = None
-    onion_key_hash: str = None
-    height: int = None
-    hash: str = None
-    challenger_owner: str = None
-    challenger_lon: float = None
-    challenger_location: str = None
-    challenger_lat: float = None
-    challenger: str = None
-    fee: int = None
+    path: Optional[List[Dict[str, Any]]] = None
+    onion_key_hash: Optional[str] = None
+    height: Optional[int] = None
+    hash: Optional[str] = None
+    challenger_owner: Optional[str] = None
+    challenger_lon: Optional[float] = None
+    challenger_location: Optional[str] = None
+    challenger_lat: Optional[float] = None
+    challenger: Optional[str] = None
+    fee: Optional[int] = None
 
 
-class ChallengeResolved(DataObject):
-    """Class to describe a resolved Challenge"""
+class ChallengeResult(BaseModel):
+    """Class to describe a Challenge loaded from the Helium API."""
+
+    challengee: Optional[str]
+    challengee_lat: Optional[float]
+    challengee_lng: Optional[float]
+    witness: Optional[str]
+    witness_lat: Optional[float]
+    witness_lng: Optional[float]
+    signal: Optional[int]
+    snr: Optional[float]
+    datarate: Optional[str]
+    is_valid: Optional[bool]
+    hash: Optional[str]
+    time: Optional[int]
+    distance: Optional[float]
+
+
+class ChallengeResolved(BaseModel):
+    """Class to describe a resolved Challenge."""
+
     type: str
     time: int
     secret: str
-    # path: List[Dict[str, Any]] = None
-    onion_key_hash: str = None
-    height: int = None
-    hash: str = None
-    witnesses: List[Witness] = None
-    receipt: Receipt = None
-    geocode: Geocode = None
-    challengee_owner: str = None
-    challengee_lon: float = None
-    challengee_location: str = None
-    challengee_lat: float = None
-    challengee: str = None
-    challenger_owner: str = None
-    challenger_lon: float = None
-    challenger_location: str = None
-    challenger_lat: float = None
-    challenger: str = None
-    fee: int = None
+    # path: List[Dict[str, AnyOptional[]]] = None
+    onion_key_hash: Optional[str] = None
+    height: Optional[int] = None
+    hash: Optional[str] = None
+    witnesses: Optional[List[Witness]] = None
+    receipt: Optional[Receipt] = None
+    geocode: Optional[Geocode] = None
+    challengee_owner: Optional[str] = None
+    challengee_lon: Optional[float] = None
+    challengee_location: Optional[str] = None
+    challengee_lat: Optional[float] = None
+    challengee: Optional[str] = None
+    challenger_owner: Optional[str] = None
+    challenger_lon: Optional[float] = None
+    challenger_location: Optional[str] = None
+    challenger_lat: Optional[float] = None
+    challenger: Optional[str] = None
+    fee: Optional[int] = None
 
 
-class Device(DataObject):
-    """Class to describe Device in Helium API"""
-    adr_allowed: bool = None
-    app_eui: str = None
-    app_key: str = None
-    cf_list_enabled: bool = None
-    dc_usage: int = None
-    dev_eui: str = None
-    id: str = None
-    in_xor_filter: bool = None
-    labels: List[str] = None
-    last_connected: str = None
-    name: str = None
-    organization_id: str = None
-    oui: str = None
-    total_packets: int = None
+class Device(BaseModel):
+    """Class to describe Device in Helium API."""
+
+    adr_allowed: Optional[bool] = None
+    app_eui: Optional[str] = None
+    app_key: Optional[str] = None
+    cf_list_enabled: Optional[bool] = None
+    dc_usage: Optional[int] = None
+    dev_eui: Optional[str] = None
+    id: Optional[str] = None
+    in_xor_filter: Optional[bool] = None
+    labels: Optional[List[Any]] = None
+    last_connected: Optional[str] = None
+    name: Optional[str] = None
+    organization_id: Optional[str] = None
+    oui: Optional[str] = None
+    total_packets: Optional[int] = None
 
 
-class Event(DataObject):
-    """Class to describe an Integration Event"""
-    data: dict
+class Event(BaseModel):
+    """Class to describe an Integration Event."""
+
+    data: Dict[str, Any]
     description: str
     device_id: str
-    frame_down: int = None
-    frame_up: int = None
+    frame_down: Optional[int] = None
+    frame_up: Optional[int] = None
     organization_id: str
     reported_at: str
     router_uuid: str

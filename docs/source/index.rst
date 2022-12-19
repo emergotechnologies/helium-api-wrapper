@@ -6,7 +6,7 @@
 Welcome to Helium Api Wrapper's documentation!
 ==============================================
 
-This is an API, that provides real-time access and historical data from Helium blockchain. 
+This is an API, that provides real-time access and historical data from Helium blockchain.
 More about Helium see at https://docs.helium.com/api/blockchain/introduction
 
 Overview on How to Run this API
@@ -33,7 +33,7 @@ Setup procedure
             poetry shell
 
 2. Type in commandline::
-         
+
          python helium-api-wrapper --help
 
 Documentation for the Code
@@ -57,7 +57,7 @@ ChallengeAPI
 .. automodule:: src.helium_api_wrapper.ChallengeApi
    :members:
    :undoc-members:
-   
+
 
 DeviceAPI
 *********************

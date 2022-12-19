@@ -12,9 +12,9 @@ Here is a list of important resources for contributors:
 - [Code of Conduct]
 
 [mit license]: https://opensource.org/licenses/MIT
-[source code]: https://github.com/g4challenge/helium-api-wrapper
+[source code]: https://github.com/emergotechnologies/helium-api-wrapper
 [documentation]: https://helium-api-wrapper.readthedocs.io/
-[issue tracker]: https://github.com/g4challenge/helium-api-wrapper/issues
+[issue tracker]: https://github.com/emergotechnologies/helium-api-wrapper/issues
 
 ## How to report a bug
 
@@ -112,7 +112,7 @@ To update documentation make sure Sphinx package is installed in your environmen
     sphinx-build --help
 
 If it's not installed, run:
-    
+
     pip install sphinx
 
 When you are done with your changes, go to the helium-api-wrapper/docs folder and run:
@@ -123,11 +123,10 @@ Check, if the file build/html/index.html contains now the changes you made.
 
 Commit your changes to the Git repository.
 
-
 It is recommended to open an issue before starting work on anything.
 This will allow a chance to talk it over with the owners and validate your approach.
 
-[pull request]: https://github.com/g4challenge/helium-api-wrapper/pulls
+[pull request]: https://github.com/emergotechnologies/helium-api-wrapper/pulls
 
 <!-- github-only -->
 

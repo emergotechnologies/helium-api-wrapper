@@ -1,4 +1,4 @@
-u// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.245.2/containers/python-3
 {
   "name": "Python 3",
@@ -51,5 +51,5 @@ u// For format details, see https://aka.ms/devcontainer.json. For config options
   },
 
   // Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-  "remoteUser": "vscode",
+  "remoteUser": "vscode"
 }

@@ -1,4 +1,5 @@
-"""
+"""Result Handler.
+
 .. module:: ResultHandler
 
 :synopsis: Functions to export the data from Helium API to a file
@@ -8,97 +9,63 @@
 """
 
 import logging
-import types
+import os
+from typing import Generator
+from typing import Sequence
+from typing import Union
 
 import pandas as pd
-import os
+from pydantic import BaseModel
 
 
-class ResultHandler:
-    """
-    Object to handle the result of the API calls.
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-    :param data: The data to be written.
-    :type data: Union[dict, list, types.GeneratorType]
 
-    :param file_format: The file format to be written.
-    :type file_format: str
+def write(
+    data: Union[Sequence[BaseModel], Generator[BaseModel, None, None]],
+    path: str,
+    file_name: str,
+    file_format: str,
+) -> None:
+    """Write the data to a file."""
+    parsed_data = pd.DataFrame([x.dict() for x in data])
+    os.makedirs(path, exist_ok=True)
+    if file_format == "csv":
+        __write_csv(parsed_data, path, file_name)
+    elif file_format == "json":
+        __write_json(parsed_data, path, file_name)
+    elif file_format == "pickle":
+        __write_pickle(parsed_data, path, file_name)
+    elif file_format == "feather":
+        __write_feather(parsed_data, path, file_name)
+    elif file_format == "parquet":
+        __write_parquet(parsed_data, path, file_name)
+    else:
+        logger.error(f"File format {file_format} not supported.")
+    logger.info(f"File {file_name} saved to {path}")
 
-    :param file_name: The name of the file to be written.
-    :type file_name: str
 
-    :param path: The path to the file to be written.
-    :type path: str
+def __write_csv(data: pd.DataFrame, path: str, file_name: str) -> None:
+    """Write the data to a csv file."""
+    data.to_csv(os.path.join(path, file_name + ".csv"))
 
-    :param logger: The logger to be used, defaults to None
-    :type logger: logging.Logger
 
-    :return: None
-    """
-    def __init__(self, data, file_format, file_name, path, logger: logging.Logger = None):
-        self.data = data
-        self.file_format = file_format
-        self.file_name = file_name
-        self.path = path
-        os.makedirs(self.path, exist_ok=True)
-        self.logger = logger
-        if logger is None:
-            self.logger = logging.getLogger(__name__)
-        else:
-            self.logger = logger
-        # self.check_data()
-        # self.data = pd.DataFrame(self.data)
+def __write_json(data: pd.DataFrame, path: str, file_name: str) -> None:
+    """Write the data to a json file."""
+    data.to_json(os.path.join(path, file_name + ".json"), orient="records")
 
-    def append(self, obj):
-        self.data = pd.concat([self.data, pd.DataFrame(obj)])
 
-    def write(self):
-        # @todo: implement data checks
-        self.check_data()
-        if self.file_format == "csv":
-            self.write_csv()
-        elif self.file_format == "json":
-            self.write_json()
-        elif self.file_format == "pickle":
-            self.write_pickle()
-        elif self.file_format == "feather":
-            self.write_feather()
-        elif self.file_format == "parquet":
-            self.write_parquet()
-        else:
-            self.logger.error(f"File format {self.file_format} not supported.")
-        self.logger.info(f"File {self.file_name} saved to {self.path}")
+def __write_pickle(data: pd.DataFrame, path: str, file_name: str) -> None:
+    """Write the data to a pickle file."""
+    data.to_pickle(os.path.join(path, file_name + ".pkl"))
 
-    def write_csv(self):
-        self.data.to_csv(os.path.join(self.path, self.file_name + ".csv"))
 
-    def write_json(self):
-        self.data.to_json(os.path.join(self.path, self.file_name + ".json"), orient="records")
+def __write_feather(data: pd.DataFrame, path: str, file_name: str) -> None:
+    """Write the data to a feather file."""
+    data.to_feather(os.path.join(path, file_name + ".feather"))
 
-    def write_pickle(self):
-        self.data.to_pickle(os.path.join(self.path, self.file_name + ".pkl"))
 
-    def write_feather(self):
-        self.data.to_feather(os.path.join(self.path, self.file_name + ".feather"))
-
-    def write_parquet(self):
-        self.data.to_parquet(os.path.join(self.path, self.file_name + ".parquet"), )
-
-    def check_data(self):
-        if self.data is None:
-            self.logger.error("No data given.")
-            raise ValueError("No data given.")
-        if isinstance(self.data, dict):
-            self.data = pd.DataFrame(self.data)
-            return
-        if isinstance(self.data, list):
-            return
-        if isinstance(self.data, types.GeneratorType):
-            self.logger.info("Generator given. Start scraping ...")
-            self.data = pd.DataFrame(self.data)
-            return
-        if isinstance(self.data, pd.DataFrame):
-            return
-        else:
-            self.logger.error("Data is not usable.")
-            raise ValueError("Data is not usable.")
+def __write_parquet(data: pd.DataFrame, path: str, file_name: str) -> None:
+    """Write the data to a parquet file."""
+    data.to_parquet(os.path.join(path, file_name + ".parquet"))

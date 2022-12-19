@@ -1,5 +1,4 @@
-"""
-Helium Api Wrapper.
+"""Helium Api Wrapper.
 
 .. module:: helium_api_wrapper
 
@@ -8,12 +7,8 @@ Helium Api Wrapper.
 .. moduleauthor:: DSIA21
 
 """
-
-"""Python package for the Helium API."""
-
-from helium_api_wrapper.ChallengeApi import ChallengeApi
-from helium_api_wrapper.HotspotApi import HotspotApi
-from helium_api_wrapper.TransactionApi import TransactionApi
-from helium_api_wrapper.DeviceApi import DeviceApi
-from helium_api_wrapper.helpers import *
 import __main__
+
+from helium_api_wrapper import challenges as challenges
+from helium_api_wrapper import devices as devices
+from helium_api_wrapper import hotspots as hotspots

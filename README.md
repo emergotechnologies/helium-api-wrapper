@@ -78,7 +78,7 @@ This project was generated from [@cjolowicz]'s [Hypermodern Python Cookiecutter]
 [@cjolowicz]: https://github.com/cjolowicz
 [pypi]: https://pypi.org/
 [hypermodern python cookiecutter]: https://github.com/cjolowicz/cookiecutter-hypermodern-python
-[file an issue]: https://github.com/g4challenge/helium-api-wrapper/issues
+[file an issue]: https://github.com/emergotechnologies/helium-api-wrapper/issues
 [pip]: https://pip.pypa.io/
 
 <!-- github-only -->

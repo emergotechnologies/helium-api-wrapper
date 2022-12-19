@@ -11,7 +11,10 @@ def runner() -> CliRunner:
     return CliRunner()
 
 
-def test_main_succeeds(runner: CliRunner) -> None:
+def c(runner: CliRunner) -> None:
     """It exits with a status code of zero."""
-    result = runner.invoke(get_hotspot, ["--address", "11BCGPgrFa2SxFMWfnv7S644uXX7jZTGmWVp3c2yhMh46G6pEbW"])
+    result = runner.invoke(
+        get_hotspot,
+        ["--address", "11BCGPgrFa2SxFMWfnv7S644uXX7jZTGmWVp3c2yhMh46G6pEbW"],
+    )
     assert result.exit_code == 0
