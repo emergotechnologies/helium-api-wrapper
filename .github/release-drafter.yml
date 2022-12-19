@@ -25,5 +25,4 @@ categories:
       - "build"
 template: |
   ## Changes
-
   $CHANGES
