@@ -74,8 +74,6 @@ def test_challenge_loading_trilateration(
     data = challenges.load_challenge_data(limit=1)
     test_df = pd.DataFrame([challenge.dict() for challenge in data])
 
-    print(test_df.head())
-
     # TESTING COLUMNS AND DATATYPES
     # Following assertion is deactivated because we return everything, and don't filter it before.
     # assert test_df.columns.tolist() == list(column_types.keys())
