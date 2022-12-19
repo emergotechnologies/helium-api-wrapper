@@ -61,7 +61,7 @@ def test_challenge_loading_trilateration(
     """Function testing if challenge data is loaded correctly."""
     mocker.patch(
         "helium_api_wrapper.hotspots.get_hotspot_by_address",
-        return_value=Hotspot(**mock_hotspots[0]),
+        return_value=[Hotspot(**mock_hotspots[0])],
         autospec=True,
     )
 
