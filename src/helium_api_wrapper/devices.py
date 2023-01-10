@@ -28,7 +28,11 @@ def get_device_by_uuid(uuid: str) -> Device:
     """
     logger.info(f"Getting Device for uuid {uuid}")
     device = request(url=f"devices/{uuid}", endpoint="console")
-    return Device(**device[0])
+    try:
+        return Device(**device[0])
+    except IndexError:
+        logger.info(f"No Device found for uuid {uuid}")
+        return Device(uuid=uuid)
 
 
 def get_last_integration(uuid: str) -> Event:
@@ -42,9 +46,11 @@ def get_last_integration(uuid: str) -> Event:
         url=f"devices/{uuid}/events?sub_category=uplink_integration_req",
         endpoint="console",
     )
-    if len(event) > 0:
+    try:
+        return Event(**event[0])
+    except IndexError:
         logger.info(f"No Integration Events existing for device with uuid {uuid}")
-    return Event(**event[0])
+        return Event(device_id=uuid)
 
 
 def get_last_event(uuid: str) -> Event:
@@ -55,7 +61,11 @@ def get_last_event(uuid: str) -> Event:
     """
     logger.info(f"Getting Device Event for uuid {uuid}")
     events = get_events_for_device(uuid)
-    return events[0]
+    try:
+        return events[0]
+    except IndexError:
+        logger.info(f"No Events existing for device with uuid {uuid}")
+        return Event(device_id=uuid)
 
 
 def get_events_for_device(uuid: str) -> List[Event]:
@@ -69,6 +79,6 @@ def get_events_for_device(uuid: str) -> List[Event]:
     """
     logger.info(f"Getting Device Events for uuid {uuid}")
     events = request(url=f"devices/{uuid}/events", endpoint="console")
-    if len(events) > 0:
+    if len(events) == 0:
         logger.info(f"No Events existing for device with uuid {uuid}")
     return [Event(**event) for event in events]
