@@ -13,7 +13,9 @@ from typing import List
 
 from helium_api_wrapper.DataObjects import Device
 from helium_api_wrapper.DataObjects import Event
+from helium_api_wrapper.DataObjects import IntegrationHotspot
 from helium_api_wrapper.endpoint import request
+from helium_api_wrapper.hotspots import get_hotspot_by_address
 
 
 logging.basicConfig(level=logging.INFO)
@@ -46,8 +48,23 @@ def get_last_integration(uuid: str) -> Event:
         url=f"devices/{uuid}/events?sub_category=uplink_integration_req",
         endpoint="console",
     )
+    event = event[0]
+    hotspots = []
+
+    for hotspot in event["data"]["req"]["body"]["hotspots"]:
+        h = get_hotspot_by_address(hotspot["id"])[0].dict()
+        h["rssi"] = hotspot["rssi"]
+        h["snr"] = hotspot["snr"]
+        h["spreading"] = hotspot["spreading"]
+        h["frequency"] = hotspot["frequency"]
+        h["reported_at"] = hotspot["reported_at"]
+        h["status"] = hotspot["snr"]
+        hotspots.append(IntegrationHotspot(**h))
+
+    event["hotspots"] = hotspots
+
     try:
-        return Event(**event[0])
+        return Event(**event)
     except IndexError:
         logger.info(f"No Integration Events existing for device with uuid {uuid}")
         return Event(device_id=uuid)
@@ -61,6 +78,7 @@ def get_last_event(uuid: str) -> Event:
     """
     logger.info(f"Getting Device Event for uuid {uuid}")
     events = get_events_for_device(uuid)
+    print(events)
     try:
         return events[0]
     except IndexError:
