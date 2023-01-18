@@ -48,10 +48,10 @@ def get_last_integration(uuid: str) -> Event:
         url=f"devices/{uuid}/events?sub_category=uplink_integration_req",
         endpoint="console",
     )
-    event = event[0]
+    last_event = event[0]
     hotspots = []
 
-    for hotspot in event["data"]["req"]["body"]["hotspots"]:
+    for hotspot in last_event["data"]["req"]["body"]["hotspots"]:
         h = get_hotspot_by_address(hotspot["id"])[0].dict()
         h["rssi"] = hotspot["rssi"]
         h["snr"] = hotspot["snr"]
@@ -61,10 +61,10 @@ def get_last_integration(uuid: str) -> Event:
         h["status"] = hotspot["snr"]
         hotspots.append(IntegrationHotspot(**h))
 
-    event["hotspots"] = hotspots
+    last_event["hotspots"] = hotspots
 
     try:
-        return Event(**event)
+        return Event(**last_event)
     except IndexError:
         logger.info(f"No Integration Events existing for device with uuid {uuid}")
         return Event(device_id=uuid)

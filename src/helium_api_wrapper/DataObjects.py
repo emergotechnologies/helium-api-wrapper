@@ -63,7 +63,6 @@ class IntegrationHotspot(Hotspot):
     frequency: float
     channel: Optional[int] = None
     reported_at: Optional[int] = None
-    status: Optional[str] = None
 
 
 class Role(BaseModel):
