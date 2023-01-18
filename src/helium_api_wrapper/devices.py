@@ -13,6 +13,7 @@ from typing import List
 
 from helium_api_wrapper.DataObjects import Device
 from helium_api_wrapper.DataObjects import Event
+from helium_api_wrapper.DataObjects import IntegrationEvent
 from helium_api_wrapper.DataObjects import IntegrationHotspot
 from helium_api_wrapper.endpoint import request
 from helium_api_wrapper.hotspots import get_hotspot_by_address
@@ -48,8 +49,17 @@ def get_last_integration(uuid: str) -> Event:
         url=f"devices/{uuid}/events?sub_category=uplink_integration_req",
         endpoint="console",
     )
+
+    if len(event) == 0:
+        raise Exception(f"No Integration Events existing for device with uuid {uuid}")
+
     last_event = event[0]
     hotspots = []
+
+    if len(last_event["data"]["req"]["body"]["hotspots"]) == 0:
+        raise Exception(
+            f"No Hotspots existing for integration of device with uuid {uuid}"
+        )
 
     for hotspot in last_event["data"]["req"]["body"]["hotspots"]:
         h = get_hotspot_by_address(hotspot["id"])[0].dict()
@@ -63,11 +73,7 @@ def get_last_integration(uuid: str) -> Event:
 
     last_event["hotspots"] = hotspots
 
-    try:
-        return Event(**last_event)
-    except IndexError:
-        logger.info(f"No Integration Events existing for device with uuid {uuid}")
-        return Event(device_id=uuid)
+    return IntegrationEvent(**last_event)
 
 
 def get_last_event(uuid: str) -> Event:

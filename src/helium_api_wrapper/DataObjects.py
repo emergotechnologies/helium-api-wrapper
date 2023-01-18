@@ -192,4 +192,9 @@ class Event(BaseModel):
     reported_at: str
     router_uuid: str
     sub_category: str
-    hotspots: Optional[List[IntegrationHotspot]] = None
+
+
+class IntegrationEvent(Event):
+    """Class to describe an Integration Event."""
+
+    hotspots: List[IntegrationHotspot]
