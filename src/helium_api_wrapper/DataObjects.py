@@ -40,18 +40,29 @@ class Status(BaseModel):
 class Hotspot(BaseModel):
     """Class to describe Hotspot Object."""
 
-    address: Optional[str] = None
+    address: str
+    lat: float
+    lng: float
     block: Optional[int] = None
     block_added: Optional[int] = None
     geocode: Optional[Geocode] = None
-    lat: Optional[float] = None
-    lng: Optional[float] = None
     location: Optional[str] = None
     name: Optional[str] = None
     nonce: Optional[int] = None
     owner: Optional[str] = None
     reward_scale: Optional[float] = None
     status: Optional[Status] = None
+
+
+class IntegrationHotspot(Hotspot):
+    """Class to describe Hotspot Object."""
+
+    rssi: float
+    snr: float
+    spreading: str
+    frequency: float
+    channel: Optional[int] = None
+    reported_at: Optional[int] = None
 
 
 class Role(BaseModel):
@@ -181,3 +192,9 @@ class Event(BaseModel):
     reported_at: str
     router_uuid: str
     sub_category: str
+
+
+class IntegrationEvent(Event):
+    """Class to describe an Integration Event."""
+
+    hotspots: List[IntegrationHotspot]

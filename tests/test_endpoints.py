@@ -182,5 +182,6 @@ def test_get_device_integration(mocker: MockFixture, mock_integrations: Any) -> 
         autospec=True,
     )
     result = devices.get_last_integration(uuid="some_uuid")
+
     assert type(result).__name__ == "Event"
     assert result.sub_category == "uplink_integration_req"
