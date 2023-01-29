@@ -59,7 +59,7 @@ class IntegrationHotspot(Hotspot):
 
     rssi: float
     snr: float
-    spreading: str
+    datarate: str
     frequency: float
     channel: Optional[int] = None
     reported_at: Optional[int] = None

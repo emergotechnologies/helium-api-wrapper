@@ -72,15 +72,15 @@ def get_last_integration(uuid: str) -> Event:
         )
 
     for hotspot in last_event["data"]["req"]["body"]["hotspots"]:
-        h = get_hotspot_by_address(hotspot["id"])
-        if len(h) == 0:
+        hsp = get_hotspot_by_address(hotspot["id"])
+        if len(hsp) == 0:
             logger.info(f"No Hotspot found for address {hotspot['id']}")
             continue
         else:
-            h = h[0].dict()
+            h = hsp[0].dict()
             h["rssi"] = hotspot["rssi"]
             h["snr"] = hotspot["snr"]
-            h["spreading"] = hotspot["spreading"]
+            h["datarate"] = hotspot["spreading"]
             h["frequency"] = hotspot["frequency"]
             h["reported_at"] = hotspot["reported_at"]
             # h["status"] = hotspot["snr"]
