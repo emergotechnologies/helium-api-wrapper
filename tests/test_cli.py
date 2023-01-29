@@ -25,6 +25,6 @@ def c_load_hotspots(runner: CliRunner) -> None:
     """It exits with a status code of zero."""
     result = runner.invoke(
         load_hotspots,
-        ["--n", 1],
+        ["--n", "1"],
     )
     assert result.exit_code == 0
