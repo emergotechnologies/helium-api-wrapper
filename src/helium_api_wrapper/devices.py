@@ -78,13 +78,13 @@ def get_last_integration(uuid: str) -> Event:
             continue
         else:
             h = h[0].dict()
-        h["rssi"] = hotspot["rssi"]
-        h["snr"] = hotspot["snr"]
-        h["spreading"] = hotspot["spreading"]
-        h["frequency"] = hotspot["frequency"]
-        h["reported_at"] = hotspot["reported_at"]
-        # h["status"] = hotspot["snr"]
-        hotspots.append(IntegrationHotspot(**h))
+            h["rssi"] = hotspot["rssi"]
+            h["snr"] = hotspot["snr"]
+            h["spreading"] = hotspot["spreading"]
+            h["frequency"] = hotspot["frequency"]
+            h["reported_at"] = hotspot["reported_at"]
+            # h["status"] = hotspot["snr"]
+            hotspots.append(IntegrationHotspot(**h))
 
     last_event["hotspots"] = hotspots
 
