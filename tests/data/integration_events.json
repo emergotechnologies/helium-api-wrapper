@@ -93,88 +93,6 @@
         "body": {
           "app_eui": "8000000000000009",
           "dc": {
-            "balance": 218,
-            "nonce": 1
-          },
-          "dev_eui": "2CF7F1C043400020",
-          "devaddr": "18000048",
-          "downlink_url": "https://console.helium.com/api/v1/down/4e22ca86-00f7-48f4-b020-e28f4959af0f/8gzxQ1H3fz6OoLWJ-kbz15wl_jxFRZow/92f23793-6647-40aa-b255-fa1d4baec75d",
-          "fcnt": 2,
-          "hotspots": [
-            {
-              "channel": 7,
-              "frequency": 868.5,
-              "hold_time": 0,
-              "id": "11eEedQiW4iCY3oeA1saw15jtyjjKPp1vESdE3wXehznj1XL32q",
-              "lat": 47.47771443776213,
-              "long": 12.053189171302527,
-              "name": "passive-inky-whale",
-              "reported_at": 1669295745094,
-              "rssi": -134,
-              "snr": -18,
-              "spreading": "SF12BW125",
-              "status": "success"
-            }
-          ],
-          "id": "92f23793-6647-40aa-b255-fa1d4baec75d",
-          "metadata": {
-            "adr_allowed": false,
-            "cf_list_enabled": false,
-            "labels": [
-              {
-                "id": "057daf06-045b-49a4-b8bd-d0dc87919d1c",
-                "name": "SenseCAP Devices",
-                "organization_id": "ccaa708c-b822-4daa-b0f4-d7c10e7e8b25"
-              }
-            ],
-            "multi_buy": 1,
-            "organization_id": "ccaa708c-b822-4daa-b0f4-d7c10e7e8b25",
-            "preferred_hotspots": [],
-            "rx_delay": 1,
-            "rx_delay_actual": 1,
-            "rx_delay_state": "rx_delay_established"
-          },
-          "name": "Vision-AI-Sensor",
-          "payload": "AU8QAAAAAM0U",
-          "payload_size": 9,
-          "port": 2,
-          "raw_packet": "gBgAAEiAAgACrMyKKEQnhNxsZf6QfQ==",
-          "replay": false,
-          "reported_at": 1669295745094,
-          "type": "uplink",
-          "uuid": "cab64427-05b2-4442-ac64-47b8d12278dc"
-        },
-        "headers": {
-          "Content-Type": "application/json",
-          "Key": "Authentication",
-          "Value": "Token b9c82905cb19f81d36cc3dab0cf0ccbafdcd7a4f"
-        },
-        "method": "post",
-        "url": "https://api.datacake.co/integrations/lorawan/helium/",
-        "url_params": []
-      }
-    },
-    "description": "Request sent to <<\"SenseCAP\">>",
-    "device_id": "92f23793-6647-40aa-b255-fa1d4baec75d",
-    "frame_down": null,
-    "frame_up": null,
-    "organization_id": "ccaa708c-b822-4daa-b0f4-d7c10e7e8b25",
-    "reported_at": "1669295745843",
-    "router_uuid": "cab64427-05b2-4442-ac64-47b8d12278dc",
-    "sub_category": "uplink_integration_req"
-  },
-  {
-    "category": "uplink",
-    "data": {
-      "integration": {
-        "id": "4e22ca86-00f7-48f4-b020-e28f4959af0f",
-        "name": "SenseCAP",
-        "status": "success"
-      },
-      "req": {
-        "body": {
-          "app_eui": "8000000000000009",
-          "dc": {
             "balance": 219,
             "nonce": 1
           },
@@ -182,22 +100,7 @@
           "devaddr": "18000048",
           "downlink_url": "https://console.helium.com/api/v1/down/4e22ca86-00f7-48f4-b020-e28f4959af0f/8gzxQ1H3fz6OoLWJ-kbz15wl_jxFRZow/92f23793-6647-40aa-b255-fa1d4baec75d",
           "fcnt": 1,
-          "hotspots": [
-            {
-              "channel": 5,
-              "frequency": 868.0999755859375,
-              "hold_time": 0,
-              "id": "119aQxCaVCEbZmh4vAroFt7WxoLoKAdL9MWF3SsBiMCfSZj7PSh",
-              "lat": 47.47929776167038,
-              "long": 11.972818993840143,
-              "name": "oblong-daffodil-eagle",
-              "reported_at": 1669292150307,
-              "rssi": -116,
-              "snr": -5.5,
-              "spreading": "SF12BW125",
-              "status": "success"
-            }
-          ],
+          "hotspots": [],
           "id": "92f23793-6647-40aa-b255-fa1d4baec75d",
           "metadata": {
             "adr_allowed": false,

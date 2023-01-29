@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/pypi/l/helium-api-wrapper)][license]
 
 [![Read the documentation at https://helium-api-wrapper.readthedocs.io/](https://img.shields.io/readthedocs/helium-api-wrapper/latest.svg?label=Read%20the%20Docs)][read the docs]
-[![Tests](https://github.com/emergotechnologies/helium-api-wrapper/workflows/Tests/badge.svg)][tests]
+[![Test](https://github.com/emergotechnologies/helium-api-wrapper/workflows/Test/badge.svg)][test]
 
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)][pre-commit]
 [![Black](https://img.shields.io/badge/code%20style-black-000000.svg)][black]
@@ -15,7 +15,7 @@
 [status]: https://pypi.org/project/helium-api-wrapper/
 [python version]: https://pypi.org/project/helium-api-wrapper
 [read the docs]: https://helium-api-wrapper.readthedocs.io/
-[tests]: https://github.com/emergotechnologies/helium-api-wrapper/actions?workflow=Tests
+[test]: https://github.com/emergotechnologies/helium-api-wrapper/actions?workflow=Test
 [pre-commit]: https://github.com/pre-commit/pre-commit
 [black]: https://github.com/psf/black
 
@@ -44,6 +44,22 @@ $ pip install helium-api-wrapper
 ```
 
 ## Usage
+
+You can import different modules to load data from the Helium Blockchain API or the Helium Console API.
+
+```python
+from helium_api_wrapper import hotspots, devices
+
+hotspots.get_hotspot_by_address("some_address")
+devices.get_device_by_uuid("some_uuid")
+```
+
+In order to use the Device API, you need to set the `API_KEY` environment variable. 
+It is also possible to set different API endpoints for the Helium Blockchain API and the Helium Console API.
+
+```python
+
+```console
 
 You can run the wrapper as a python module:
 

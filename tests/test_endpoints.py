@@ -63,6 +63,18 @@ def mock_integrations() -> Any:
 
 
 @pytest.fixture
+def mock_integrations_failed() -> Any:
+    """Mock integrations.
+
+    :return: List of integrations
+    :rtype: Any
+    """
+    with open("tests/data/integration_events_failed.json") as file:
+        integration = json.load(file)
+    return integration
+
+
+@pytest.fixture
 def mock_events() -> Any:
     """Mock events.
 
@@ -185,3 +197,25 @@ def test_get_device_integration(mocker: MockFixture, mock_integrations: Any) -> 
 
     assert type(result).__name__ == "Event"
     assert result.sub_category == "uplink_integration_req"
+
+
+def test_get_device_integration_no_event(mocker: MockFixture, mock_integrations: Any) -> None:
+    """It exits with a status code of zero."""
+    mocker.patch(
+        "helium_api_wrapper.devices.get_last_integration",
+        return_value=Event(**mock_integrations_failed[0]),
+        autospec=True,
+    )
+    with pytest.raises(Exception, match="No Integration Events existing for device with uuid some_uuid"):
+        devices.get_last_integration(uuid="some_uuid")
+
+
+def test_get_device_integration_no_hotspot(mocker: MockFixture, mock_integrations: Any) -> None:
+    """It exits with a status code of zero."""
+    mocker.patch(
+        "helium_api_wrapper.devices.get_last_integration",
+        return_value=Event(**mock_integrations[1]),
+        autospec=True,
+    )
+    with pytest.raises(Exception, match="No Hotspots existing for integration of device with uuid some_uuid"):
+        devices.get_last_integration(uuid="some_uuid")
