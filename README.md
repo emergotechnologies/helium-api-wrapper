@@ -54,19 +54,21 @@ hotspots.get_hotspot_by_address("some_address")
 devices.get_device_by_uuid("some_uuid")
 ```
 
-In order to use the Device API, you need to set the `API_KEY` environment variable. 
+In order to use the Device API, you need to set the `API_KEY` environment variable.
 It is also possible to set different API endpoints for the Helium Blockchain API and the Helium Console API.
 
-```python
+````python
 
 ```console
 
 You can run the wrapper as a python module:
 
-```
+````
+
 python -m helium_api_wrapper --help
 python -m helium_api_wrapper get-hotspots
 python -m helium_api_wrapper get-hotspot --address your-hotspot-address
+
 ```
 
 To personalise the settings command the file (using -, -- or CAPS to specify your settings) in a preferred terminal.
@@ -102,3 +104,4 @@ This project was generated from [@cjolowicz]'s [Hypermodern Python Cookiecutter]
 [license]: https://github.com/emergotechnologies/helium-api-wrapper/blob/main/LICENSE
 [contributor guide]: https://github.com/emergotechnologies/helium-api-wrapper/blob/main/CONTRIBUTING.md
 [command-line reference]: https://helium-api-wrapper.readthedocs.io/en/latest/usage.html
+```

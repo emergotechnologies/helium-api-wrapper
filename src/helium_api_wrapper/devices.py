@@ -57,7 +57,7 @@ def get_last_integration(uuid: str) -> Event:
     hotspots = []
 
     # Handling too long body
-    for i, event in enumerate(events):
+    for event in events:
         if isinstance(event["data"]["req"]["body"], str):
             continue
         last_event = event
