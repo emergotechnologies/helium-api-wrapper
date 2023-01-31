@@ -51,7 +51,7 @@ class Hotspot(BaseModel):
     nonce: Optional[int] = None
     owner: Optional[str] = None
     reward_scale: Optional[float] = None
-    status: Optional[Status] = None
+    # status: Optional[Status] = None
 
 
 class IntegrationHotspot(Hotspot):

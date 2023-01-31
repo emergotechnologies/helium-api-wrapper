@@ -38,7 +38,7 @@ def get_device_by_uuid(uuid: str) -> Device:
         return Device(uuid=uuid)
 
 
-def get_last_integration(uuid: str) -> Event:
+def get_last_integration(uuid: str) -> IntegrationEvent:
     """Load a device integration events.
 
     :param uuid: UUID of the device
