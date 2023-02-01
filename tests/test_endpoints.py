@@ -63,6 +63,18 @@ def mock_integrations() -> Any:
 
 
 @pytest.fixture
+def mock_integrations_failed() -> Any:
+    """Mock failed integrations.
+
+    :return: List of integrations
+    :rtype: Any
+    """
+    with open("tests/data/integration_events_failed.json") as file:
+        integration = json.load(file)
+    return integration
+
+
+@pytest.fixture
 def mock_events() -> Any:
     """Mock events.
 

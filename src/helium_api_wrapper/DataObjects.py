@@ -51,7 +51,7 @@ class Hotspot(BaseModel):
     nonce: Optional[int] = None
     owner: Optional[str] = None
     reward_scale: Optional[float] = None
-    status: Optional[Status] = None
+    # status: Optional[Status] = None
 
 
 class IntegrationHotspot(Hotspot):
@@ -59,7 +59,7 @@ class IntegrationHotspot(Hotspot):
 
     rssi: float
     snr: float
-    spreading: str
+    datarate: str
     frequency: float
     channel: Optional[int] = None
     reported_at: Optional[int] = None

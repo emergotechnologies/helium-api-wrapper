@@ -38,23 +38,33 @@ def get_device_by_uuid(uuid: str) -> Device:
         return Device(uuid=uuid)
 
 
-def get_last_integration(uuid: str) -> Event:
+def get_last_integration(uuid: str) -> IntegrationEvent:
     """Load a device integration events.
 
     :param uuid: UUID of the device
     :return: Device
     """
     logger.info(f"Getting Device Integration Events for uuid {uuid}")
-    event = request(
+    events = request(
         url=f"devices/{uuid}/events?sub_category=uplink_integration_req",
         endpoint="console",
     )
 
-    if len(event) == 0:
+    if len(events) == 0:
         raise Exception(f"No Integration Events existing for device with uuid {uuid}")
 
-    last_event = event[0]
+    last_event = None
     hotspots = []
+
+    # Handling too long body
+    for event in events:
+        if isinstance(event["data"]["req"]["body"], str):
+            continue
+        last_event = event
+        break
+
+    if last_event is None:
+        raise Exception(f"No Integration Events existing for device with uuid {uuid}")
 
     if len(last_event["data"]["req"]["body"]["hotspots"]) == 0:
         raise Exception(
@@ -62,14 +72,19 @@ def get_last_integration(uuid: str) -> Event:
         )
 
     for hotspot in last_event["data"]["req"]["body"]["hotspots"]:
-        h = get_hotspot_by_address(hotspot["id"])[0].dict()
-        h["rssi"] = hotspot["rssi"]
-        h["snr"] = hotspot["snr"]
-        h["spreading"] = hotspot["spreading"]
-        h["frequency"] = hotspot["frequency"]
-        h["reported_at"] = hotspot["reported_at"]
-        h["status"] = hotspot["snr"]
-        hotspots.append(IntegrationHotspot(**h))
+        hsp = get_hotspot_by_address(hotspot["id"])
+        if len(hsp) == 0:
+            logger.info(f"No Hotspot found for address {hotspot['id']}")
+            continue
+        else:
+            h = hsp[0].dict()
+            h["rssi"] = hotspot["rssi"]
+            h["snr"] = hotspot["snr"]
+            h["datarate"] = hotspot["spreading"]
+            h["frequency"] = hotspot["frequency"]
+            h["reported_at"] = hotspot["reported_at"]
+            # h["status"] = hotspot["snr"]
+            hotspots.append(IntegrationHotspot(**h))
 
     last_event["hotspots"] = hotspots
 

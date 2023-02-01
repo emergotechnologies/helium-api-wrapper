@@ -1,0 +1,31 @@
+[
+  {
+    "category": "uplink",
+    "data": {
+      "integration": {
+        "id": "4e22ca86-00f7-48f4-b020-e28f4959af0f",
+        "name": "SenseCAP",
+        "status": "success"
+      },
+      "req": {
+        "body": "Body too long to be displayed correctly.",
+        "headers": {
+          "Content-Type": "application/json",
+          "Key": "Authentication",
+          "Value": "Token b9c82905cb19f81d36cc3dab0cf0ccbafdcd7a4f"
+        },
+        "method": "post",
+        "url": "https://api.datacake.co/integrations/lorawan/helium/",
+        "url_params": []
+      }
+    },
+    "description": "Request sent to <<\"SenseCAP\">>",
+    "device_id": "92f23793-6647-40aa-b255-fa1d4baec75d",
+    "frame_down": null,
+    "frame_up": null,
+    "organization_id": "ccaa708c-b822-4daa-b0f4-d7c10e7e8b25",
+    "reported_at": "1669295745843",
+    "router_uuid": "cab64427-05b2-4442-ac64-47b8d12278dc",
+    "sub_category": "uplink_integration_req"
+  }
+]
