@@ -1,3 +1,4 @@
+"""Sphinx configuration."""
 # Configuration file for the Sphinx documentation builder.
 #
 # For the full list of built-in configuration values, see the documentation:
@@ -38,7 +39,7 @@ extensions = [
 ]
 
 templates_path = ["_templates"]
-exclude_patterns = []
+# exclude_patterns = []
 
 # The master toctree document.
 
