@@ -3,6 +3,8 @@
 ## helium_api_wrapper
 
 ```{eval-rst}
-.. automodule:: helium_api_wrapper
-   :members:
+.. toctree::
+   :maxdepth: 4
+
+   helium_api_wrapper
 ```
